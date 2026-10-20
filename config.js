@@ -19,7 +19,7 @@ window.FLEET_CONFIG = {
   FACULTY_URL: 'https://eng.msu.ac.th',
 
   // อีเมลติดต่อผู้ดูแลระบบ
-  CONTACT_EMAIL: 'engneering.msu6@msu.ac.th'
+  CONTACT_EMAIL: 'engineering.msu6@msu.ac.th'
 };
 
 (function (c) {
