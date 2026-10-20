@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ระบบจองรถยนต์และพนักงานขับรถ | คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม</title>
+  <meta name="description" content="ปฏิทินการใช้รถและระบบจองรถยนต์พร้อมพนักงานขับรถ คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม">
+  <link rel="icon" href="logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --gold:#F9BE02;--gold-deep:#C59701;--gold-soft:#FFF4CC;
+      --graphite:#454545;--graphite-2:#2F2F2F;--slate:#646464;
+      --maroon:#401D1B;--maroon-soft:#F5E9E7;
+      --paper:#F2F2F0;--line:#E2E1DD;--ink:#262423;--muted:#76716D;
+      --ok:#1F7A3F;--ok-soft:#E2F3E7;--bad:#9B1C1C;--bad-soft:#FBE6E4;--info:#2D5B8A;--info-soft:#E5EEF7;
+      --head:'Prompt',Tahoma,sans-serif;--body:'Sarabun',Tahoma,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:var(--body);font-size:16px;line-height:1.6;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased}
+    h1,h2,h3,h4{font-family:var(--head);color:var(--maroon);margin:0;line-height:1.25;font-weight:600}
+    a{color:var(--maroon)}
+    button{font:inherit;color:inherit}
+    :focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
+    .wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+    .hidden{display:none!important}
+    svg{width:20px;height:20px;flex:none}
+
+    /* ---------- Header ---------- */
+    .top{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    .top .wrap{display:flex;align-items:center;gap:16px;height:74px}
+    .brand{display:flex;align-items:center;gap:14px;text-decoration:none;min-width:0}
+    .brand img{height:50px;width:auto;display:block}
+    .brand .t{border-left:2px solid var(--line);padding-left:14px;line-height:1.3;min-width:0}
+    .brand .t b{display:block;font-family:var(--head);font-weight:600;color:var(--maroon);font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .brand .t span{font-size:13px;color:var(--muted);white-space:nowrap}
+    .top nav{display:flex;gap:2px}
+    .home-btn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-family:var(--head);font-size:14.5px;text-decoration:none;color:var(--maroon);padding:8px 14px;border-radius:999px;background:var(--gold-soft);white-space:nowrap}
+    .home-btn:hover{background:var(--gold)}
+    .home-btn svg{width:18px;height:18px}
+    .avatar{display:inline-grid;place-items:center;border-radius:50%;object-fit:cover;flex:none;background:linear-gradient(135deg,var(--gold),var(--gold-deep));color:var(--maroon);font-family:var(--head);font-weight:600;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+    .car-ph{position:relative;width:100%;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#ECEBE7,#F7F6F3);display:grid;place-items:center;color:#BDB8B2}
+    .car-ph svg{width:46%;height:auto}
+    .car-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+    .drv{display:flex;align-items:center;gap:10px}
+    .top nav a{font-family:var(--head);font-size:14.5px;text-decoration:none;color:var(--graphite);padding:8px 10px;border-radius:999px;white-space:nowrap}
+    .top nav a:hover{background:var(--paper)}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:999px;padding:12px 22px;font-family:var(--head);font-weight:500;font-size:15.5px;cursor:pointer;text-decoration:none;transition:background .15s,transform .1s;white-space:nowrap}
+    .btn:active{transform:translateY(1px)}
+    .btn-gold{background:var(--gold);color:var(--maroon)} .btn-gold:hover{background:#ffcb1f}
+    .btn-maroon{background:var(--maroon);color:var(--gold)} .btn-maroon:hover{background:#552826}
+    .btn-ghost{background:#fff;color:var(--graphite);border:1.5px solid var(--line)} .btn-ghost:hover{border-color:var(--slate)}
+    .btn-sm{padding:8px 16px;font-size:14.5px}
+    .icon-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:#fff;display:inline-grid;place-items:center;cursor:pointer;color:var(--graphite)}
+    .icon-btn:hover{border-color:var(--slate)}
+
+    .notice{background:var(--maroon);color:#f1e3e0;font-size:14.5px}
+    .notice .wrap{display:flex;align-items:center;gap:10px;padding-top:9px;padding-bottom:9px}
+    .notice svg{color:var(--gold)}
+    .notice b{color:var(--gold);font-family:var(--head);font-weight:500}
+
+    /* ---------- Calendar (เนื้อหาหลัก บนสุด) ---------- */
+    .cal-section{padding:24px 0 8px}
+    .cal-layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:20px;align-items:start}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 1px 0 rgba(64,29,27,.04),0 10px 30px -18px rgba(64,29,27,.35)}
+    .cal-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+    .cal-head h1{font-size:24px;margin-right:auto}
+    .cal-head h1 small{display:block;font-family:var(--body);font-weight:400;font-size:14px;color:var(--muted)}
+    .month-title{font-family:var(--head);font-weight:600;font-size:20px;color:var(--ink);min-width:150px;text-align:center}
+    .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:0 0 12px}
+    .legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+
+    .month{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+    .dow{background:var(--graphite);color:#fff;text-align:center;padding:9px 0;font-family:var(--head);font-size:14px}
+    .dow.sun{color:var(--gold)}
+    .day{min-height:118px;border:0;border-right:1px solid #EFEEEA;border-top:1px solid #EFEEEA;padding:6px;background:#fff;text-align:left;display:flex;flex-direction:column;gap:3px;cursor:default;position:relative}
+    .day:nth-child(7n){border-right:0}
+    .day.out{background:#FAFAF8}
+    .day.out .n{color:#b6b2ad}
+    .day.has{cursor:pointer}
+    .day.has:hover{background:#FFFBEA}
+    .day .n{font-family:var(--head);font-size:14.5px;font-weight:500;width:30px;height:30px;display:grid;place-items:center;border-radius:50%}
+    .day.today .n{background:var(--gold);color:var(--maroon);font-weight:700}
+    .day .cnt{position:absolute;top:8px;right:8px;font-size:12px;font-family:var(--head);background:var(--maroon);color:var(--gold);border-radius:999px;padding:0 8px;line-height:20px}
+    .ev{display:block;font-size:12.5px;border-radius:6px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:3px solid rgba(64,29,27,.55)}
+    .ev.s-PENDING_APPROVAL{background:#EBD8D5;color:var(--maroon)}
+    .ev.s-WAITING_DRIVER{background:#FFE9A0;color:#6b4f00}
+    .ev.s-CONFIRMED{background:var(--gold);color:var(--maroon)}
+    .ev.s-COMPLETED{background:#E4E4E0;color:var(--graphite);border-left-color:#999}
+    .ev.more{background:none;border:0;color:var(--muted);padding:0 4px}
+    .dots{display:none;gap:3px;flex-wrap:wrap}
+    .dots i{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+    .dots i.s-WAITING_DRIVER{background:#E8B800} .dots i.s-PENDING_APPROVAL{background:#C9A8A3} .dots i.s-COMPLETED{background:#AAA}
+    .cal-state{padding:60px 20px;text-align:center;color:var(--muted)}
+
+    /* side panel */
+    .side{display:flex;flex-direction:column;gap:16px}
+    .live-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .live-head h2{font-size:17px;flex:1}
+    .pulse{width:10px;height:10px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(31,122,63,.5)}70%{box-shadow:0 0 0 10px rgba(31,122,63,0)}100%{box-shadow:0 0 0 0 rgba(31,122,63,0)}}
+    .live-time{font-size:12.5px;color:var(--muted)}
+    .kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .kpi{background:var(--paper);border-radius:14px;padding:10px 14px}
+    .kpi b{display:block;font-family:var(--head);font-size:26px;line-height:1.15;color:var(--maroon)}
+    .kpi b small{font-size:14px;color:var(--muted);font-weight:500}
+    .kpi span{font-size:13px;color:var(--muted)}
+    .kpi.hl{background:var(--gold)} .kpi.hl b,.kpi.hl span,.kpi.hl b small{color:var(--maroon)}
+    .today-list{display:flex;flex-direction:column}
+    .ti{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;padding:10px 4px;border-bottom:1px dashed var(--line);background:none;border-left:0;border-right:0;border-top:0;text-align:left;cursor:pointer}
+    .ti:last-child{border-bottom:0}
+    .ti:hover{background:#FFFBEA}
+    .ti .tm{font-family:var(--head);font-weight:600;color:var(--maroon);font-size:14.5px}
+    .ti .ds{font-size:14px}
+    .ti .sub{grid-column:2;font-size:12.5px;color:var(--muted)}
+    .empty-s{color:var(--muted);font-size:14px;padding:6px 0}
+    .cta-card{background:var(--graphite);color:#e9e9e9;position:relative;overflow:hidden}
+    .cta-card::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.18) 2px,transparent 2.4px);background-size:14px 14px;-webkit-mask-image:linear-gradient(120deg,#000,transparent 70%);mask-image:linear-gradient(120deg,#000,transparent 70%)}
+    .cta-card > *{position:relative}
+    .cta-card h2{color:#fff;font-size:18px;margin-bottom:6px}
+    .cta-card p{margin:0 0 14px;font-size:14px;color:#cfcfcf}
+    .mode-note{margin:10px 0 0;font-size:13px;color:#bdbdbd}
+    .mode-note button{background:none;border:0;color:var(--gold);cursor:pointer;text-decoration:underline;padding:0;font-size:13px}
+
+    /* ---------- Sections ---------- */
+    section.block{padding:44px 0 8px}
+    .sec-head{margin-bottom:18px}
+    .sec-head h2{font-size:26px}
+    .sec-head p{margin:4px 0 0;color:var(--muted)}
+    .plate{display:inline-flex;flex-direction:column;align-items:center;background:#fff;border:2.5px solid #222;border-radius:9px;padding:4px 14px 3px;min-width:136px;box-shadow:inset 0 0 0 2px #fff,inset 0 0 0 3px #bbb}
+    .plate .no{font-family:var(--head);font-weight:700;font-size:22px;color:#111;line-height:1.1}
+    .plate .pv{font-size:12px;color:#333;line-height:1.2}
+    .plate.sm{min-width:104px;padding:2px 10px 1px;border-width:2px}
+    .plate.sm .no{font-size:16px}.plate.sm .pv{font-size:10.5px}
+    .fleet{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+    .car{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+    .car .meta{font-size:14px;color:var(--muted)}
+    .state{display:flex;align-items:center;gap:8px;font-family:var(--head);font-size:14.5px}
+    .state i{width:10px;height:10px;border-radius:50%}
+    .READY i{background:var(--ok)} .ON_TRIP i{background:var(--gold)} .MAINTENANCE i{background:var(--bad)}
+    .car.ON_TRIP{border-color:var(--gold);background:linear-gradient(180deg,var(--gold-soft),#fff 60%)}
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:s}
+    .step{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px}
+    .step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--gold);color:var(--maroon);font-family:var(--head);font-weight:700;font-size:17px;margin-bottom:12px}
+    .step h3{font-size:17px;margin-bottom:6px}
+    .step p{margin:0;font-size:15px;color:var(--muted)}
+    .skeleton{height:96px;border-radius:16px;background:linear-gradient(90deg,#e8e7e3,#f5f4f1,#e8e7e3);background-size:200% 100%;animation:sk 1.2s infinite}
+    @keyframes sk{to{background-position:-200% 0}}
+
+    .pill{display:inline-flex;align-items:center;padding:2px 11px;border-radius:999px;font-size:13px;font-family:var(--head);font-weight:500;white-space:nowrap}
+    .s-PENDING_APPROVAL.pill{background:var(--maroon-soft);color:var(--maroon)}
+    .s-WAITING_DRIVER.pill{background:var(--gold-soft);color:#7A5A00}
+    .s-CONFIRMED.pill{background:var(--ok-soft);color:var(--ok)}
+    .s-COMPLETED.pill{background:#ECECEA;color:var(--graphite)}
+.g-M{background:#E5EEF7;color:#2D5B8A}.g-F{background:#FCE7F1;color:#A3245F}
+    .ext-nav{border:1.5px solid var(--line)}
+    .m-INTERNAL{background:var(--info-soft);color:var(--info)} .m-EXTERNAL{background:#F3E8FA;color:#6B2C8F}
+
+    /* ---------- Footer ---------- */
+    footer{margin-top:56px;background:var(--graphite-2);color:#cfcfcf;font-size:14.5px}
+    footer .wrap{display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center;padding-top:28px;padding-bottom:22px}
+    footer .logo-chip{background:#fff;border-radius:12px;padding:8px 10px}
+    footer .logo-chip img{height:46px;display:block}
+    footer a{color:var(--gold)}
+    footer b{color:#fff;font-family:var(--head);font-weight:500}
+    .copy{border-top:1px solid #444;text-align:center;padding:16px 24px 22px;font-size:14px;color:#bdbdbd;line-height:1.8}
+    .copy b{color:#fff}
+
+    /* ---------- Modals ---------- */
+    .modal-bg{position:fixed;inset:0;z-index:100;background:rgba(38,36,35,.55);display:flex;align-items:center;justify-content:center;padding:16px;animation:fade .15s ease-out}
+    .modal{position:relative;width:100%;max-width:470px;background:#fff;border-radius:24px;padding:24px 22px 18px;box-shadow:0 40px 80px -30px rgba(0,0,0,.55);animation:pop .2s ease-out;max-height:92vh;overflow-y:auto}
+    .modal.day-modal{max-width:640px;padding:0}
+    @keyframes fade{from{opacity:0}} @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98)}}
+    .m-head{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+    .m-ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(180deg,#FFB547,#F28C00);color:#fff;flex:none;box-shadow:0 6px 14px -6px rgba(242,140,0,.7)}
+    .m-ico svg{width:24px;height:24px}
+    .m-head h2{font-size:20px;flex:1;color:var(--ink)}
+    .m-close{width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);display:grid;place-items:center;cursor:pointer;color:var(--slate);flex:none}
+    .m-close:hover{background:var(--line)}
+    .m-desc{font-size:14.5px;color:var(--slate);margin:0 0 16px}
+    .opt{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:18px 16px;cursor:pointer;margin-bottom:12px;position:relative;transition:border-color .15s}
+    .opt:hover{border-color:var(--gold-deep)}
+    .opt.rec{border-color:#7BD3A4;background:linear-gradient(180deg,#F1FBF5,#fff 70%)}
+    .opt.rec:hover{border-color:var(--ok)}
+    .opt .badge{position:absolute;top:-11px;right:14px;background:#22A05B;color:#fff;font-family:var(--head);font-size:12.5px;font-weight:500;padding:2px 12px;border-radius:999px}
+    .opt .oi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none;color:#fff}
+    .opt .oi.blue{background:#4A7BF7} .opt .oi.teal{background:#14B8A6}
+    .opt h3{font-size:16.5px;color:var(--ink);margin-bottom:4px}
+    .opt p{margin:0;font-size:13.5px;color:var(--slate);line-height:1.55}
+    .m-foot{font-size:13px;color:var(--muted);margin:4px 2px 0;line-height:1.55}
+
+    .dm-head{display:flex;align-items:center;gap:10px;padding:18px 20px;border-bottom:4px solid var(--gold);position:sticky;top:0;background:#fff;z-index:2}
+    .dm-head h2{flex:1;font-size:19px}
+    .dm-head h2 small{display:block;font-family:var(--body);font-weight:400;font-size:14px;color:var(--muted)}
+    .dm-body{padding:16px 20px 20px;display:flex;flex-direction:column;gap:12px}
+    .bk{border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;display:grid;grid-template-columns:170px 1fr;gap:12px 16px}
+    .bk.s-CONFIRMED{border-color:var(--gold)}
+    .bk .when{grid-column:1/-1;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .bk .when b{font-family:var(--head);font-size:19px;color:var(--maroon);margin-right:auto}
+    .bk dl{margin:0;display:grid;grid-template-columns:96px 1fr;gap:4px 10px;font-size:14.5px;align-content:start}
+    .bk dt{color:var(--muted)} .bk dd{margin:0}
+    .bk .car-col{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+    .bk .car-col span{font-size:13px;color:var(--muted)}
+    .wait{color:#7A5A00}
+
+    @media (max-width:1280px){ .top nav a[href="#how"]{display:none} .brand .t span{display:none} }
+    @media (max-width:1060px){ .cal-layout{grid-template-columns:1fr} .side{display:grid;grid-template-columns:1fr 1fr} .side .cta-card{grid-column:1/-1} }
+    @media (max-width:900px){ .home-btn span{display:none} .top nav{display:none} .steps{grid-template-columns:1fr 1fr} footer .wrap{grid-template-columns:1fr} .brand .t span{display:none} }
+    @media (max-width:640px){
+      .wrap{padding:0 12px} .panel{padding:14px;border-radius:18px}
+      .brand img{height:38px} .brand .t{display:none} .top .btn{padding:8px 14px;font-size:14px}
+      .side{grid-template-columns:1fr}
+      .day{min-height:64px;padding:4px} .day .ev{display:none} .day .dots{display:flex} .day .cnt{display:none}
+      .day .n{width:26px;height:26px;font-size:13.5px}
+      .cal-head h1{font-size:20px;width:100%} .month-title{min-width:0;flex:1}
+      .steps{grid-template-columns:1fr}
+      .bk{grid-template-columns:1fr}
+    }
+    @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+
+  <header class="top">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="หน้าหลัก">
+        <img src="logo.png" alt="คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม">
+        <span class="t"><b>ระบบจองรถยนต์และพนักงานขับรถ</b><span>คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม</span></span>
+      </a>
+      <a class="home-btn" id="facHome" href="https://eng.msu.ac.th" title="หน้าหลักคณะวิศวกรรมศาสตร์">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg><span>หน้าหลัก</span></a>
+      <nav aria-label="เมนูหลัก">
+        <a href="#calendar">ปฏิทิน</a>
+        <a href="#fleet">สถานะรถ</a>
+        <a href="#how">ขั้นตอนการขอใช้รถ</a>
+        <a href="request.html" class="ext-nav">หน่วยงานอื่นขอใช้รถ</a>
+      </nav>
+      <button class="btn btn-maroon btn-sm" data-login>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        เข้าสู่ระบบเจ้าหน้าที่
+      </button>
+    </div>
+  </header>
+
+  <div class="notice" role="note">
+    <div class="wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      <b>ระบบทางการของคณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม</b>
+    </div>
+  </div>
+
+  <!-- ===== ปฏิทิน (เนื้อหาหลัก) ===== -->
+  <main class="wrap">
+    <section class="cal-section" id="calendar">
+      <div class="cal-layout">
+        <div class="panel">
+          <div class="cal-head">
+            <h1>ปฏิทินการใช้รถ<small>กดวันที่มีรายการเพื่อดูรถ ทะเบียน สถานที่ และพนักงานขับรถ</small></h1>
+            <button class="icon-btn" id="prevM" aria-label="เดือนก่อนหน้า"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg></button>
+            <div class="month-title" id="monthTitle" aria-live="polite">–</div>
+            <button class="icon-btn" id="nextM" aria-label="เดือนถัดไป"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></button>
+            <button class="btn btn-ghost btn-sm" id="todayBtn">เดือนนี้</button>
+          </div>
+          <div class="legend">
+            <span style="--c:#F9BE02">ยืนยันแล้ว</span><span style="--c:#FFE9A0">รอพนักงานขับรถรับงาน</span><span style="--c:#EBD8D5">รออนุมัติ</span><span style="--c:#E4E4E0">เสร็จสิ้น</span>
+          </div>
+          <div id="month"><div class="cal-state">กำลังโหลดปฏิทิน…</div></div>
+        </div>
+
+        <aside class="side">
+          <div class="panel" aria-live="polite">
+            <div class="live-head"><span class="pulse" aria-hidden="true"></span><h2>สถานะตอนนี้</h2><span class="live-time" id="updated">กำลังโหลด…</span></div>
+            <div class="kpis">
+              <div class="kpi hl"><b id="kCars">–</b><span>รถว่างพร้อมใช้</span></div>
+              <div class="kpi"><b id="kDrivers">–</b><span>คนขับว่าง</span></div>
+              <div class="kpi"><b id="kToday">–</b><span>งานวันนี้</span></div>
+              <div class="kpi"><b id="kDone">–</b><span>เสร็จสิ้นเดือนนี้</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="live-head"><h2>รายการวันนี้</h2><button class="btn btn-ghost btn-sm" id="todayDetail">ดูทั้งหมด</button></div>
+            <div class="today-list" id="todayList"><div class="empty-s">กำลังโหลด…</div></div>
+          </div>
+          <div class="panel cta-card">
+            <h2>ต้องการจองรถ?</h2>
+            <p>เข้าสู่ระบบเพื่อจองรถ ติดตามสถานะ หรือจัดการงาน (ผู้ดูแลระบบ บุคลากร พนักงานขับรถ)</p>
+            <button class="btn btn-gold" data-login>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+              เข้าสู่ระบบเพื่อจองรถ
+            </button>
+            <a class="btn btn-ghost btn-sm ext-btn" href="request.html" style="margin-top:10px;background:transparent;color:#fff;border-color:rgba(255,255,255,.35)">หน่วยงานอื่นขอใช้รถ (ไม่ต้องมีบัญชี)</a>
+            <p class="mode-note hidden" id="modeNote">ครั้งก่อนเข้าด้วย <span id="modeName"></span> • <button type="button" id="changeMode">เปลี่ยนวิธี</button></p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="block" id="fleet">
+      <div class="sec-head"><h2>สถานะรถของคณะ</h2><p>อัปเดตอัตโนมัติทุก 1 นาที</p></div>
+      <div class="fleet" id="fleetList"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    </section>
+
+    <section class="block" id="how">
+      <div class="sec-head"><h2>ขั้นตอนการขอใช้รถ</h2></div>
+      <div class="steps">
+        <div class="step"><h3>เข้าสู่ระบบ</h3><p>กด "เข้าสู่ระบบเจ้าหน้าที่" ใช้ชื่อผู้ใช้ของระบบ หรือสมัครบัญชีผู้ขอใช้รถครั้งแรก</p></div>
+        <div class="step"><h3>เลือกเวลาและรถ</h3><p>ระบบแสดงเฉพาะรถที่ว่างในช่วงเวลานั้น กรอกสถานที่และวัตถุประสงค์</p></div>
+        <div class="step"><h3>พนักงานขับรถรับงาน</h3><p>ระบบส่งอีเมลถึงพนักงานขับรถที่ว่าง คนแรกที่กดรับจะได้งาน</p></div>
+        <div class="step"><h3>รับอีเมลยืนยัน</h3><p>คุณได้รับอีเมลแจ้งชื่อและเบอร์โทรพนักงานขับรถ ติดตามสถานะได้ในระบบ</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="logo-chip"><img src="logo.png" alt=""></div>
+      <div><b>ระบบจองรถยนต์และพนักงานขับรถ</b><br>คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม ตำบลขามเรียง อำเภอกันทรวิชัย จังหวัดมหาสารคาม 44150</div>
+      <div>ติดต่อผู้ดูแลระบบ<br><a id="contact" href="mailto:engneering.msu6@msu.ac.th">engneering.msu6@msu.ac.th</a></div>
+    </div>
+    <div class="copy">
+      © 2570 <b>คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม</b><br>
+      พัฒนาโดย นายปัญญา จีระฉัตร | นักวิชาการโสตทัศนศึกษา | <a href="mailto:panya.j@msu.ac.th">panya.j@msu.ac.th</a>
+    </div>
+  </footer>
+
+  <!-- ===== Popup รายละเอียดวัน ===== -->
+  <div class="modal-bg hidden" id="dayModal" role="dialog" aria-modal="true" aria-labelledby="dmTitle">
+    <div class="modal day-modal">
+      <div class="dm-head">
+        <button class="icon-btn" id="dmPrev" aria-label="วันก่อนหน้า"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg></button>
+        <h2 id="dmTitle">–</h2>
+        <button class="icon-btn" id="dmNext" aria-label="วันถัดไป"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg></button>
+        <button class="m-close" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
+      <div class="dm-body" id="dmBody"></div>
+    </div>
+  </div>
+
+  <!-- ===== เลือกวิธีเข้าสู่ระบบ ===== -->
+  <div class="modal-bg hidden" id="chooser" role="dialog" aria-modal="true" aria-labelledby="chTitle">
+    <div class="modal">
+      <div class="m-head">
+        <div class="m-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+        <h2 id="chTitle">เลือกวิธีเข้าสู่ระบบ</h2>
+        <button class="m-close" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
+      <p class="m-desc">เลือกวิธีที่ใช้ได้กับเครื่องนี้ ระบบจะจำไว้ให้ ครั้งต่อไปกดปุ่มเดียวเข้าได้เลย ใช้ได้ทั้งผู้ดูแลระบบ บุคลากร และพนักงานขับรถ</p>
+      <button class="opt rec" data-mode="msu">
+        <span class="badge">วิธีใช้ง่ายสุด</span>
+        <span class="oi blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15h18M8 11h.01M12 11h.01M16 11h.01"/></svg></span>
+        <span><h3>เข้าด้วยบัญชี @msu.ac.th</h3>
+        <p>สำหรับเครื่องที่ลงชื่อเข้าใช้ Google ด้วยอีเมลมหาวิทยาลัยอยู่แล้ว เช่น เครื่องที่ล็อกอิน msu.ac.th ไว้ — แนะนำสำหรับเจ้าหน้าที่ส่วนใหญ่</p></span>
+      </button>
+      <button class="opt" data-mode="free">
+        <span class="oi teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>
+        <span><h3>เข้าแบบไม่ผูกบัญชี Google</h3>
+        <p>ใช้เมื่อวิธีแรกขึ้นหน้าขอสิทธิ์หรือ “Sorry, unable to open the file” หรือเครื่องนั้นลงชื่อ Google ไว้หลายบัญชี ไม่ได้ลงชื่อ หรือใช้อีเมลอื่นที่ไม่ใช่ของมหาวิทยาลัย</p></span>
+      </button>
+      <p class="m-foot">ทั้งสองวิธีเข้าหน้าเดียวกัน และยังต้องกรอกชื่อผู้ใช้และรหัสผ่านของระบบเหมือนเดิม ต่างกันแค่ช่องทางที่ใช้เปิดหน้าเท่านั้น ถ้ากดแล้วขึ้นข้อผิดพลาด ให้กลับมาเลือกอีกวิธีได้ทันที</p>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+  (function () {
+    const CFG = window.FLEET_CONFIG || {};
+    const KEY = 'fleet_login_mode';
+    const MODE_NAME = { msu: 'บัญชี @msu.ac.th', free: 'แบบไม่ผูกบัญชี Google' };
+    const ST = { READY: 'ว่าง พร้อมใช้', ON_TRIP: 'กำลังปฏิบัติงาน', MAINTENANCE: 'ซ่อมบำรุง' };
+    const STATUS = { PENDING_APPROVAL: 'รออนุมัติ', WAITING_DRIVER: 'รอพนักงานขับรถรับงาน', CONFIRMED: 'ยืนยันแล้ว', COMPLETED: 'เสร็จสิ้น' };
+    const MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+    const MS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+    const DAYS = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+    const DOW = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+    const GEN = { M: 'ชาย', F: 'หญิง' };
+    const CAR_SVG = '<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 28h52M10 28V20l7-10h30l7 10v8"/><circle cx="18" cy="30" r="5"/><circle cx="46" cy="30" r="5"/><path d="M20 10v9M44 10v9M10 20h44"/></svg>';
+    const carPic = url => '<div class="car-ph">' + (url ? '<img src="' + esc(url) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + CAR_SVG + '</div>';
+    const ini = n => esc(String(n || '').replace(/^(นาย|นางสาว|นาง)\s*/, '').slice(0, 1) || '?');
+    const avatar = (url, name, s) => url ? '<img class="avatar" src="' + esc(url) + '" alt="" loading="lazy" style="width:' + s + 'px;height:' + s + 'px">'
+      : '<span class="avatar" style="width:' + s + 'px;height:' + s + 'px;font-size:' + Math.round(s * .42) + 'px">' + ini(name) + '</span>';
+    const DAY = 86400000, OFF = 7 * 3600e3;                     // เวลาไทย UTC+7
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const p2 = n => String(n).padStart(2, '0');
+    const bk = ms => new Date(ms + OFF);
+    const tm = ms => { const d = bk(ms); return p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()); };
+    const ymd = d => d.getUTCFullYear() + '-' + p2(d.getUTCMonth() + 1) + '-' + p2(d.getUTCDate());
+    const dShort = ms => { const d = bk(ms); return d.getUTCDate() + ' ' + MS[d.getUTCMonth()]; };
+    const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+                    set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} },
+                    del: k => { try { localStorage.removeItem(k); } catch (e) {} } };
+
+    function api(fn, args) {
+      return fetch(CFG.API_URL, { method: 'POST', credentials: 'omit', cache: 'no-store',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: fn, args: args || [] }) })
+        .then(r => r.json()).then(j => { if (!j.ok) throw new Error(j.error); return j.data; });
+    }
+
+    /* ===================== ปฏิทิน ===================== */
+    const now0 = bk(Date.now());
+    const todayKey = ymd(now0);
+    let view = new Date(Date.UTC(now0.getUTCFullYear(), now0.getUTCMonth(), 1));   // วันที่ 1 ของเดือนที่แสดง (ตามเวลาไทย)
+    let cal = null, board = null, openKey = null, lastFocus = null;
+
+    function gridStart() { return new Date(view.getTime() - view.getUTCDay() * DAY); }
+    function dayItems(key) {
+      if (!cal) return [];
+      const [y, m, d] = key.split('-').map(Number);
+      const a = Date.UTC(y, m - 1, d) - OFF, b = a + DAY;          // 00:00–24:00 เวลาไทย (ms)
+      return cal.bookings.filter(x => x.start < b && x.end > a);
+    }
+    function loadCalendar() {
+      const s = gridStart(), e = new Date(s.getTime() + 42 * DAY);
+      $('#monthTitle').textContent = MONTHS[view.getUTCMonth()] + ' ' + (view.getUTCFullYear() + 543);
+      return api('getPublicCalendar', [ymd(s), ymd(e)]).then(d => { cal = d; renderMonth(); })
+        .catch(() => { if (!cal) $('#month').innerHTML = '<div class="cal-state">ยังโหลดปฏิทินไม่ได้ กรุณารีเฟรชหน้านี้อีกครั้ง</div>'; });
+    }
+    function renderMonth() {
+      const s = gridStart(), month = view.getUTCMonth();
+      let h = '<div class="month" role="grid">' + DOW.map((d, i) => '<div class="dow' + (i === 0 ? ' sun' : '') + '" role="columnheader">' + d + '</div>').join('');
+      for (let i = 0; i < 42; i++) {
+        const d = new Date(s.getTime() + i * DAY), key = ymd(d), items = dayItems(key);
+        const label = d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()] + (items.length ? ' มี ' + items.length + ' รายการ' : ' ไม่มีรายการ');
+        h += '<button type="button" class="day' + (d.getUTCMonth() !== month ? ' out' : '') + (key === todayKey ? ' today' : '') + (items.length ? ' has' : '') + '"' +
+          ' data-key="' + key + '" aria-label="' + esc(label) + '"' + (items.length ? '' : ' tabindex="-1"') + '>' +
+          '<span class="n">' + d.getUTCDate() + '</span>' + (items.length ? '<span class="cnt">' + items.length + '</span>' : '') +
+          items.slice(0, 3).map(x => '<span class="ev s-' + esc(x.status) + '">' + tm(Math.max(x.start, Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) - OFF)) + ' ' + esc(x.plateNo) + (x.destination ? ' ' + esc(x.destination) : '') + '</span>').join('') +
+          (items.length > 3 ? '<span class="ev more">+ อีก ' + (items.length - 3) + ' รายการ</span>' : '') +
+          (items.length ? '<span class="dots">' + items.slice(0, 6).map(x => '<i class="s-' + esc(x.status) + '"></i>').join('') + '</span>' : '') +
+          '</button>';
+      }
+      $('#month').innerHTML = h + '</div>';
+      $$('.day.has').forEach(b => b.addEventListener('click', () => openDay(b.dataset.key)));
+      if (openKey) renderDay();
+    }
+    function shiftMonth(n) {
+      view = new Date(Date.UTC(view.getUTCFullYear(), view.getUTCMonth() + n, 1));
+      $('#month').innerHTML = '<div class="cal-state">กำลังโหลดปฏิทิน…</div>';
+      loadCalendar();
+    }
+    $('#prevM').addEventListener('click', () => shiftMonth(-1));
+    $('#nextM').addEventListener('click', () => shiftMonth(1));
+    $('#todayBtn').addEventListener('click', () => { view = new Date(Date.UTC(now0.getUTCFullYear(), now0.getUTCMonth(), 1)); shiftMonth(0); });
+
+    /* ---------- Popup รายละเอียดวัน ---------- */
+    function openDay(key) {
+      lastFocus = document.activeElement; openKey = key;
+      renderDay();
+      $('#dayModal').classList.remove('hidden');
+      setTimeout(() => $('#dayModal .m-close').focus(), 30);
+    }
+    function renderDay() {
+      const [y, m, d] = openKey.split('-').map(Number);
+      const dt = new Date(Date.UTC(y, m - 1, d));
+      const items = dayItems(openKey);
+      $('#dmTitle').innerHTML = 'วัน' + DAYS[dt.getUTCDay()] + 'ที่ ' + d + ' ' + MONTHS[m - 1] + ' ' + (y + 543) +
+        '<small>' + (items.length ? 'ใช้รถ ' + items.length + ' รายการ' : 'ไม่มีรายการใช้รถ — รถทุกคันว่าง') + '</small>';
+      $('#dmBody').innerHTML = items.length ? items.map(x => {
+        const multi = ymd(bk(x.start)) !== ymd(bk(x.end));
+        return '<article class="bk s-' + esc(x.status) + '">' +
+          '<div class="when"><b>' + (multi ? dShort(x.start) + ' ' + tm(x.start) + ' – ' + dShort(x.end) + ' ' + tm(x.end) : tm(x.start) + ' – ' + tm(x.end)) + ' น.</b>' +
+          '<span class="pill m-' + esc(x.missionType) + '">' + (x.missionType === 'EXTERNAL' ? 'ภายนอก' : 'ภายใน') + '</span>' +
+          '<span class="pill s-' + esc(x.status) + '">' + esc(STATUS[x.status] || x.status) + '</span></div>' +
+          '<div class="car-col">' + carPic(x.carPhoto) + '<span class="plate sm"><span class="no">' + esc(x.plateNo) + '</span><span class="pv">' + esc(x.province) + '</span></span>' +
+          '<span>' + esc(x.carType) + (x.carModel ? ' • ' + esc(x.carModel) : '') + '</span></div>' +
+          '<dl>' +
+          (x.destination ? '<dt>สถานที่ไป</dt><dd><b>' + esc(x.destination) + '</b></dd>' : '') +
+          '<dt>พนักงานขับรถ</dt><dd>' + (x.driverName ? '<span class="drv">' + avatar(x.driverPhoto, x.driverName, 40) + '<span><b>' + esc(x.driverName) + '</b>' + (x.driverNick ? ' (' + esc(x.driverNick) + ')' : '') + (GEN[x.driverGender] ? ' <span class="pill g-' + esc(x.driverGender) + '">' + GEN[x.driverGender] + '</span>' : '') + '</span></span>' : '<span class="wait">รอพนักงานขับรถรับงาน</span>') + '</dd>' +
+          (x.department ? '<dt>หน่วยงาน</dt><dd>' + esc(x.department) + (x.requesterType === 'EXTERNAL' ? ' <span class="pill m-EXTERNAL">ภายนอก</span>' : '') + '</dd>' : '') +
+          '<dt>ผู้โดยสาร</dt><dd>' + esc(x.passengers || '-') + ' คน</dd>' +
+          '<dt>เลขที่</dt><dd>' + esc(x.id) + '</dd></dl></article>';
+      }).join('') : '<p class="empty-s">ไม่มีรายการใช้รถในวันนี้</p>';
+    }
+    function stepDay(n) {
+      const [y, m, d] = openKey.split('-').map(Number);
+      const nd = new Date(Date.UTC(y, m - 1, d + n));
+      const s = gridStart(), e = new Date(s.getTime() + 42 * DAY);
+      openKey = ymd(nd);
+      if (nd < s || nd >= e) {                                    // ออกนอกช่วงที่โหลด -> เลื่อนเดือน
+        view = new Date(Date.UTC(nd.getUTCFullYear(), nd.getUTCMonth(), 1));
+        $('#dmBody').innerHTML = '<p class="empty-s">กำลังโหลด…</p>';
+        loadCalendar();
+      } else renderDay();
+    }
+    $('#dmPrev').addEventListener('click', () => stepDay(-1));
+    $('#dmNext').addEventListener('click', () => stepDay(1));
+    function closeDay() { $('#dayModal').classList.add('hidden'); openKey = null; if (lastFocus) lastFocus.focus(); }
+
+    /* ===================== สถานะ & รายการวันนี้ ===================== */
+    function loadBoard() {
+      return api('getPublicBoard').then(d => { board = d; renderBoard(); }).catch(() => {
+        $('#updated').textContent = 'เชื่อมต่อไม่ได้';
+        if (!board) $('#fleetList').innerHTML = '<p class="empty-s">ยังโหลดสถานะรถไม่ได้ กรุณารีเฟรชหน้านี้อีกครั้ง</p>';
+      });
+    }
+    function renderBoard() {
+      const s = board.stats;
+      $('#kCars').innerHTML = s.carsReady + '<small> / ' + s.carsTotal + '</small>';
+      $('#kDrivers').innerHTML = s.driversReady + '<small> / ' + s.driversTotal + '</small>';
+      $('#kToday').textContent = s.today;
+      $('#kDone').textContent = s.monthDone;
+      $('#updated').textContent = 'อัปเดต ' + tm(board.generatedAt) + ' น.';
+      if (board.settings && board.settings.allowExternal === false) $$('.ext-nav,.ext-btn').forEach(x => x.classList.add('hidden'));
+      if (board.settings && board.settings.contactEmail) { $('#contact').textContent = board.settings.contactEmail; $('#contact').href = 'mailto:' + board.settings.contactEmail; }
+      const now = Date.now();
+      $('#todayList').innerHTML = board.today.length ? board.today.map(b =>
+        '<button type="button" class="ti"><span class="tm">' + tm(b.start) + '–' + tm(b.end) + '</span><span class="ds">' + esc(String(b.car).split(' (')[0]) + (b.destination ? ' → ' + esc(b.destination) : '') + '</span>' +
+        '<span class="sub">' + (b.start <= now && b.end > now ? 'กำลังเดินทาง • ' : '') + esc(STATUS[b.status] || b.status) + '</span></button>').join('')
+        : '<div class="empty-s">วันนี้ยังไม่มีรายการใช้รถ</div>';
+      $$('.ti').forEach(b => b.addEventListener('click', () => openDay(todayKey)));
+      $('#fleetList').innerHTML = board.fleet.length ? board.fleet.map(c =>
+        '<div class="car ' + esc(c.state) + '">' + carPic(c.photo) + '<span class="plate"><span class="no">' + esc(c.plateNo) + '</span><span class="pv">' + esc(c.province || '') + '</span></span>' +
+        '<div class="meta">' + esc(c.carType) + (c.seats ? ' • ' + esc(c.seats) + ' ที่นั่ง' : '') + '</div>' +
+        '<div class="state ' + esc(c.state) + '"><i></i>' + esc(ST[c.state] || c.state) + '</div>' +
+        '<div class="meta">' + (c.next ? 'งานถัดไป ' + dShort(c.next.start) + ' ' + tm(c.next.start) + '–' + tm(c.next.end) + ' น.' : 'ยังไม่มีงานที่จะถึง') + '</div></div>').join('')
+        : '<p class="empty-s">ยังไม่มีข้อมูลรถ</p>';
+    }
+    $('#todayDetail').addEventListener('click', () => openDay(todayKey));
+
+    /* ===================== เข้าสู่ระบบ ===================== */
+    function target(mode) { return mode === 'msu' ? CFG.GAS_DOMAIN_URL : (CFG.APP_URL || 'app.html'); }
+    function openChooser() { lastFocus = document.activeElement; $('#chooser').classList.remove('hidden'); setTimeout(() => $('.opt').focus(), 30); }
+    function closeChooser() { $('#chooser').classList.add('hidden'); if (lastFocus) lastFocus.focus(); }
+    function go(mode) { store.set(KEY, mode); window.location.href = target(mode); }
+    $$('[data-login]').forEach(b => b.addEventListener('click', () => { const m = store.get(KEY); if (MODE_NAME[m]) go(m); else openChooser(); }));
+    $$('.opt').forEach(o => o.addEventListener('click', () => go(o.dataset.mode)));
+    function refreshModeNote() { const m = store.get(KEY); $('#modeNote').classList.toggle('hidden', !MODE_NAME[m]); $('#modeName').textContent = MODE_NAME[m] || ''; }
+    $('#changeMode').addEventListener('click', () => { store.del(KEY); refreshModeNote(); openChooser(); });
+    refreshModeNote();
+    if (/[?&]choose=1/.test(location.search)) { store.del(KEY); refreshModeNote(); openChooser(); }
+
+    /* ---------- ปิด modal ---------- */
+    $$('.modal-bg').forEach(bg => bg.addEventListener('click', e => {
+      if (e.target === bg || e.target.closest('[data-close]')) bg.id === 'dayModal' ? closeDay() : closeChooser();
+    }));
+    document.addEventListener('keydown', e => {
+      if (!$('#dayModal').classList.contains('hidden')) {
+        if (e.key === 'Escape') closeDay();
+        if (e.key === 'ArrowLeft') stepDay(-1);
+        if (e.key === 'ArrowRight') stepDay(1);
+      } else if (e.key === 'Escape' && !$('#chooser').classList.contains('hidden')) closeChooser();
+    });
+
+    if (CFG.FACULTY_URL) $('#facHome').href = CFG.FACULTY_URL;
+    loadCalendar();
+    loadBoard();
+    setInterval(() => { if (!document.hidden) { loadBoard(); loadCalendar(); } }, 60000);
+  })();
+  </script>
+</body>
+</html>
