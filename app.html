@@ -119,6 +119,12 @@ img.avatar[data-zoom]{cursor:zoom-in}
 .modal.nudge{animation:nudge .35s}
 @keyframes nudge{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
 @media (max-width:860px){ .sum-grid{grid-template-columns:1fr} .step-head > .hint{margin-left:0} }
+.memo-box{border:2px dashed var(--line);border-radius:var(--r-md);padding:12px 14px;margin-bottom:18px;background:#FCFBF8}
+.memo-box.on{border-color:var(--gold-deep);background:var(--gold-soft)}
+.memo-tg{display:flex;gap:8px;align-items:center;font-family:var(--font-head);font-weight:500;color:var(--maroon);cursor:pointer}
+.memo-fields{display:none}
+.memo-box.on .memo-fields{display:block}
+.drv-opt.none{border-style:dashed;border-color:#C9A8A3}
 .lbl-row{display:flex;align-items:center;gap:10px;min-width:0}
 .lbl-row > div{min-width:0}
 .tl-row .lbl .lbl-row b{display:block}
@@ -496,7 +502,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
 /* =====================================================================
  *  EN-MSU Fleet — Client (Single Page App ใน Apps Script HtmlService)
  * ===================================================================== */
-const CLIENT_VERSION = '2569.10-r9';   // ต้องตรงกับ APP.VERSION ใน Code.gs
+const CLIENT_VERSION = '2569.10-r10';   // ต้องตรงกับ APP.VERSION ใน Code.gs
 const S = { token: null, user: null, settings: window.PUBLIC || {}, cars: [], drivers: [], page: null,
             charts: [], timer: null, cal: { mode: 'month', date: null, resource: 'car' }, filters: {} };
 
@@ -808,7 +814,8 @@ const MENUS = {
     ['งานจอง'], ['newBooking', 'จองรถ', 'plus'], ['myBookings', 'การจองของฉัน', 'list']
   ],
   driver: [
-    ['ภาพรวม'], ['dashboard', 'แดชบอร์ด', 'dashboard'], ['myJobs', 'งานของฉัน', 'job'], ['calendar', 'ปฏิทินการใช้รถ', 'calendar']
+    ['ภาพรวม'], ['dashboard', 'แดชบอร์ด', 'dashboard'], ['myJobs', 'งานของฉัน', 'job'], ['calendar', 'ปฏิทินการใช้รถ', 'calendar'],
+    ['บันทึกคำขอ'], ['newBooking', 'จองรถ (จากหนังสือ)', 'plus'], ['myBookings', 'รายการที่ฉันบันทึก', 'list']
   ]
 };
 const TITLES = { dashboard: 'แดชบอร์ด', calendar: 'ปฏิทินการใช้รถ', newBooking: 'จองรถ', bookings: 'รายการจองทั้งหมด',
@@ -1124,8 +1131,18 @@ const Pages = {
     const u = S.user;
     let draft = null;
     try { draft = JSON.parse(localStorage.getItem(Pages._draftKey()) || 'null'); } catch (e) {}
+    const staff = u.role === 'admin' || u.role === 'driver';
+    const memoAlways = u.role === 'driver';
+    const memoSec = staff ? '<div class="memo-box' + (memoAlways ? ' on' : '') + '" id="memoBox">' +
+        (memoAlways ? '' : '<label class="memo-tg"><input type="checkbox" name="memoOn" id="memoOn"> บันทึกแทนผู้ขอ (จากหนังสือบันทึกข้อความ/เอกสารขอใช้รถ)</label>') +
+        '<div class="memo-fields"><div class="step-head" style="margin-top:' + (memoAlways ? '0' : '12px') + '"><span class="step-no">0</span><h3>ผู้ขอใช้รถตามหนังสือบันทึกข้อความ</h3></div>' +
+        '<div class="field ac-wrap"><label>ค้นหาบุคลากร (พิมพ์ชื่อ 1-3 ตัวอักษร)</label><input class="input" id="obFind" autocomplete="off" placeholder="เช่น สม… หรือพิมพ์ชื่อหน่วยงานภายนอกเองด้านล่าง"><div class="ac-list hidden" id="obList"></div></div>' +
+        '<div class="grid2"><div class="field"><label>ชื่อ-นามสกุลผู้ขอ *</label><input class="input" name="obName"></div><div class="field"><label>ตำแหน่ง</label><input class="input" name="obPosition"></div></div>' +
+        '<div class="grid3"><div class="field"><label>หน่วยงาน</label><input class="input" name="obDepartment"></div><div class="field"><label>อีเมล (รับแจ้งผล)</label><input class="input" type="email" name="obEmail"></div><div class="field"><label>โทรศัพท์</label><input class="input" name="obPhone"></div></div>' +
+        '<div class="grid2"><div class="field"><label>เลขที่หนังสือ</label><input class="input" name="obMemoNo" placeholder="เช่น อว 0605.9/123"></div>' +
+        '<div class="field"><label>รูป/สแกนหนังสือบันทึกข้อความ</label><div class="rcpt" id="memoPic"></div><input type="hidden" name="obMemoUrl"></div></div></div></div>' : '';
     $('#page').innerHTML = (draft ? '<div class="draft-bar" id="draftBar">' + ic('refresh') + '<span>กู้คืนข้อมูลที่กรอกค้างไว้เมื่อ ' + fDT(draft.savedAt) + ' แล้ว</span><button type="button" class="btn btn-ghost btn-sm" id="draftClear">เริ่มกรอกใหม่</button></div>' : '') +
-      '<form class="panel" id="bkForm" novalidate autocomplete="off">' +
+      '<form class="panel" id="bkForm" novalidate autocomplete="off">' + memoSec +
       '<div class="step-head"><span class="step-no">1</span><h3>เลือกช่วงเวลาที่ใช้รถ</h3></div>' +
       '<div class="grid2"><div class="field"><label>วัน-เวลาเริ่ม *</label><input type="datetime-local" class="input" name="start" value="' + ymd + 'T08:00" required></div>' +
       '<div class="field"><label>วัน-เวลาสิ้นสุด *</label><input type="datetime-local" class="input" name="end" value="' + ymd + 'T16:00" required></div></div>' +
@@ -1139,7 +1156,7 @@ const Pages = {
       '<div class="grid2"><div class="field"><label>สถานที่ไป *</label><input class="input" name="destination" required placeholder="เช่น ศาลากลางจังหวัดขอนแก่น"></div>' +
       '<div class="field"><label>จำนวนผู้โดยสาร *</label><input type="number" min="1" class="input" name="passengers" value="1" required></div></div>' +
       '<div class="field"><label>วัตถุประสงค์ *</label><textarea class="input" name="purpose" required placeholder="เช่น นำนักศึกษาดูงานโรงไฟฟ้า"></textarea></div>' +
-      '<div class="grid2"><div class="field"><label>เบอร์โทรติดต่อ</label><input class="input" name="phone" value="' + esc(u.phone || '') + '"></div>' +
+      '<div class="grid2 own-fields"><div class="field"><label>เบอร์โทรติดต่อ</label><input class="input" name="phone" value="' + esc(u.phone || '') + '"></div>' +
       '<div class="field"><label>หน่วยงาน/ภาควิชา</label><input class="input" name="department" value="' + esc(u.department || '') + '"></div></div>' +
       '<input type="hidden" name="position" value="' + esc(u.position || '') + '">' +
       '<div class="field"><label>หมายเหตุ</label><input class="input" name="remark" placeholder="จุดนัดรับ, สัมภาระ ฯลฯ"></div>' +
@@ -1148,7 +1165,27 @@ const Pages = {
       '</form>';
     const f = $('#bkForm');
     // กู้คืนร่าง
-    if (draft && draft.v) Object.keys(draft.v).forEach(k => { if (f.elements[k] && k !== 'position') f.elements[k].value = draft.v[k]; });
+    if (draft && draft.v) Object.keys(draft.v).forEach(k => { if (f.elements[k] && k !== 'position' && k !== 'memoOn') f.elements[k].value = draft.v[k]; });
+    // บันทึกแทนผู้ขอ
+    const memoOn = () => memoAlways || (f.memoOn && f.memoOn.checked);
+    const syncMemo = () => { const mb = $('#memoBox'); if (mb) mb.classList.toggle('on', memoOn()); $$('.own-fields').forEach(x => x.classList.toggle('hidden', memoOn())); };
+    if (staff) {
+      if (draft && draft.v && draft.v.memoOn === '1' && f.memoOn) f.memoOn.checked = true;
+      if (f.memoOn) f.memoOn.onchange = () => { syncMemo(); Pages._saveDraft(); };
+      syncMemo();
+      Staff.attach($('#obFind'), $('#obList'), p => {
+        f.obName.value = p.n; f.obPosition.value = p.p || ''; f.obDepartment.value = p.d || ''; f.obEmail.value = p.m === 0 ? '' : p.e;
+        $('#obFind').value = p.n; Pages._saveDraft(); Pages._renderSummary();
+      });
+      const drawMemo = () => {
+        const url = f.obMemoUrl.value;
+        $('#memoPic').innerHTML = (url ? '<a href="' + esc(url) + '" target="_blank" rel="noopener"><img src="' + esc(url) + '" alt="หนังสือ"></a>' : '') +
+          '<button type="button" class="btn btn-ghost btn-sm" id="memoBtn">' + ic('camera') + (url ? 'เปลี่ยนไฟล์' : 'ถ่าย/เลือกรูปหนังสือ') + '</button>';
+        $('#memoBtn').onclick = () => pickAndUpload('memo', f.obMemoNo.value || 'MEMO', 2000).then(x => { f.obMemoUrl.value = x; drawMemo(); Pages._saveDraft(); UI.toast('แนบหนังสือแล้ว', 'ok'); }).catch(e => { if (e.message !== 'ยกเลิก') UI.err(e); });
+      };
+      drawMemo();
+    }
+    S.memoOn = memoOn;
     const setMission = v => { $$('#mType button').forEach(x => x.classList.toggle('on', x.dataset.v === v)); f.missionType.value = v; };
     setMission(f.missionType.value || 'INTERNAL');
     $$('#mType button').forEach(b => b.onclick = () => { setMission(b.dataset.v); Pages._saveDraft(); });
@@ -1165,23 +1202,35 @@ const Pages = {
     f.addEventListener('input', () => { Pages._saveDraft(); Pages._renderSummary(); });
     f.addEventListener('change', () => Pages._saveDraft());
     f.addEventListener('submit', Pages._submitBooking);
+    // อัปเดตสถานะว่างของรถ/คนขับแบบเรียลไทม์ทุก 30 วินาที (คงสิ่งที่เลือกไว้ถ้ายังว่าง)
+    clearInterval(S.timer);
+    S.timer = setInterval(() => { if (S.page === 'newBooking' && !document.hidden && !$('#modalRoot').children.length) Pages._checkAvail(true); }, 30000);
     S.dirtyGuard = () => { try { return S.page === 'newBooking' && !!localStorage.getItem(Pages._draftKey()); } catch (e) { return false; } };
     Pages._checkAvail();
   },
+  _flowText() {
+    const m = S.settings.approvalMode || 'DRIVER_FIRST';
+    if (m === 'NONE') return 'ขั้นตอน: แจ้งพนักงานขับรถ → คนขับกดรับ → ยืนยันแล้ว';
+    if (m === 'APPROVE_FIRST') return 'ขั้นตอน: รออนุมัติ → แจ้งพนักงานขับรถ → คนขับกดรับ → ยืนยันแล้ว';
+    return 'ขั้นตอน: แจ้งพนักงานขับรถทันที → คนขับกดรับ (สถานะ "รออนุมัติ") → ผู้บริหารอนุมัติ → ยืนยันแล้ว';
+  },
   _saveDraft() {
     const f = $('#bkForm'); if (!f) return;
-    const v = {}; ['start', 'end', 'carId', 'driverId', 'missionType', 'destination', 'passengers', 'purpose', 'phone', 'department', 'remark'].forEach(k => v[k] = f.elements[k].value);
-    const touched = v.destination || v.purpose || v.remark || v.carId || v.driverId;
+    const v = {}; ['start', 'end', 'carId', 'driverId', 'missionType', 'destination', 'passengers', 'purpose', 'phone', 'department', 'remark',
+      'obName', 'obPosition', 'obDepartment', 'obEmail', 'obPhone', 'obMemoNo', 'obMemoUrl'].forEach(k => { if (f.elements[k]) v[k] = f.elements[k].value; });
+    if (f.memoOn) v.memoOn = f.memoOn.checked ? '1' : '';
+    const touched = v.destination || v.purpose || v.remark || v.carId || v.driverId || v.obName;
     try { if (touched) localStorage.setItem(Pages._draftKey(), JSON.stringify({ v, savedAt: Date.now() })); } catch (e) {}
   },
   _clearDraft() { try { localStorage.removeItem(Pages._draftKey()); } catch (e) {} },
-  async _checkAvail() {
+  async _checkAvail(quiet) {
     const f = $('#bkForm'); if (!f) return;
     const bar = $('#availBar');
+    const prevCar = f.carId.value, prevDrv = f.driverId.value;
     if (!f.start.value || !f.end.value || f.end.value <= f.start.value) {
       bar.className = 'avail-bar warn'; bar.textContent = 'เวลาสิ้นสุดต้องมากกว่าเวลาเริ่ม'; S.avail = null; Pages._renderPick(); return;
     }
-    bar.className = 'avail-bar'; bar.textContent = 'กำลังตรวจสอบตารางรถและพนักงานขับรถ…';
+    if (!quiet) { bar.className = 'avail-bar'; bar.textContent = 'กำลังตรวจสอบตารางรถและพนักงานขับรถ…'; }
     try {
       const a = await call('getAvailability', f.start.value, f.end.value);
       if (!$('#bkForm')) return;
@@ -1191,7 +1240,8 @@ const Pages = {
       bar.innerHTML = ic(freeCars && a.freeDriverCount ? 'check' : 'x') + '<span>' + fRange(toMs(f.start.value), toMs(f.end.value)) + ' • รถว่าง <b>' + freeCars + '</b> คัน • พนักงานขับรถว่าง <b>' + a.freeDriverCount + '</b> จาก ' + a.totalDrivers + ' คน' +
         (a.freeDriverCount ? '' : ' — ยังจองได้ ผู้ดูแลจะจัดคนขับให้ภายหลัง') + '</span>';
       Pages._renderPick();
-    } catch (e) { bar.className = 'avail-bar warn'; bar.textContent = e.message; }
+      if (quiet && ((prevCar && !f.carId.value) || (prevDrv && !f.driverId.value))) UI.toast('รถหรือพนักงานขับรถที่คุณเลือกเพิ่งถูกจองไป กรุณาเลือกใหม่', 'err');
+    } catch (e) { if (!quiet) { bar.className = 'avail-bar warn'; bar.textContent = e.message; } }
   },
   _renderPick() {
     const f = $('#bkForm'); if (!f) return;
@@ -1211,10 +1261,12 @@ const Pages = {
     $$('.car-opt', pick).forEach(b => b.onclick = () => { f.carId.value = b.dataset.id; $$('.car-opt', pick).forEach(x => x.classList.toggle('on', x === b)); Pages._saveDraft(); Pages._renderSummary(); });
     // คนขับ
     const drivers = a.drivers || [];
-    if (f.driverId.value && !drivers.some(d => d.id === f.driverId.value && d.available)) f.driverId.value = '';
-    dp.innerHTML = '<button type="button" class="drv-opt auto' + (f.driverId.value ? '' : ' on') + '" data-id=""><span class="avatar ph" style="width:56px;height:56px;font-size:22px">✦</span><b>ให้ระบบจัดให้</b><span class="hint">ส่งงานถึงคนขับที่ว่างทุกคน คนแรกที่กดรับได้งาน</span></button>' +
+    if (f.driverId.value && f.driverId.value !== '__NONE__' && !drivers.some(d => d.id === f.driverId.value && d.available)) f.driverId.value = '';
+    const staffRole = S.user.role === 'admin' || S.user.role === 'driver';
+    dp.innerHTML = (staffRole ? '<button type="button" class="drv-opt none' + (f.driverId.value === '__NONE__' ? ' on' : '') + '" data-id="__NONE__"><span class="avatar ph" style="width:56px;height:56px;font-size:22px">' + ic('car') + '</span><b>ไม่ใช้พนักงานขับรถ</b><span class="hint">ผู้ขอขับเอง (ตามที่ผู้บริหารอนุมัติ)</span></button>' : '') +
+      '<button type="button" class="drv-opt auto' + (f.driverId.value ? '' : ' on') + '" data-id=""><span class="avatar ph" style="width:56px;height:56px;font-size:22px">✦</span><b>ให้ระบบจัดให้</b><span class="hint">ส่งงานถึงคนขับที่ว่างทุกคน คนแรกที่กดรับได้งาน</span></button>' +
       drivers.map(d => '<button type="button" class="drv-opt' + (d.id === f.driverId.value ? ' on' : '') + '" data-id="' + esc(d.id) + '"' + (d.available ? '' : ' disabled') + '>' +
-        avatar(d.photo, d.fullName, 56) + '<b>' + esc(d.fullName) + '</b>' +
+        avatar(d.photo, d.fullName, 56) + '<b>' + esc(d.fullName) + (S.user.driverId === d.id ? ' (ฉัน)' : '') + '</b>' +
         '<span class="hint">' + (d.nickname ? esc(d.nickname) + ' • ' : '') + (GENDER_TH[d.gender] ? GENDER_TH[d.gender] : 'ไม่ระบุเพศ') + '</span>' +
         (d.available ? '<span class="ok-tag">ว่าง</span>' : '<span class="why">' + esc(d.reason) + '</span>') + '</button>').join('');
     $$('.drv-opt', dp).forEach(b => b.onclick = () => { f.driverId.value = b.dataset.id; $$('.drv-opt', dp).forEach(x => x.classList.toggle('on', x === b)); Pages._saveDraft(); Pages._renderSummary(); });
@@ -1226,13 +1278,21 @@ const Pages = {
     const c = a.cars.find(x => x.id === f.carId.value), d = (a.drivers || []).find(x => x.id === f.driverId.value);
     el.innerHTML = '<div class="sum-head">' + ic('check') + ' สรุปก่อนส่งคำขอ</div><div class="sum-grid">' +
       '<div class="sum-car">' + (c ? carPic(c.photo, 'sm', c.plateNo) + '<div><span class="hint">รถ</span><b>' + esc(c.plateNo) + '</b><div class="hint">' + esc(c.carType) + ' • ' + esc(c.seats) + ' ที่นั่ง</div></div>' : '<div class="sum-miss">ยังไม่ได้เลือกรถ</div>') + '</div>' +
-      '<div class="sum-drv">' + (d ? avatar(d.photo, d.fullName, 48) + '<div><span class="hint">พนักงานขับรถที่เลือก</span><b>' + drvName(d.fullName, d.gender) + '</b><div class="hint">ระบบส่งงานให้คนนี้ก่อน</div></div>' : '<span class="avatar ph" style="width:48px;height:48px">✦</span><div><span class="hint">พนักงานขับรถ</span><b>ให้ระบบจัดให้</b></div>') + '</div>' +
+      '<div class="sum-drv">' + (f.driverId.value === '__NONE__' ? '<span class="avatar ph" style="width:48px;height:48px">' + ic('car') + '</span><div><span class="hint">พนักงานขับรถ</span><b>ไม่ใช้พนักงานขับรถ</b></div>' :
+        d ? avatar(d.photo, d.fullName, 48) + '<div><span class="hint">พนักงานขับรถที่เลือก</span><b>' + drvName(d.fullName, d.gender) + '</b><div class="hint">' + (S.user.driverId === d.id || isAdmin() ? 'กำหนดเป็นคนขับทันที' : 'ระบบส่งงานให้คนนี้ก่อน') + '</div></div>' : '<span class="avatar ph" style="width:48px;height:48px">✦</span><div><span class="hint">พนักงานขับรถ</span><b>ให้ระบบจัดให้</b></div>') + '</div>' +
       '<div class="sum-time"><span class="hint">ช่วงเวลา</span><b>' + (f.start.value && f.end.value && f.end.value > f.start.value ? fRange(toMs(f.start.value), toMs(f.end.value)) : '-') + '</b>' +
-      '<div class="hint">' + esc(f.destination.value || 'ยังไม่ระบุสถานที่') + ' • ' + esc(f.passengers.value || 0) + ' คน</div></div></div>';
+      '<div class="hint">' + esc(f.destination.value || 'ยังไม่ระบุสถานที่') + ' • ' + esc(f.passengers.value || 0) + ' คน</div>' +
+      (S.memoOn && S.memoOn() ? '<div class="hint">ผู้ขอ: ' + esc((f.obName && f.obName.value) || '—') + '</div>' : '') + '</div></div>' +
+      '<p class="hint" style="margin:8px 0 0">' + Pages._flowText() + '</p>';
   },
   async _submitBooking(e) {
     e.preventDefault();
     const f = e.target, d = UI.formData(f);
+    if (S.memoOn && S.memoOn()) {
+      if (!d.obName) { UI.toast('กรุณากรอกชื่อผู้ขอใช้รถตามหนังสือ', 'err'); f.obName.focus(); return; }
+      d.onBehalf = { name: d.obName, position: d.obPosition, department: d.obDepartment, email: d.obEmail, phone: d.obPhone, memoNo: d.obMemoNo, memoUrl: d.obMemoUrl };
+    }
+    if (d.driverId === '__NONE__') { d.noDriver = true; d.driverId = ''; }
     if (!d.carId) { UI.toast('กรุณาเลือกรถ', 'err'); $('#carPick').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
     if (!d.destination || !d.purpose) { UI.toast('กรุณากรอกสถานที่และวัตถุประสงค์', 'err'); (d.destination ? f.purpose : f.destination).focus(); return; }
     const btn = $('#bkSubmit'); btn.disabled = true;
@@ -1241,7 +1301,8 @@ const Pages = {
       const r = await call('createBooking', d);
       UI.loading(false);
       Pages._clearDraft();
-      const msg = r.status === 'PENDING_APPROVAL' ? 'คำขออยู่ระหว่างรอผู้ดูแลอนุมัติ ระบบจะแจ้งผลทางอีเมล'
+      const msg = r.status === 'CONFIRMED' ? 'บันทึกและยืนยันการจองแล้ว'
+        : r.status === 'PENDING_APPROVAL' ? 'บันทึกแล้ว สถานะ "รออนุมัติ" — ระบบแจ้งผู้บริหาร/ผู้ดูแลให้อนุมัติแล้ว'
         : r.notified ? (d.driverId ? 'ระบบส่งงานถึงพนักงานขับรถที่คุณเลือกแล้ว หากไม่รับภายในเวลาที่กำหนด ระบบจะส่งให้คนขับที่ว่างคนอื่น' : 'ระบบส่งอีเมลแจ้งงานถึงพนักงานขับรถที่ว่าง ' + r.notified + ' คนแล้ว') + ' คุณจะได้รับอีเมลยืนยันเมื่อมีผู้รับงาน'
         : 'ขณะนี้ไม่มีพนักงานขับรถว่าง ระบบแจ้งผู้ดูแลให้จัดคนขับแล้ว';
       const m = UI.modal({ title: 'ส่งคำขอแล้ว • ' + r.bookingId, body: '<p style="margin:0 0 10px">' + pill(r.status) + '</p><p>' + esc(msg) + '</p>',
@@ -1300,17 +1361,20 @@ const Pages = {
     const u = S.user, admin = isAdmin(), active = ['PENDING_APPROVAL', 'WAITING_DRIVER', 'CONFIRMED'].indexOf(b.status) > -1;
     const own = b.requesterId === u.userId;
     const acts = [];
+    if (admin && b.status === 'WAITING_DRIVER' && !b.approved) acts.push('<button class="btn btn-ok" data-a="approve">' + ic('check') + 'อนุมัติล่วงหน้า</button>');
     if (admin && b.status === 'PENDING_APPROVAL') {
-      acts.push('<button class="btn btn-ok" data-a="approve">' + ic('check') + (b.carId ? 'อนุมัติ' : 'อนุมัติและเลือกรถ') + '</button>');
+      acts.push('<button class="btn btn-ok" data-a="approve">' + ic('check') + (b.carId ? (b.driverId ? 'อนุมัติ (' + esc(b.driverName) + ' รับงานแล้ว)' : b.noDriver ? 'อนุมัติ (ไม่ใช้คนขับ)' : 'อนุมัติ') : 'อนุมัติและเลือกรถ') + '</button>');
       if (b.carId) acts.push('<button class="btn btn-ghost" data-a="changecar">' + ic('car') + 'เปลี่ยนรถแล้วอนุมัติ</button>');
       acts.push('<button class="btn btn-bad" data-a="reject">ไม่อนุมัติ</button>');
     }
     if (admin && b.status === 'WAITING_DRIVER') acts.push('<button class="btn btn-gold" data-a="resend">' + ic('send') + (b.preferredDriverId ? 'ส่งให้คนขับที่ว่างทุกคน' : 'แจ้งคนขับอีกครั้ง') + '</button>');
-    if (admin && active && b.carId) acts.push('<button class="btn btn-ghost" data-a="assign">' + ic('wheel') + (b.driverId ? 'เปลี่ยนคนขับ' : 'มอบหมายคนขับ') + '</button>');
+    const canEdit = active && (admin || (u.role === 'driver' && (b.createdBy === u.userId || b.driverId === u.driverId)));
+    if (canEdit) acts.push('<button class="btn btn-ghost" data-a="edit">' + ic('edit') + 'เปลี่ยนรถ/คนขับ</button>');
+    if (false && admin && active && b.carId) acts.push('<button class="btn btn-ghost" data-a="assign">' + ic('wheel') + (b.driverId ? 'เปลี่ยนคนขับ' : 'มอบหมายคนขับ') + '</button>');
     const myTrip = admin || (u.role === 'driver' && b.driverId === u.driverId);
     if (myTrip && b.status === 'CONFIRMED') acts.push('<button class="btn btn-ok" data-a="complete">' + ic('fuel') + 'ปิดงาน + บันทึกระยะทาง/น้ำมัน</button>');
     if (myTrip && b.status === 'COMPLETED') acts.push('<button class="btn btn-gold" data-a="log">' + ic('fuel') + (b.trip ? 'แก้ไขบันทึกการเดินทาง' : 'บันทึกระยะทาง/ค่าน้ำมัน') + '</button>');
-    if (active && (admin || own)) acts.push('<button class="btn btn-ghost" data-a="cancel" style="color:var(--bad)">ยกเลิกการจอง</button>');
+    if (active && (admin || own || b.createdBy === u.userId)) acts.push('<button class="btn btn-ghost" data-a="cancel" style="color:var(--bad)">ยกเลิกการจอง</button>');
 
     const row = (k, v) => '<dt>' + k + '</dt><dd>' + v + '</dd>';
     const m = UI.modal({
@@ -1326,7 +1390,8 @@ const Pages = {
         row('หน่วยงาน', esc(b.department || '-')) +
         row('ติดต่อ', esc(b.requesterPhone || '-') + (b.requesterEmail ? ' • ' + esc(b.requesterEmail) : '')) +
         row('รถ', b.carPlate ? esc(b.carPlate) : '<span class="hint">ยังไม่ระบุ' + (b.preferredCarType ? ' — ต้องการ ' + esc(b.preferredCarType) : '') + '</span>') +
-        row('คนขับ', b.driverName ? '<b>' + drvName(b.driverName, b.driverGender) + '</b>' : '<span class="hint">ยังไม่มีผู้รับงาน</span>') +
+        row('คนขับ', b.noDriver ? '<b>ไม่ใช้พนักงานขับรถ</b> <span class="hint">(ผู้ขอขับเอง)</span>' : b.driverName ? '<b>' + drvName(b.driverName, b.driverGender) + '</b>' + (b.status === 'PENDING_APPROVAL' ? ' <span class="pill s-WAITING_DRIVER">รับงานแล้ว • รออนุมัติ</span>' : '') : '<span class="hint">ยังไม่มีผู้รับงาน</span>') +
+        (b.requesterType === 'MEMO' ? row('ที่มา', 'หนังสือบันทึกข้อความ' + (b.memoNo ? ' เลขที่ <b>' + esc(b.memoNo) + '</b>' : '') + (b.memoUrl ? ' • <a href="' + esc(b.memoUrl) + '" target="_blank" rel="noopener">ดูหนังสือ</a>' : '')) : '') +
         (b.preferredDriverId && b.preferredDriverId !== b.driverId ? row('คนขับที่ผู้ขอเลือก', '<span class="lbl-row">' + avatar(b.preferredDriverPhoto, b.preferredDriverName, 28) + esc(b.preferredDriverName) + '</span>') : '') +
         (admin ? row('แจ้งงานถึง', esc(b.notifiedDrivers || '-')) + row('อนุมัติโดย', esc(b.approvedBy || '-')) : '') +
         (b.remark ? row('หมายเหตุ', '<span style="white-space:pre-line">' + esc(b.remark) + '</span>') : '') + '</dl>' +
@@ -1347,8 +1412,10 @@ const Pages = {
       try {
         if (a === 'approve') {
           if (!b.carId) { m.close(); return Pages.approveWithCar(b, reload); }
-          UI.loading(true); const r = await call('approveBooking', b.id); UI.loading(false); done('อนุมัติแล้ว แจ้งคนขับที่ว่าง ' + r.notified + ' คน');
+          UI.loading(true); const r = await call('approveBooking', b.id); UI.loading(false);
+          done(r.confirmed ? 'อนุมัติแล้ว — ยืนยันการจองและแจ้งผู้เกี่ยวข้องแล้ว' : r.notified ? 'อนุมัติแล้ว แจ้งคนขับที่ว่าง ' + r.notified + ' คน' : 'อนุมัติแล้ว — เมื่อคนขับกดรับ งานจะยืนยันทันที');
         }
+        if (a === 'edit') { m.close(); Pages.editAssignment(b, reload); }
         if (a === 'reject') { const why = await UI.confirm('ไม่อนุมัติ ' + b.id, 'ระบบจะแจ้งผู้จองทางอีเมล', { input: 'เหตุผล', required: true, ok: 'ไม่อนุมัติ', danger: true }); if (!why) return; UI.loading(true); await call('rejectBooking', b.id, why); UI.loading(false); done('บันทึกการไม่อนุมัติแล้ว'); }
         if (a === 'resend') { UI.loading(true); const r = await call('resendDriverNotify', b.id); UI.loading(false); done('ส่งแจ้งเตือนถึงคนขับที่ว่าง ' + r.notified + ' คน'); }
         if (a === 'complete' || a === 'log') { m.close(); Pages.tripLog(b, reload); }
@@ -1399,6 +1466,40 @@ const Pages = {
       const d = UI.formData(f); d.receiptUrl = receipt;
       try { UI.loading(true); await call('completeBooking', b.id, d); UI.loading(false); m.close(); UI.toast('บันทึกการเดินทางแล้ว', 'ok'); (reload || (() => App.go(S.page)))(); }
       catch (e) { UI.err(e); }
+    };
+  },
+
+  /** เปลี่ยนรถ / คนขับ / ไม่ใช้คนขับ (Admin หรือพนักงานขับรถที่บันทึกงาน) */
+  async editAssignment(b, reload) {
+    UI.loading(true);
+    let a;
+    try { a = await call('getAvailability', toInput(b.start), toInput(b.end), b.id); } catch (e) { return UI.err(e); }
+    UI.loading(false);
+    let carId = b.carId || '', drv = 'keep';
+    const m = UI.modal({
+      title: 'เปลี่ยนรถ / พนักงานขับรถ • ' + b.id, wide: true,
+      body: '<p class="hint" style="margin-top:0">' + fRange(b.start, b.end) + ' • ' + esc(b.destination) + ' • ผู้โดยสาร ' + esc(b.passengers) + ' คน — แสดงสถานะว่างจริง ณ ตอนนี้</p>' +
+        '<div class="step-head" style="margin-top:6px"><span class="step-no">1</span><h3>รถ</h3></div><div class="car-pick" id="eaCars">' + a.cars.map(c => {
+          const ok = c.available && !(Number(c.seats) && Number(b.passengers) > Number(c.seats));
+          return '<button type="button" class="car-opt' + (c.id === carId ? ' on' : '') + '" data-id="' + esc(c.id) + '"' + (ok || c.id === carId ? '' : ' disabled') + '>' + carPic(c.photo, '', c.plateNo) + plate(c.plateNo, c.province, true) +
+            '<div><b style="font-family:var(--font-head)">' + esc(c.carType) + '</b> • ' + esc(c.seats) + ' ที่นั่ง</div>' + (c.id === carId ? '<span class="ok-tag">คันปัจจุบัน</span>' : ok ? '' : '<div class="why">' + esc(c.reason || 'ที่นั่งไม่พอ') + '</div>') + '</button>';
+        }).join('') + '</div>' +
+        '<div class="step-head"><span class="step-no">2</span><h3>พนักงานขับรถ</h3></div><div class="drv-pick" id="eaDrv">' +
+          '<button type="button" class="drv-opt on" data-v="keep"><span class="avatar ph" style="width:52px;height:52px">✓</span><b>คงเดิม</b><span class="hint">' + (b.noDriver ? 'ไม่ใช้คนขับ' : esc(b.driverName || 'ยังไม่มีผู้รับงาน')) + '</span></button>' +
+          '<button type="button" class="drv-opt none" data-v="none"><span class="avatar ph" style="width:52px;height:52px">' + ic('car') + '</span><b>ไม่ใช้พนักงานขับรถ</b><span class="hint">ผู้ขอขับเอง</span></button>' +
+          '<button type="button" class="drv-opt auto" data-v="auto"><span class="avatar ph" style="width:52px;height:52px">✦</span><b>ส่งให้คนขับที่ว่างทุกคน</b><span class="hint">คนแรกที่กดรับได้งาน</span></button>' +
+          (a.drivers || []).map(d => '<button type="button" class="drv-opt" data-v="' + esc(d.id) + '"' + (d.available || d.id === b.driverId ? '' : ' disabled') + '>' + avatar(d.photo, d.fullName, 52) +
+            '<b>' + esc(d.fullName) + '</b><span class="hint">' + esc(GENDER_TH[d.gender] || '') + '</span>' + (d.id === b.driverId ? '<span class="ok-tag">คนปัจจุบัน</span>' : d.available ? '<span class="ok-tag">ว่าง</span>' : '<span class="why">' + esc(d.reason) + '</span>') + '</button>').join('') +
+        '</div><p class="hint">' + (b.approved ? 'รายการนี้อนุมัติแล้ว: กำหนดคนขับ/ไม่ใช้คนขับ จะยืนยันทันที' : 'ยังไม่อนุมัติ: กำหนดคนขับ/ไม่ใช้คนขับ จะเป็นสถานะ "รออนุมัติ"') + '</p>',
+      foot: '<button class="btn btn-ghost" data-close>ยกเลิก</button><button class="btn btn-maroon" id="eaOk">' + ic('check') + 'บันทึกการเปลี่ยนแปลง</button>'
+    });
+    $$('#eaCars .car-opt', m.el).forEach(x => x.onclick = () => { carId = x.dataset.id; $$('#eaCars .car-opt', m.el).forEach(y => y.classList.toggle('on', y === x)); });
+    $$('#eaDrv .drv-opt', m.el).forEach(x => x.onclick = () => { drv = x.dataset.v === b.driverId ? 'keep' : x.dataset.v; $$('#eaDrv .drv-opt', m.el).forEach(y => y.classList.toggle('on', y === x)); });
+    m.el.querySelector('#eaOk').onclick = async () => {
+      try {
+        UI.loading(true); await call('updateBookingAssignment', b.id, { carId: carId !== b.carId ? carId : '', driver: drv }); UI.loading(false);
+        m.close(); UI.toast('บันทึกการเปลี่ยนแปลงแล้ว', 'ok'); (reload || (() => App.go(S.page)))();
+      } catch (e) { UI.err(e); }
     };
   },
 
@@ -1463,13 +1564,19 @@ const Pages = {
       '<p class="section-note">งานเหล่านี้ส่งถึงคุณเพราะคุณว่างในช่วงเวลานั้น คนที่กดรับก่อนจะได้งาน</p>' +
       (j.open.length ? '<div class="jobs">' + j.open.map(b => '<div class="job">' + carPic(b.carPhoto) + '<div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h4>' + esc(b.destination) + '</h4>' + mpill(b.missionType) + '</div>' +
         '<dl class="kv">' + kv('เวลา', '<b>' + fRange(b.start, b.end) + '</b>') + kv('รถ', esc(b.carPlate)) + kv('ผู้จอง', esc(b.requesterName)) + kv('ผู้โดยสาร', esc(b.passengers) + ' คน') + kv('วัตถุประสงค์', esc(b.purpose)) + '</dl>' +
-        '<button class="btn btn-maroon btn-block" data-accept="' + esc(b.id) + '">' + ic('check') + 'กดรับงานนี้</button></div>').join('') + '</div>'
+        '<button class="btn btn-ok btn-block" data-accept="' + esc(b.id) + '">' + ic('check') + 'รับงานนี้</button>' +
+        '<button class="btn btn-ghost btn-block" data-decline="' + esc(b.id) + '">ไม่สะดวก</button></div>').join('') + '</div>'
         : UI.empty('ไม่มีงานที่เปิดรับตอนนี้', ' เมื่อมีงานใหม่ในช่วงที่คุณว่าง ระบบจะส่งอีเมลแจ้ง')) + '</div>' +
       '<div class="panel"><div class="panel-head"><h3>งานของฉัน</h3></div>' + Pages._bookingTable(j.mine, { emptyText: 'ยังไม่มีงานที่รับ' }) + '</div>';
     $$('[data-accept]').forEach(btn => btn.onclick = async () => {
-      if (!await UI.confirm('รับงาน ' + btn.dataset.accept, 'ยืนยันรับงานนี้? ระบบจะแจ้งผู้จองทันที', { ok: 'รับงาน' })) return;
+      if (!await UI.confirm('รับงาน ' + btn.dataset.accept, 'ยืนยันรับงานนี้? ระบบจะกันเวลาของคุณไว้ให้งานนี้และแจ้งผู้จอง/ผู้บริหารทันที', { ok: 'รับงาน' })) return;
       try { UI.loading(true); const r = await call('acceptJobInApp', btn.dataset.accept); UI.loading(false); UI.toast(r.message, 'ok'); Pages.myJobs(); }
       catch (e) { UI.err(e); Pages.myJobs(); }
+    });
+    $$('[data-decline]').forEach(btn => btn.onclick = async () => {
+      const why = await UI.confirm('ไม่สะดวกรับงาน ' + btn.dataset.decline, 'ระบบจะส่งงานให้พนักงานขับรถคนอื่น', { input: 'เหตุผล (ไม่บังคับ)', ok: 'ยืนยันไม่สะดวก', danger: true });
+      if (!why) return;
+      try { UI.loading(true); const r = await call('declineJobInApp', btn.dataset.decline, why.trim()); UI.loading(false); UI.toast(r.message, 'ok'); Pages.myJobs(); } catch (e) { UI.err(e); }
     });
     $$('[data-log]').forEach(btn => btn.onclick = () => Pages.tripLog(pend.find(b => b.id === btn.dataset.log), () => Pages.myJobs()));
     Pages._bindRows(j.mine, () => Pages.myJobs());
@@ -1831,13 +1938,16 @@ const Pages = {
   async settings() {
     const [items, logs] = await Promise.all([call('getSettings'), call('getLogs')]);
     if (S.page !== 'settings') return;
-    const bool = ['REQUIRE_ADMIN_APPROVAL', 'ALLOW_SELF_REGISTER', 'DIRECTORY_PUBLIC', 'ALLOW_EXTERNAL_REQUEST', 'PUBLIC_SHOW_DESTINATION'];
+    const bool = ['REQUIRE_ADMIN_APPROVAL', 'EMAIL_QR', 'ALLOW_SELF_REGISTER', 'DIRECTORY_PUBLIC', 'ALLOW_EXTERNAL_REQUEST', 'PUBLIC_SHOW_DESTINATION'];
     $('#page').innerHTML = '<div class="panel media-link"><div class="panel-head"><h3>' + ic('camera') + ' รูปภาพรถยนต์ บุคลากร และพนักงานขับรถ</h3>' +
         '<button class="btn btn-gold btn-sm" onclick="App.go(\'media\')">เปิดศูนย์จัดการรูปภาพ</button></div>' +
         '<div id="upStat" class="hint">กำลังตรวจสอบเซิร์ฟเวอร์เก็บรูป…</div></div>' +
       '<div class="panel"><div class="panel-head"><h3>ตั้งค่าระบบ</h3></div><form id="setF">' +
-      items.map(i => '<div class="field"><label>' + esc(i.key) + '</label>' +
-        (bool.indexOf(i.key) > -1
+      items.filter(i => i.key !== 'REQUIRE_ADMIN_APPROVAL').map(i => '<div class="field"><label>' + esc(i.key) + '</label>' +
+        (i.key === 'APPROVAL_MODE'
+          ? '<select class="input" name="APPROVAL_MODE">' + [['DRIVER_FIRST', 'แจ้งคนขับทันที → คนขับกดรับ → รออนุมัติ → อนุมัติ (แนะนำ)'], ['APPROVE_FIRST', 'อนุมัติก่อน → แจ้งคนขับ → คนขับกดรับ'], ['NONE', 'ไม่ต้องอนุมัติ (คนขับกดรับแล้วยืนยันทันที)']]
+              .map(o => '<option value="' + o[0] + '"' + (String(i.value).toUpperCase() === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select>'
+          : bool.indexOf(i.key) > -1
           ? '<select class="input" name="' + esc(i.key) + '"><option value="TRUE"' + (String(i.value).toUpperCase() === 'TRUE' ? ' selected' : '') + '>เปิด (TRUE)</option><option value="FALSE"' + (String(i.value).toUpperCase() !== 'TRUE' ? ' selected' : '') + '>ปิด (FALSE)</option></select>'
           : '<input class="input" name="' + esc(i.key) + '" value="' + esc(i.value) + '">') +
         '<span class="hint">' + esc(i.description || '') + '</span></div>').join('') +

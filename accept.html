@@ -23,6 +23,8 @@
     .when{font-family:'Prompt',sans-serif;font-size:19px;color:var(--maroon);background:var(--gold-soft);border-radius:12px;padding:12px 14px;margin-bottom:18px}
     .btn{width:100%;border:0;border-radius:999px;padding:16px;font-family:'Prompt',sans-serif;font-size:18px;font-weight:600;cursor:pointer;background:var(--maroon);color:var(--gold)}
     .btn[disabled]{opacity:.6}
+    .btn.ghost{background:#fff;color:#646464;border:1.5px solid #E2E1DD;font-size:15px;padding:12px}
+    .btn.bad{background:#9B1C1C;color:#fff;font-size:15px;padding:12px}
     .msg{border-radius:14px;padding:16px;font-family:'Prompt',sans-serif;font-size:17px;text-align:center}
     .msg.ok{background:#E2F3E7;color:var(--ok)} .msg.bad{background:#FBE6E4;color:var(--bad)} .msg.info{background:var(--gold-soft);color:#7A5A00}
     .carimg{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;margin-bottom:14px;display:block;background:#eee}
@@ -54,27 +56,48 @@
   const fmt = ms => new Date(ms).toLocaleString('th-TH', { timeZone: 'Asia/Bangkok', weekday: 'short', day: 'numeric', month: 'short', year: '2-digit', hour: '2-digit', minute: '2-digit' }) + ' น.';
   const body = document.getElementById('body');
 
+  // เรียกเซิร์ฟเวอร์ (บน Apps Script ใช้ช่องทางของ Google / บนเว็บคณะ accept.html ใช้ fetch)
+  function run(fn, args) {
+    return api(fn, args);
+  }
+  const errText = e => String((e && e.message) || e).replace(/^(Exception|Error):\s*/, '');
+  const ACTION = (location.search.match(/[?&]a=(\w+)/) || [])[1] || '';
   function render() {
     if (!INFO.ok) { body.innerHTML = '<div class="msg bad">' + esc(INFO.message) + '</div>'; return; }
     const b = INFO.booking;
-    let html = '<h1>' + (INFO.state === 'OPEN' ? 'ยืนยันรับงานขับรถ' : 'รายละเอียดงาน') + '</h1>' +
-      '<p class="sub">คุณ' + esc(INFO.driverName) + ' • เลขที่ ' + esc(b.id) + '</p>' +
+    let html = '<h1>' + (INFO.state === 'OPEN' ? 'งานขับรถใหม่สำหรับคุณ' : 'รายละเอียดงาน') + '</h1>' +
+      '<p class="sub">คุณ' + esc(INFO.driverName) + ' • เลขที่ ' + esc(b.id) + (b.status === 'PENDING_APPROVAL' ? ' • <b style="color:#401D1B">รออนุมัติ</b>' : '') + '</p>' +
       (b.carPhoto ? '<img class="carimg" src="' + esc(b.carPhoto) + '" alt="" onerror="this.remove()">' : '') +
       '<div class="when">' + fmt(b.start) + '<br>ถึง ' + fmt(b.end) + '</div>' +
       '<dl><dt>สถานที่ไป</dt><dd><b>' + esc(b.destination) + '</b></dd><dt>ภารกิจ</dt><dd>' + esc(TH[b.missionType] || b.missionType) + '</dd>' +
-      '<dt>วัตถุประสงค์</dt><dd>' + esc(b.purpose) + '</dd><dt>รถ</dt><dd>' + esc(b.carPlate) + '</dd>' +
-      '<dt>ผู้จอง</dt><dd>' + esc(b.requesterName) + (b.requesterPhone ? ' • ' + esc(b.requesterPhone) : '') + '</dd>' +
+      '<dt>วัตถุประสงค์</dt><dd>' + esc(b.purpose) + '</dd><dt>รถ</dt><dd>' + esc(b.carPlate || 'รอเจ้าหน้าที่จัดรถ') + '</dd>' +
+      '<dt>ผู้จอง</dt><dd>' + esc(b.requesterName) + (b.department ? ' • ' + esc(b.department) : '') + (b.requesterPhone ? ' • ' + esc(b.requesterPhone) : '') + '</dd>' +
       '<dt>ผู้โดยสาร</dt><dd>' + esc(b.passengers) + ' คน</dd></dl>';
-    if (INFO.state === 'OPEN') html += '<button class="btn" id="go">✋ ยืนยันรับงานนี้</button><p class="sub" style="text-align:center;margin:10px 0 0;font-size:13px">คนขับที่ยืนยันก่อนจะได้งาน</p>';
-    else html += '<div class="msg ' + (INFO.state === 'MINE' ? 'ok' : 'info') + '">' + esc(INFO.message) + '</div>';
+    if (INFO.state === 'OPEN') {
+      html += '<div id="acts"><button class="btn" id="go">✋ รับงานนี้</button>' +
+        '<p class="sub" style="text-align:center;margin:10px 0 14px;font-size:13px">' + (b.approved ? 'กดรับแล้วงานจะยืนยันทันที' : 'กดรับแล้วสถานะเป็น "รออนุมัติ" และระบบกันเวลาของคุณไว้ให้งานนี้') + ' • คนที่กดรับก่อนได้งาน</p>' +
+        '<button class="btn ghost" id="no">ไม่สะดวกรับงานนี้</button>' +
+        '<div id="noBox" style="display:none;margin-top:12px"><textarea id="why" placeholder="เหตุผล (ไม่บังคับ) เช่น ติดธุระ/ลา" style="width:100%;min-height:70px;border:1.5px solid #E2E1DD;border-radius:12px;padding:10px;font:inherit"></textarea>' +
+        '<button class="btn bad" id="noOk" style="margin-top:8px">ยืนยันไม่สะดวก</button></div></div>';
+    } else html += '<div class="msg ' + (INFO.state === 'MINE' ? 'ok' : 'info') + '">' + esc(INFO.message) + '</div>';
     body.innerHTML = html;
-    const go = document.getElementById('go');
+    const go = document.getElementById('go'), acts = document.getElementById('acts');
     if (go) go.onclick = () => {
       go.disabled = true; go.textContent = 'กำลังบันทึก…';
-      api('acceptJobByToken', [TOKEN])
-        .then(r => { go.outerHTML = '<div class="msg ok">✔ ' + esc(r.message) + '</div>'; })
-        .catch(e => { go.outerHTML = '<div class="msg bad">' + esc(String(e.message || e).replace(/^(Exception|Error):\s*/, '')) + '</div>'; });
+      run('acceptJobByToken', [TOKEN]).then(r => { acts.innerHTML = '<div class="msg ok">✔ ' + esc(r.message) + '</div>'; })
+        .catch(e => { acts.innerHTML = '<div class="msg bad">' + esc(errText(e)) + '</div>'; });
     };
+    const no = document.getElementById('no');
+    if (no) {
+      const open = () => { document.getElementById('noBox').style.display = 'block'; no.style.display = 'none'; document.getElementById('why').focus(); };
+      no.onclick = open;
+      if (ACTION === 'decline') open();
+      document.getElementById('noOk').onclick = () => {
+        const btn = document.getElementById('noOk'); btn.disabled = true; btn.textContent = 'กำลังบันทึก…';
+        run('declineJobByToken', [TOKEN, document.getElementById('why').value]).then(r => { acts.innerHTML = '<div class="msg info">' + esc(r.message) + '</div>'; })
+          .catch(e => { acts.innerHTML = '<div class="msg bad">' + esc(errText(e)) + '</div>'; });
+      };
+    }
   }
   body.innerHTML = '<p class="sub" style="text-align:center">กำลังโหลดข้อมูลงาน…</p>';
   if (!TOKEN) { INFO = { ok: false, message: 'ลิงก์ไม่ครบ กรุณาเปิดจากปุ่มในอีเมลอีกครั้ง' }; render(); }

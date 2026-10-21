@@ -98,6 +98,9 @@
     .notice .wrap{display:flex;align-items:center;gap:10px;padding-top:9px;padding-bottom:9px}
     .notice svg{color:var(--gold)}
     .notice b{color:var(--gold);font-family:var(--head);font-weight:500}
+    .notice .sys{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+    .notice .sys b{font-size:16px}
+    .notice .sys span{color:#e6d3cf;font-size:14px}
 
     /* ---------- Calendar (เนื้อหาหลัก บนสุด) ---------- */
     .cal-section{padding:24px 0 8px}
@@ -265,7 +268,6 @@
     <div class="wrap">
       <a class="brand" href="index.html" aria-label="หน้าหลัก">
         <img src="logo.png" alt="คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม">
-        <span class="t"><b>ระบบจองรถยนต์และพนักงานขับรถ</b><span>คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม</span></span>
       </a>
       <a class="home-btn" id="facHome" href="https://eng.msu.ac.th" title="หน้าหลักคณะวิศวกรรมศาสตร์">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg><span>หน้าหลัก</span></a>
@@ -285,8 +287,8 @@
 
   <div class="notice" role="note">
     <div class="wrap">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-      <b>ระบบทางการของคณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม</b>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M5 17a2 2 0 1 1-4 0v-5l2-5h14l2 5v5a2 2 0 1 1-4 0"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+      <span class="sys"><b id="sysName">ระบบจองรถยนต์และพนักงานขับรถ</b><span id="orgName">คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม</span></span>
     </div>
   </div>
 
@@ -557,6 +559,7 @@
       $('#kToday').textContent = s.today;
       $('#kDone').textContent = s.monthDone;
       $('#updated').textContent = 'อัปเดต ' + tm(board.generatedAt) + ' น.';
+      if (board.settings) { if (board.settings.systemName) $('#sysName').textContent = board.settings.systemName; if (board.settings.orgName) $('#orgName').textContent = board.settings.orgName; }
       if (board.settings && board.settings.allowExternal === false) $$('.ext-nav,.ext-btn').forEach(x => x.classList.add('hidden'));
       if (board.settings && board.settings.contactEmail) { $('#contact').textContent = board.settings.contactEmail; $('#contact').href = 'mailto:' + board.settings.contactEmail; }
       const now = Date.now();
