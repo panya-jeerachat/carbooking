@@ -125,6 +125,49 @@ img.avatar[data-zoom]{cursor:zoom-in}
 .memo-fields{display:none}
 .memo-box.on .memo-fields{display:block}
 .drv-opt.none{border-style:dashed;border-color:#C9A8A3}
+/* ===== ขั้นตอนการอนุมัติ ===== */
+.s-DELETED{background:#ECECEA;color:#999;text-decoration:line-through}
+.tl-box{border:1px solid var(--line);border-radius:var(--r-md);padding:12px;margin:0 0 16px;background:#FCFBFE}
+.tl-title{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.tl-title > svg{background:#6D5BD0;color:#fff;border-radius:8px;padding:3px;width:24px;height:24px}
+.tl-title b{font-family:var(--font-head);font-size:16px}
+.tl-step{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;border:1px solid var(--line);border-left:5px solid var(--c);border-radius:12px;padding:12px;margin-bottom:8px;background:#fff}
+.tl-step.CURRENT{background:color-mix(in srgb,var(--c) 10%,#fff);box-shadow:0 0 0 1.5px var(--c) inset}
+.tl-step.TODO{opacity:.75}
+.tl-no{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-family:var(--font-head);font-weight:700;color:var(--c);border:2px solid var(--c);background:#fff;flex:none}
+.tl-step.DONE .tl-no,.tl-step.CURRENT .tl-no{background:var(--c);color:#fff}
+.tl-name{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tl-name b{font-family:var(--font-head);font-weight:600}
+.tl-badge{background:var(--c);color:#fff;font-size:11.5px;font-family:var(--font-head);border-radius:999px;padding:1px 9px}
+.tl-who{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--paper);border-radius:999px;padding:2px 10px 2px 3px;font-size:13px}
+.chip button{border:0;background:none;color:var(--muted);cursor:pointer;padding:0 2px}
+.tl-log{margin-top:6px;font-size:13.5px}
+.tl-side{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.tl-act{background:#6D5BD0;color:#fff}
+.ap-steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13.5px}
+.ap-steps span{background:var(--paper);border-radius:999px;padding:3px 12px}
+.ap-steps span.mine{background:#6D5BD0;color:#fff;font-family:var(--font-head)}
+.ap-steps i{color:var(--muted);font-style:normal}
+.ap-list{display:flex;flex-direction:column;gap:10px}
+.ap-card{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;border:1.5px solid var(--line);border-left:5px solid #6D5BD0;border-radius:14px;padding:12px;background:#fff;cursor:pointer}
+.ap-card:hover{border-color:#6D5BD0}
+.ap-top{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ap-top b{font-family:var(--font-head);font-size:16px}
+.ap-btns{display:flex;flex-direction:column;gap:6px}
+.cfg-step{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;border:1px solid var(--line);border-left:5px solid var(--c);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}
+.cfg-step .tl-no{background:var(--c);color:#fff}
+.cfg-row{display:flex;gap:10px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.chip-add{min-width:240px;flex:1}
+.chip-add .input{padding:6px 10px;font-size:14px}
+.cfg-ops{display:flex;flex-direction:column;gap:4px}
+.switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--font-head);font-size:14.5px}
+.switch input{width:20px;height:20px;accent-color:#6D5BD0}
+.today-who{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line)}
+.today-who .tl-no{background:var(--c);color:#fff}
+.today-who .lbl-row{margin:4px 8px 0 0;display:inline-flex}
+@media (max-width:760px){ .ap-card{grid-template-columns:1fr} .ap-btns{flex-direction:row;flex-wrap:wrap} .tl-step{grid-template-columns:auto 1fr} .tl-side{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;align-items:center} }
 .lbl-row{display:flex;align-items:center;gap:10px;min-width:0}
 .lbl-row > div{min-width:0}
 .tl-row .lbl .lbl-row b{display:block}
@@ -502,12 +545,12 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
 /* =====================================================================
  *  EN-MSU Fleet — Client (Single Page App ใน Apps Script HtmlService)
  * ===================================================================== */
-const CLIENT_VERSION = '2569.10-r10';   // ต้องตรงกับ APP.VERSION ใน Code.gs
+const CLIENT_VERSION = '2569.10-r11';   // ต้องตรงกับ APP.VERSION ใน Code.gs
 const S = { token: null, user: null, settings: window.PUBLIC || {}, cars: [], drivers: [], page: null,
             charts: [], timer: null, cal: { mode: 'month', date: null, resource: 'car' }, filters: {} };
 
 const STATUS_TH = { PENDING_APPROVAL: 'รออนุมัติ', WAITING_DRIVER: 'รอคนขับรับงาน', CONFIRMED: 'ยืนยันแล้ว',
-                    COMPLETED: 'เสร็จสิ้น', REJECTED: 'ไม่อนุมัติ', CANCELLED: 'ยกเลิก' };
+                    COMPLETED: 'เสร็จสิ้น', REJECTED: 'ไม่อนุมัติ', CANCELLED: 'ยกเลิก', DELETED: 'ลบแล้ว' };
 const MISSION_TH = { INTERNAL: 'ภายใน', EXTERNAL: 'ภายนอก' };
 const MISSION_LONG = { INTERNAL: 'ภายในจังหวัด/ภายในมหาวิทยาลัย', EXTERNAL: 'ภายนอก/ต่างจังหวัด' };
 const CAR_ST = { AVAILABLE: 'พร้อมใช้งาน', MAINTENANCE: 'ซ่อมบำรุง', INACTIVE: 'งดใช้งาน' };
@@ -805,9 +848,9 @@ const Staff = {
 const MENUS = {
   admin: [
     ['ภาพรวม'], ['dashboard', 'แดชบอร์ด', 'dashboard'], ['calendar', 'ปฏิทินการใช้รถ', 'calendar'],
-    ['งานจอง'], ['newBooking', 'จองรถ', 'plus'], ['bookings', 'รายการจองทั้งหมด', 'list'], ['myBookings', 'การจองของฉัน', 'list'],
+    ['งานจอง'], ['approvals', 'รายการรออนุมัติ', 'check'], ['newBooking', 'จองรถ', 'plus'], ['bookings', 'รายการจองทั้งหมด', 'list'], ['myBookings', 'การจองของฉัน', 'list'],
     ['รายงาน'], ['report', 'รายงานการใช้รถ', 'chart'],
-    ['ข้อมูลหลัก'], ['media', 'รูปภาพรถ/บุคลากร', 'camera'], ['cars', 'รถยนต์', 'car'], ['drivers', 'พนักงานขับรถ', 'wheel'], ['users', 'ผู้ใช้งาน', 'users'], ['settings', 'ตั้งค่าระบบ', 'gear']
+    ['ข้อมูลหลัก'], ['approvalCfg', 'ขั้นตอนการอนุมัติ', 'users'], ['media', 'รูปภาพรถ/บุคลากร', 'camera'], ['cars', 'รถยนต์', 'car'], ['drivers', 'พนักงานขับรถ', 'wheel'], ['users', 'ผู้ใช้งาน', 'users'], ['settings', 'ตั้งค่าระบบ', 'gear']
   ],
   requester: [
     ['ภาพรวม'], ['dashboard', 'แดชบอร์ด', 'dashboard'], ['calendar', 'ปฏิทินการใช้รถ', 'calendar'],
@@ -820,7 +863,7 @@ const MENUS = {
 };
 const TITLES = { dashboard: 'แดชบอร์ด', calendar: 'ปฏิทินการใช้รถ', newBooking: 'จองรถ', bookings: 'รายการจองทั้งหมด',
   myBookings: 'การจองของฉัน', myJobs: 'งานของฉัน', cars: 'จัดการรถยนต์', drivers: 'จัดการพนักงานขับรถ',
-  users: 'จัดการผู้ใช้งาน', settings: 'ตั้งค่าระบบ', profile: 'บัญชีของฉัน', report: 'รายงานการใช้รถ ระยะทาง และค่าน้ำมัน', media: 'ศูนย์จัดการรูปภาพ' };
+  users: 'จัดการผู้ใช้งาน', settings: 'ตั้งค่าระบบ', profile: 'บัญชีของฉัน', report: 'รายงานการใช้รถ ระยะทาง และค่าน้ำมัน', media: 'ศูนย์จัดการรูปภาพ', approvals: 'รายการรออนุมัติ', approvalCfg: 'ขั้นตอนการอนุมัติและผู้ปฏิบัติงานแทน' };
 
 const App = {
   async init() {
@@ -898,7 +941,7 @@ const App = {
   },
   async boot() {
     const b = await call('getBootstrap');
-    S.user = b.user; S.settings = b.settings; S.cars = b.cars; S.drivers = b.drivers;
+    S.user = b.user; S.settings = b.settings; S.cars = b.cars; S.drivers = b.drivers; S.approverSteps = b.approverSteps || [];
     App.versionCheck(b.serverVersion);
     $('#loginView').classList.add('hidden'); $('#appView').classList.remove('hidden');
     $('#whoName').textContent = S.user.name;
@@ -906,11 +949,13 @@ const App = {
     $('#whoPic').innerHTML = avatar(S.user.photo, S.user.name, 46);
     $('#whoRole').textContent = ROLE_TH[S.user.role] || S.user.role;
     App.renderMenu();
-    App.go('dashboard');
+    App.go(S.approverSteps.length && S.user.role !== 'admin' ? 'approvals' : 'dashboard');
     if (S.user.mustChange) Pages.forceChangePassword();
   },
   renderMenu() {
-    $('#menu').innerHTML = (MENUS[S.user.role] || []).map(m => m.length === 1
+    let items = (MENUS[S.user.role] || []).slice();
+    if (S.user.role !== 'admin' && (S.approverSteps || []).length) items = [['การพิจารณา'], ['approvals', 'รายการรออนุมัติ', 'check']].concat(items);
+    $('#menu').innerHTML = items.map(m => m.length === 1
       ? '<div class="menu-group">' + esc(m[0]) + '</div>'
       : '<a data-page="' + m[0] + '" tabindex="0">' + ic(m[2]) + '<span>' + esc(m[1]) + '</span><span class="count hidden" data-count="' + m[0] + '"></span></a>').join('');
     $$('#menu a').forEach(a => {
@@ -1356,35 +1401,47 @@ const Pages = {
   },
 
   /* ---------- Booking detail + actions ---------- */
-  bookingDetail(b, reload) {
-    if (!b) return;
+  /** หน้าต่างรายละเอียด: ดึงข้อมูลล่าสุด + ไทม์ไลน์ขั้นตอนอนุมัติ + ปุ่มตามสิทธิ์ */
+  async bookingDetail(b0, reload) {
+    if (!b0) return;
+    let b;
+    try { UI.loading(true); b = await call('getBookingDetail', b0.id); UI.loading(false); } catch (e) { return UI.err(e); }
     const u = S.user, admin = isAdmin(), active = ['PENDING_APPROVAL', 'WAITING_DRIVER', 'CONFIRMED'].indexOf(b.status) > -1;
     const own = b.requesterId === u.userId;
+    const tl = b.timeline;
     const acts = [];
-    if (admin && b.status === 'WAITING_DRIVER' && !b.approved) acts.push('<button class="btn btn-ok" data-a="approve">' + ic('check') + 'อนุมัติล่วงหน้า</button>');
-    if (admin && b.status === 'PENDING_APPROVAL') {
-      acts.push('<button class="btn btn-ok" data-a="approve">' + ic('check') + (b.carId ? (b.driverId ? 'อนุมัติ (' + esc(b.driverName) + ' รับงานแล้ว)' : b.noDriver ? 'อนุมัติ (ไม่ใช้คนขับ)' : 'อนุมัติ') : 'อนุมัติและเลือกรถ') + '</button>');
-      if (b.carId) acts.push('<button class="btn btn-ghost" data-a="changecar">' + ic('car') + 'เปลี่ยนรถแล้วอนุมัติ</button>');
-      acts.push('<button class="btn btn-bad" data-a="reject">ไม่อนุมัติ</button>');
+    // --- พิจารณาอนุมัติ ---
+    if (b.status === 'PENDING_APPROVAL' && b.right) {
+      const lbl = tl ? 'อนุมัติขั้นที่ ' + tl.current + (tl.current === tl.total ? ' (ขั้นสุดท้าย)' : '') : (b.driverId ? 'อนุมัติ (' + esc(b.driverName) + ' รับงานแล้ว)' : b.noDriver ? 'อนุมัติ (ไม่ใช้คนขับ)' : 'อนุมัติ');
+      acts.push('<button class="btn btn-ok" data-a="approve">' + ic('check') + (b.carId ? lbl : 'เลือกรถแล้ว' + lbl) + '</button>');
+      acts.push('<button class="btn btn-bad" data-a="reject">' + ic('x') + 'ไม่อนุมัติ</button>');
+      if (b.carId && (admin || (tl && tl.current === tl.total))) acts.push('<button class="btn btn-ghost" data-a="changecar">' + ic('car') + 'เปลี่ยนรถแล้วอนุมัติ</button>');
     }
+    if (admin && b.status === 'WAITING_DRIVER' && !b.approved && !tl) acts.push('<button class="btn btn-ok" data-a="approve">' + ic('check') + 'อนุมัติล่วงหน้า</button>');
     if (admin && b.status === 'WAITING_DRIVER') acts.push('<button class="btn btn-gold" data-a="resend">' + ic('send') + (b.preferredDriverId ? 'ส่งให้คนขับที่ว่างทุกคน' : 'แจ้งคนขับอีกครั้ง') + '</button>');
-    const canEdit = active && (admin || (u.role === 'driver' && (b.createdBy === u.userId || b.driverId === u.driverId)));
-    if (canEdit) acts.push('<button class="btn btn-ghost" data-a="edit">' + ic('edit') + 'เปลี่ยนรถ/คนขับ</button>');
-    if (false && admin && active && b.carId) acts.push('<button class="btn btn-ghost" data-a="assign">' + ic('wheel') + (b.driverId ? 'เปลี่ยนคนขับ' : 'มอบหมายคนขับ') + '</button>');
+    // --- แก้ไข ---
+    if (b.canEdit && b.status !== 'COMPLETED' && b.status !== 'DELETED') acts.push('<button class="btn btn-ghost" data-a="editinfo">' + ic('edit') + 'แก้ไขข้อมูล</button>');
+    const canAssign = active && (admin || (u.role === 'driver' && (b.createdBy === u.userId || b.driverId === u.driverId)));
+    if (canAssign) acts.push('<button class="btn btn-ghost" data-a="edit">' + ic('car') + 'เปลี่ยนรถ/คนขับ</button>');
     const myTrip = admin || (u.role === 'driver' && b.driverId === u.driverId);
     if (myTrip && b.status === 'CONFIRMED') acts.push('<button class="btn btn-ok" data-a="complete">' + ic('fuel') + 'ปิดงาน + บันทึกระยะทาง/น้ำมัน</button>');
     if (myTrip && b.status === 'COMPLETED') acts.push('<button class="btn btn-gold" data-a="log">' + ic('fuel') + (b.trip ? 'แก้ไขบันทึกการเดินทาง' : 'บันทึกระยะทาง/ค่าน้ำมัน') + '</button>');
+    acts.push('<button class="btn btn-ghost" data-a="print">' + ic('list') + 'พิมพ์</button>');
     if (active && (admin || own || b.createdBy === u.userId)) acts.push('<button class="btn btn-ghost" data-a="cancel" style="color:var(--bad)">ยกเลิกการจอง</button>');
+    if (b.canDelete) acts.push('<button class="btn btn-ghost" data-a="delete" style="color:var(--bad)">' + ic('trash') + 'ลบ</button>');
+    if (admin && b.status === 'DELETED') acts.push('<button class="btn btn-gold" data-a="restore">กู้คืนรายการ</button>');
 
     const row = (k, v) => '<dt>' + k + '</dt><dd>' + v + '</dd>';
     const m = UI.modal({
       title: 'รายการจอง ' + b.id, wide: true,
-      body: '<div class="bk-visual">' + carPic(b.carPhoto, 'lg') +
+      body: '<div class="bk-visual">' + carPic(b.carPhoto, 'lg', b.carPlate) +
           '<div class="bk-people">' +
             '<div class="person">' + avatar(b.requesterPhoto, b.requesterName, 44) + '<div><span class="hint">ผู้จอง</span><b>' + esc(b.requesterName) + '</b></div></div>' +
-            '<div class="person">' + (b.driverName ? avatar(b.driverPhoto, b.driverName, 44) : '<span class="avatar ph" style="width:44px;height:44px">?</span>') + '<div><span class="hint">พนักงานขับรถ</span><b>' + (b.driverName ? drvName(b.driverName, b.driverGender) : 'รอรับงาน') + '</b></div></div>' +
+            '<div class="person">' + (b.driverName ? avatar(b.driverPhoto, b.driverName, 44) : '<span class="avatar ph" style="width:44px;height:44px">?</span>') + '<div><span class="hint">พนักงานขับรถ</span><b>' + (b.noDriver ? 'ไม่ใช้พนักงานขับรถ' : b.driverName ? drvName(b.driverName, b.driverGender) : 'รอรับงาน') + '</b></div></div>' +
           '</div></div>' +
-        '<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">' + pill(b.status) + mpill(b.missionType) + (b.requesterType === 'EXTERNAL' ? '<span class="pill" style="background:#F3E8FA;color:#6B2C8F">คำขอจากหน่วยงานภายนอก</span>' : '') + '</div>' +
+        '<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">' + pill(b.status) + (tl && b.status === 'PENDING_APPROVAL' ? '<span class="pill s-WAITING_DRIVER">ขั้นที่ ' + tl.current + '/' + tl.total + '</span>' : '') + mpill(b.missionType) +
+          (b.requesterType === 'EXTERNAL' ? '<span class="pill" style="background:#F3E8FA;color:#6B2C8F">หน่วยงานภายนอก</span>' : '') + (b.requesterType === 'MEMO' ? '<span class="pill" style="background:var(--info-soft);color:var(--info)">จากหนังสือบันทึกข้อความ</span>' : '') + '</div>' +
+        (tl ? Pages._timelineHtml(tl, b) : '') +
         '<dl class="kv">' + row('ช่วงเวลา', '<b>' + fRange(b.start, b.end) + '</b>') + row('สถานที่ไป', esc(b.destination)) + row('วัตถุประสงค์', esc(b.purpose)) +
         row('ผู้โดยสาร', esc(b.passengers) + ' คน') + row('ผู้จอง', '<b>' + esc(b.requesterName) + '</b>' + (b.requesterPosition ? ' • ' + esc(b.requesterPosition) : '')) +
         row('หน่วยงาน', esc(b.department || '-')) +
@@ -1394,7 +1451,8 @@ const Pages = {
         (b.requesterType === 'MEMO' ? row('ที่มา', 'หนังสือบันทึกข้อความ' + (b.memoNo ? ' เลขที่ <b>' + esc(b.memoNo) + '</b>' : '') + (b.memoUrl ? ' • <a href="' + esc(b.memoUrl) + '" target="_blank" rel="noopener">ดูหนังสือ</a>' : '')) : '') +
         (b.preferredDriverId && b.preferredDriverId !== b.driverId ? row('คนขับที่ผู้ขอเลือก', '<span class="lbl-row">' + avatar(b.preferredDriverPhoto, b.preferredDriverName, 28) + esc(b.preferredDriverName) + '</span>') : '') +
         (admin ? row('แจ้งงานถึง', esc(b.notifiedDrivers || '-')) + row('อนุมัติโดย', esc(b.approvedBy || '-')) : '') +
-        (b.remark ? row('หมายเหตุ', '<span style="white-space:pre-line">' + esc(b.remark) + '</span>') : '') + '</dl>' +
+        (b.status === 'DELETED' ? row('ลบโดย', esc(b.deletedBy || '-')) : '') +
+        (b.remark ? row('หมายเหตุ/ประวัติ', '<span style="white-space:pre-line">' + esc(b.remark) + '</span>') : '') + '</dl>' +
         (b.trip ? '<div class="trip-box"><b>' + ic('fuel') + ' บันทึกการเดินทาง</b><div class="trip-grid">' +
           '<div><span>ระยะทางไป-กลับ</span><b>' + fmtN(b.trip.km) + ' กม.</b></div>' +
           '<div><span>ค่าน้ำมัน</span><b>' + fmtN(b.trip.cost) + ' บาท</b></div>' +
@@ -1404,25 +1462,224 @@ const Pages = {
           (b.trip.receipt ? '<a class="btn btn-ghost btn-sm" style="margin-top:8px" href="' + esc(b.trip.receipt) + '" target="_blank" rel="noopener">' + ic('camera') + 'ดูรูปใบเสร็จ/เลขไมล์</a>' : '') +
           '<p class="hint" style="margin:6px 0 0">บันทึกโดย ' + esc(b.trip.by || '-') + '</p></div>'
           : (b.status === 'COMPLETED' ? '<div class="trip-box warn">ยังไม่ได้บันทึกระยะทางและค่าน้ำมันของงานนี้</div>' : '')),
-      foot: acts.length ? acts.join('') : '<button class="btn btn-ghost" data-close>ปิด</button>'
+      foot: acts.join('')
     });
-    const done = msg => { m.close(); UI.toast(msg, 'ok'); (reload || (() => App.go(S.page)))(); };
+    const again = reload || (() => App.go(S.page));
+    const done = msg => { m.close(); UI.toast(msg, 'ok'); again(); };
     $$('[data-a]', m.el).forEach(btn => btn.onclick = async () => {
       const a = btn.dataset.a;
       try {
         if (a === 'approve') {
-          if (!b.carId) { m.close(); return Pages.approveWithCar(b, reload); }
-          UI.loading(true); const r = await call('approveBooking', b.id); UI.loading(false);
-          done(r.confirmed ? 'อนุมัติแล้ว — ยืนยันการจองและแจ้งผู้เกี่ยวข้องแล้ว' : r.notified ? 'อนุมัติแล้ว แจ้งคนขับที่ว่าง ' + r.notified + ' คน' : 'อนุมัติแล้ว — เมื่อคนขับกดรับ งานจะยืนยันทันที');
+          if (!b.carId && (!tl || tl.current === tl.total)) { m.close(); return Pages.approveWithCar(b, reload); }
+          const note = await UI.confirm(tl ? 'อนุมัติขั้นที่ ' + tl.current + ': ' + tl.steps[tl.current - 1].name : 'อนุมัติ ' + b.id,
+            tl && tl.current < tl.total ? 'ระบบจะส่งต่อให้ขั้นที่ ' + (tl.current + 1) + ': ' + esc(tl.steps[tl.current].name) + ' ทางอีเมลทันที' : 'นี่คือขั้นสุดท้าย ระบบจะยืนยันการจองและแจ้งผู้เกี่ยวข้อง',
+            { input: 'ความเห็น (ไม่บังคับ)', ok: 'อนุมัติ' });
+          if (!note) return;
+          UI.loading(true); const r = await call('approveStep', b.id, note.trim()); UI.loading(false);
+          done(r.message || 'อนุมัติแล้ว');
         }
+        if (a === 'reject') { const why = await UI.confirm('ไม่อนุมัติ ' + b.id, 'ระบบจะแจ้งผู้ขอและพนักงานขับรถทางอีเมล', { input: 'เหตุผล', required: true, ok: 'ไม่อนุมัติ', danger: true }); if (!why) return; UI.loading(true); const r = await call('rejectStep', b.id, why.trim()); UI.loading(false); done(r.message); }
+        if (a === 'skip') { const why = await UI.confirm('ข้ามขั้นที่ ' + tl.current, 'ใช้เมื่อผู้อนุมัติขั้นนี้ไม่อยู่และไม่มีผู้ปฏิบัติงานแทน (บันทึกในประวัติ)', { input: 'เหตุผล', required: true, ok: 'ข้ามขั้นนี้' }); if (!why) return; UI.loading(true); const r = await call('skipStep', b.id, why.trim()); UI.loading(false); done(r.message); }
+        if (a === 'notify') { UI.loading(true); await call('resendStep', b.id); UI.loading(false); UI.toast('ส่งอีเมลถึงผู้พิจารณาขั้นปัจจุบันแล้ว', 'ok'); }
+        if (a === 'editinfo') { m.close(); Pages.editInfo(b, reload); }
         if (a === 'edit') { m.close(); Pages.editAssignment(b, reload); }
-        if (a === 'reject') { const why = await UI.confirm('ไม่อนุมัติ ' + b.id, 'ระบบจะแจ้งผู้จองทางอีเมล', { input: 'เหตุผล', required: true, ok: 'ไม่อนุมัติ', danger: true }); if (!why) return; UI.loading(true); await call('rejectBooking', b.id, why); UI.loading(false); done('บันทึกการไม่อนุมัติแล้ว'); }
         if (a === 'resend') { UI.loading(true); const r = await call('resendDriverNotify', b.id); UI.loading(false); done('ส่งแจ้งเตือนถึงคนขับที่ว่าง ' + r.notified + ' คน'); }
         if (a === 'complete' || a === 'log') { m.close(); Pages.tripLog(b, reload); }
         if (a === 'cancel') { const why = await UI.confirm('ยกเลิก ' + b.id, 'ระบบจะแจ้งผู้เกี่ยวข้องทางอีเมล', { input: 'เหตุผลการยกเลิก', ok: 'ยกเลิกการจอง', danger: true }); if (!why) return; UI.loading(true); await call('cancelBooking', b.id, why.trim()); UI.loading(false); done('ยกเลิกการจองแล้ว'); }
-        if (a === 'assign') { m.close(); Pages.assignDriver(b, reload); }
+        if (a === 'delete') { const why = await UI.confirm('ลบรายการ ' + b.id, 'รายการจะถูกซ่อนจากรายการ ปฏิทิน และรายงาน (ผู้ดูแลกู้คืนได้) และคืนรถ/คนขับให้ว่าง', { input: 'เหตุผลการลบ', required: true, ok: 'ลบรายการ', danger: true }); if (!why) return; UI.loading(true); await call('deleteBooking', b.id, why.trim()); UI.loading(false); done('ลบรายการแล้ว'); }
+        if (a === 'restore') { UI.loading(true); await call('restoreBooking', b.id); UI.loading(false); done('กู้คืนแล้ว (สถานะยกเลิก)'); }
         if (a === 'changecar') { m.close(); Pages.approveWithCar(b, reload); }
+        if (a === 'print') Pages._print(b);
       } catch (e) { UI.err(e); }
+    });
+  },
+
+  /** ไทม์ไลน์ขั้นตอนการพิจารณา (แบบเดียวกับระบบวันลา) */
+  _timelineHtml(tl, b) {
+    const admin = isAdmin();
+    const colors = ['#6D5BD0', '#7BA7E8', '#F2B36B', '#5FBFA4', '#E07A9B', '#8E8E8E'];
+    const ST = { DONE: ['อนุมัติแล้ว', 's-CONFIRMED'], CURRENT: ['รอพิจารณา', 's-WAITING_DRIVER'], TODO: ['ยังไม่ถึงขั้นนี้', 's-COMPLETED'], REJECTED: ['ไม่อนุมัติ', 's-CANCELLED'] };
+    return '<div class="tl-box"><div class="tl-title">' + ic('check') + '<b>ขั้นตอนการพิจารณา</b><span class="hint">' + tl.total + ' ขั้น เรียงตามลำดับ</span></div>' +
+      tl.steps.map((st, i) => {
+        const c = colors[i % colors.length], s = ST[st.state] || ST.TODO, lg = st.log;
+        return '<div class="tl-step ' + st.state + '" style="--c:' + c + '"><span class="tl-no">' + st.no + '</span><div class="tl-main">' +
+          '<div class="tl-name"><span class="tl-badge">ขั้นที่ ' + st.no + '</span><b>' + esc(st.name) + '</b></div>' +
+          '<div class="tl-who">' + (st.approvers.length ? st.approvers.map(p => '<span class="chip">' + avatar(p.photo, p.name, 22) + esc(p.name) + '</span>').join('') : '<span class="hint" style="color:var(--bad)">ยังไม่กำหนดผู้อนุมัติ</span>') +
+            (st.source === 'ACTING' && st.state === 'CURRENT' ? '<span class="pill s-PENDING_APPROVAL">ปฏิบัติงานแทนวันนี้</span>' : '') + '</div>' +
+          (lg ? '<div class="tl-log">' + (lg.action === 'SKIP' ? 'ข้ามขั้นโดย ' : lg.action === 'REJECT' ? 'ไม่อนุมัติโดย ' : 'อนุมัติโดย ') + '<b>' + esc(lg.name) + '</b>' +
+            (lg.as === 'ACTING' ? ' (แทน)' : lg.as === 'ADMIN' ? ' (ผู้ดูแลระบบ)' : '') + ' • ' + fDT(lg.at) + (lg.note ? '<br><span class="hint">“' + esc(lg.note) + '”</span>' : '') + '</div>' : '') +
+          '</div><div class="tl-side"><span class="pill ' + s[1] + '">' + s[0] + '</span>' +
+          (st.state === 'CURRENT' && admin && b.status === 'PENDING_APPROVAL' ? '<button class="btn btn-sm tl-act" data-a="notify">' + ic('send') + 'แจ้งผู้พิจารณา</button><button class="btn btn-ghost btn-sm" data-a="skip">↷ ข้ามขั้นนี้</button>' : '') +
+          '</div></div>';
+      }).join('') + '</div>';
+  },
+
+  _print(b) {
+    const w = window.open('', '_blank');
+    if (!w) return UI.toast('เบราว์เซอร์บล็อกหน้าต่างพิมพ์', 'err');
+    const tl = b.timeline;
+    w.document.write('<html><head><meta charset="utf-8"><title>' + esc(b.id) + '</title><style>body{font-family:Sarabun,Tahoma,sans-serif;padding:24px;color:#222}h2{margin:0 0 4px}table{border-collapse:collapse;width:100%;margin-top:12px}td{border:1px solid #ccc;padding:6px 8px;vertical-align:top}td:first-child{width:30%;background:#f6f6f6}</style></head><body>' +
+      '<h2>แบบขออนุญาตใช้รถยนต์ราชการ</h2><div>' + esc(S.settings.orgName || '') + ' • เลขที่ ' + esc(b.id) + '</div><table>' +
+      [['ผู้ขอ', b.requesterName + (b.requesterPosition ? ' • ' + b.requesterPosition : '')], ['หน่วยงาน', b.department], ['ติดต่อ', (b.requesterPhone || '') + ' ' + (b.requesterEmail || '')],
+       ['ช่วงเวลา', fRange(b.start, b.end)], ['สถานที่ไป', b.destination], ['วัตถุประสงค์', b.purpose], ['ผู้โดยสาร', b.passengers + ' คน'], ['รถ', b.carPlate || '-'],
+       ['พนักงานขับรถ', b.noDriver ? 'ไม่ใช้พนักงานขับรถ' : (b.driverName || '-')], ['สถานะ', STATUS_TH[b.status] || b.status]]
+        .map(r => '<tr><td>' + r[0] + '</td><td>' + esc(r[1] || '-') + '</td></tr>').join('') +
+      (tl ? tl.steps.map(st => '<tr><td>ขั้นที่ ' + st.no + ' ' + esc(st.name) + '</td><td>' + (st.log ? esc((st.log.action === 'REJECT' ? 'ไม่อนุมัติ' : st.log.action === 'SKIP' ? 'ข้าม' : 'อนุมัติ') + ' — ' + st.log.name + ' ' + fDT(st.log.at) + (st.log.note ? ' “' + st.log.note + '”' : '')) : '-') + '</td></tr>').join('') : '') +
+      '</table><p style="font-size:12px;color:#777">พิมพ์จากระบบ EN-MSU Fleet ' + fDT(Date.now()) + '</p><scr' + 'ipt>window.print()<\/scr' + 'ipt></body></html>');
+    w.document.close();
+  },
+
+  /** แก้ไขข้อมูลที่ผู้ขอกรอกผิด (Admin, พนักงานขับรถ, ผู้อนุมัติของขั้นปัจจุบัน) */
+  editInfo(b, reload) {
+    const v = x => esc(x == null ? '' : x);
+    const m = UI.modal({
+      title: 'แก้ไขข้อมูลคำขอ ' + b.id, wide: true,
+      body: '<p class="hint" style="margin-top:0">แก้ไขข้อมูลที่ผู้ขอกรอกผิดให้ถูกต้อง • ทุกการแก้ไขถูกบันทึกในประวัติพร้อมชื่อผู้แก้</p><form id="eiF">' +
+        '<div class="grid2"><div class="field"><label>วัน-เวลาเริ่ม</label><input type="datetime-local" class="input" name="start" value="' + toInput(b.start) + '"></div>' +
+        '<div class="field"><label>วัน-เวลาสิ้นสุด</label><input type="datetime-local" class="input" name="end" value="' + toInput(b.end) + '"></div></div>' +
+        '<div class="grid3"><div class="field"><label>ประเภทภารกิจ</label><select class="input" name="missionType"><option value="INTERNAL"' + (b.missionType === 'INTERNAL' ? ' selected' : '') + '>ภายใน</option><option value="EXTERNAL"' + (b.missionType === 'EXTERNAL' ? ' selected' : '') + '>ภายนอก</option></select></div>' +
+        '<div class="field" style="grid-column:span 2"><label>สถานที่ไป</label><input class="input" name="destination" value="' + v(b.destination) + '"></div></div>' +
+        '<div class="grid3"><div class="field" style="grid-column:span 2"><label>วัตถุประสงค์</label><input class="input" name="purpose" value="' + v(b.purpose) + '"></div>' +
+        '<div class="field"><label>ผู้โดยสาร</label><input type="number" min="1" class="input" name="passengers" value="' + v(b.passengers) + '"></div></div>' +
+        '<div class="grid2"><div class="field"><label>ชื่อผู้ขอ</label><input class="input" name="requesterName" value="' + v(b.requesterName) + '"></div>' +
+        '<div class="field"><label>ตำแหน่ง</label><input class="input" name="requesterPosition" value="' + v(b.requesterPosition) + '"></div></div>' +
+        '<div class="grid3"><div class="field"><label>หน่วยงาน</label><input class="input" name="department" value="' + v(b.department) + '"></div>' +
+        '<div class="field"><label>อีเมล</label><input class="input" type="email" name="requesterEmail" value="' + v(b.requesterEmail) + '"></div>' +
+        '<div class="field"><label>โทรศัพท์</label><input class="input" name="requesterPhone" value="' + v(b.requesterPhone) + '"></div></div>' +
+        (b.requesterType === 'MEMO' ? '<div class="field"><label>เลขที่หนังสือ</label><input class="input" name="memoNo" value="' + v(b.memoNo) + '"></div>' : '') +
+        '<div class="field"><label>หมายเหตุการแก้ไข</label><input class="input" name="note" placeholder="เช่น ผู้ขอแจ้งเปลี่ยนเวลาทางโทรศัพท์"></div></form>',
+      foot: '<button class="btn btn-ghost" data-close>ยกเลิก</button><button class="btn btn-maroon" id="eiOk">' + ic('check') + 'บันทึกการแก้ไข</button>'
+    });
+    m.el.querySelector('#eiOk').onclick = async () => {
+      const d = UI.formData(m.el.querySelector('#eiF'));
+      try { UI.loading(true); await call('editBookingDetails', b.id, d); UI.loading(false); m.close(); UI.toast('บันทึกการแก้ไขแล้ว', 'ok'); (reload || (() => App.go(S.page)))(); }
+      catch (e) { UI.err(e); }
+    };
+  },
+
+  /* ---------- กล่องงานผู้อนุมัติ ---------- */
+  async approvals(silent) {
+    const d = await call('getApprovalInbox');
+    if (S.page !== 'approvals') return;
+    App.setCount('approvals', d.pending.length || null);
+    const tab = S.apTab || 'pending';
+    const card = b => {
+      const tl = b.timeline, st = tl ? tl.steps[tl.current - 1] : null;
+      return '<div class="ap-card" data-bk="' + esc(b.id) + '">' + carPic(b.carPhoto, 'sm', b.carPlate) +
+        '<div class="ap-main"><div class="ap-top"><b>' + esc(b.destination) + '</b>' + (tl ? '<span class="pill s-WAITING_DRIVER">ขั้นที่ ' + tl.current + '/' + tl.total + (st ? ' • ' + esc(st.name) : '') + '</span>' : '') +
+          (b.right === 'ADMIN' ? '<span class="pill s-COMPLETED">ดูในฐานะผู้ดูแล</span>' : '') + '</div>' +
+          '<div class="hint">' + fRange(b.start, b.end) + ' • ' + esc((b.carPlate || 'ยังไม่ระบุรถ').split(' (')[0]) + ' • ' + (b.noDriver ? 'ไม่ใช้คนขับ' : esc(b.driverName || 'ยังไม่มีคนขับ')) + '</div>' +
+          '<div class="lbl-row" style="margin-top:6px">' + avatar(b.requesterPhoto, b.requesterName, 26) + '<span>' + esc(b.requesterName) + (b.department ? ' • ' + esc(b.department) : '') + '</span></div></div>' +
+        '<div class="ap-btns">' + (b.right ? '<button class="btn btn-ok btn-sm" data-ok="' + esc(b.id) + '">' + ic('check') + 'อนุมัติ</button><button class="btn btn-bad btn-sm" data-no="' + esc(b.id) + '">ไม่อนุมัติ</button>' : '') +
+          '<button class="btn btn-ghost btn-sm" data-view="' + esc(b.id) + '">รายละเอียด</button></div></div>';
+    };
+    $('#page').innerHTML = '<div class="panel"><div class="panel-head"><h3>' + ic('check') + ' รายการรออนุมัติ</h3>' +
+        (d.myStepNames.length ? '<span class="hint">วันนี้คุณพิจารณา: <b>' + d.myStepNames.map(esc).join(', ') + '</b></span>' : (d.isAdmin ? '<span class="hint">คุณเห็นทุกขั้นในฐานะผู้ดูแลระบบ</span>' : '<span class="hint">วันนี้คุณไม่ได้รับมอบหมายให้พิจารณาขั้นใด</span>')) + '</div>' +
+      (d.enabled ? '<div class="ap-steps">' + d.steps.map(s2 => '<span class="' + (s2.mine ? 'mine' : '') + '">' + s2.no + '. ' + esc(s2.name) + (s2.source === 'ACTING' ? ' (มีผู้แทนวันนี้)' : '') + '</span>').join('<i>›</i>') + '</div>' : '') +
+      '<div class="seg" id="apTab" style="margin:10px 0 14px"><button data-t="pending" class="' + (tab === 'pending' ? 'on' : '') + '">รอฉันพิจารณา (' + d.pending.length + ')</button><button data-t="done" class="' + (tab === 'done' ? 'on' : '') + '">ที่ฉันพิจารณาแล้ว (' + d.done.length + ')</button></div>' +
+      (tab === 'pending' ? (d.pending.length ? '<div class="ap-list">' + d.pending.map(card).join('') + '</div>' : UI.empty('ไม่มีเรื่องรอพิจารณา', ' ระบบจะส่งอีเมลแจ้งเมื่อมีเรื่องเข้ามาในขั้นของคุณ'))
+        : (d.done.length ? '<div class="table-wrap"><table class="tbl"><thead><tr><th>เลขที่</th><th>ช่วงเวลา</th><th>สถานที่</th><th>ผู้ขอ</th><th>การพิจารณาของฉัน</th><th>สถานะปัจจุบัน</th></tr></thead><tbody>' +
+          d.done.map(b => '<tr data-view="' + esc(b.id) + '" style="cursor:pointer"><td class="id">' + esc(b.id) + '</td><td>' + fRange(b.start, b.end) + '</td><td>' + esc(b.destination) + '</td><td>' + esc(b.requesterName) + '</td>' +
+            '<td>' + (b.myLog ? (b.myLog.action === 'REJECT' ? '✕ ไม่อนุมัติ' : b.myLog.action === 'SKIP' ? '↷ ข้าม' : '✓ อนุมัติ') + ' ขั้นที่ ' + b.myLog.step + '<div class="hint">' + fDT(b.myLog.at) + '</div>' : '-') + '</td><td>' + pill(b.status) + '</td></tr>').join('') + '</tbody></table></div>'
+          : UI.empty('ยังไม่มีประวัติการพิจารณา', ''))) + '</div>';
+    $$('#apTab button').forEach(x => x.onclick = () => { S.apTab = x.dataset.t; Pages.approvals(); });
+    const find = id => d.pending.concat(d.done).find(b => b.id === id);
+    $$('[data-view]').forEach(x => x.onclick = e => { e.stopPropagation(); Pages.bookingDetail(find(x.dataset.view), () => Pages.approvals()); });
+    $$('.ap-card').forEach(x => x.onclick = e => { if (e.target.closest('button,[data-zoom]')) return; Pages.bookingDetail(find(x.dataset.bk), () => Pages.approvals()); });
+    $$('[data-ok]').forEach(x => x.onclick = async e => {
+      e.stopPropagation();
+      const b = find(x.dataset.ok), tl = b.timeline;
+      if (!b.carId && (!tl || tl.current === tl.total)) return Pages.approveWithCar(b, () => Pages.approvals());
+      const note = await UI.confirm('อนุมัติ ' + b.id + (tl ? ' (ขั้นที่ ' + tl.current + ')' : ''), esc(b.destination) + ' • ' + fRange(b.start, b.end), { input: 'ความเห็น (ไม่บังคับ)', ok: 'อนุมัติ' });
+      if (!note) return;
+      try { UI.loading(true); const r = await call('approveStep', b.id, note.trim()); UI.loading(false); UI.toast(r.message, 'ok'); Pages.approvals(); } catch (err) { UI.err(err); }
+    });
+    $$('[data-no]').forEach(x => x.onclick = async e => {
+      e.stopPropagation();
+      const why = await UI.confirm('ไม่อนุมัติ ' + x.dataset.no, 'ระบบจะแจ้งผู้ขอและพนักงานขับรถ', { input: 'เหตุผล', required: true, ok: 'ไม่อนุมัติ', danger: true });
+      if (!why) return;
+      try { UI.loading(true); const r = await call('rejectStep', x.dataset.no, why.trim()); UI.loading(false); UI.toast(r.message, 'ok'); Pages.approvals(); } catch (err) { UI.err(err); }
+    });
+    if (!silent) App.autoRefresh(Pages.approvals, 60);
+  },
+
+  /* ---------- ตั้งค่าขั้นตอนการอนุมัติ (Admin) ---------- */
+  async approvalCfg(cfgIn) {
+    const c = cfgIn || await call('getApprovalConfig');
+    if (S.page !== 'approvalCfg') return;
+    S.apCfg = JSON.parse(JSON.stringify(c));
+    Pages._renderApCfg();
+  },
+  _renderApCfg() {
+    const c = S.apCfg;
+    const colors = ['#6D5BD0', '#7BA7E8', '#F2B36B', '#5FBFA4', '#E07A9B', '#8E8E8E'];
+    const stepName = id => { const i = c.steps.findIndex(x => x.id === id); return i > -1 ? (i + 1) + '. ' + c.steps[i].name : id; };
+    $('#page').innerHTML =
+      '<div class="panel"><div class="panel-head"><h3>' + ic('check') + ' ขั้นตอนการอนุมัติ</h3>' +
+        '<label class="switch"><input type="checkbox" id="apOn"' + (c.enabled ? ' checked' : '') + '><span></span> เปิดใช้การอนุมัติหลายขั้น</label></div>' +
+        '<p class="section-note">ระบบส่งอีเมลไล่ตามขั้นเมื่อแต่ละขั้นอนุมัติ ผู้อนุมัติเห็นและอนุมัติได้เฉพาะเรื่องในขั้นของตน • ปิดไว้ = ผู้ดูแลระบบอนุมัติขั้นเดียวแบบเดิม</p>' +
+        '<div id="apSteps">' + c.steps.map((st, i) => '<div class="cfg-step" style="--c:' + colors[i % colors.length] + '" data-i="' + i + '">' +
+          '<span class="tl-no">' + (i + 1) + '</span><div class="cfg-main">' +
+          '<div class="cfg-row"><input class="input" data-name="' + i + '" value="' + esc(st.name) + '" placeholder="ชื่อขั้นตอน เช่น หัวหน้างาน">' +
+          '<label class="hint" style="display:flex;gap:6px;align-items:center;white-space:nowrap"><input type="checkbox" data-act="' + i + '"' + (st.active ? ' checked' : '') + '> ใช้งาน</label></div>' +
+          '<div class="chips">' + st.approvers.map((p, j) => '<span class="chip">' + avatar(p.photo, p.name, 22) + esc(p.name) + '<button type="button" data-rm="' + i + ':' + j + '" aria-label="ลบ">✕</button></span>').join('') +
+            '<span class="ac-wrap chip-add"><input class="input" data-find="' + i + '" placeholder="+ เพิ่มผู้อนุมัติ (พิมพ์ชื่อ)" autocomplete="off"><div class="ac-list hidden" data-list="' + i + '"></div></span></div></div>' +
+          '<div class="cfg-ops"><button class="icon-btn" data-up="' + i + '" title="เลื่อนขึ้น"' + (i ? '' : ' disabled') + '>▲</button><button class="icon-btn" data-dn="' + i + '" title="เลื่อนลง"' + (i < c.steps.length - 1 ? '' : ' disabled') + '>▼</button><button class="icon-btn" data-del="' + i + '" title="ลบขั้นนี้">' + ic('trash') + '</button></div></div>').join('') + '</div>' +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><button class="btn btn-ghost" id="apAdd">' + ic('plus') + 'เพิ่มขั้นตอน</button><button class="btn btn-maroon" id="apSave" style="margin-left:auto">' + ic('check') + 'บันทึกขั้นตอน</button></div></div>' +
+      '<div class="layout-2"><div class="panel"><div class="panel-head"><h3>ผู้ปฏิบัติงานแทน (รายวัน)</h3></div>' +
+        '<p class="section-note">วันที่กำหนดไว้ สิทธิ์อนุมัติของขั้นนั้นเป็นของผู้ปฏิบัติงานแทนเท่านั้น และระบบส่งเรื่องที่ค้างในขั้นนั้นให้ผู้แทนทันที</p>' +
+        '<form id="dlF"><div class="grid3"><div class="field"><label>ขั้นตอน</label><select class="input" name="stepId">' + c.steps.map((st, i) => '<option value="' + esc(st.id) + '">' + (i + 1) + '. ' + esc(st.name) + '</option>').join('') + '</select></div>' +
+          '<div class="field"><label>ตั้งแต่วันที่</label><input type="date" class="input" name="from" value="' + c.today + '"></div><div class="field"><label>ถึงวันที่</label><input type="date" class="input" name="to" value="' + c.today + '"></div></div>' +
+          '<div class="field ac-wrap"><label>ผู้ปฏิบัติงานแทน (พิมพ์ชื่อ 1-3 ตัวอักษร)</label><input class="input" id="dlFind" autocomplete="off"><div class="ac-list hidden" id="dlList"></div><div class="chips" id="dlChips"></div></div>' +
+          '<div class="field"><label>หมายเหตุ</label><input class="input" name="note" placeholder="เช่น ปฏิบัติงานแทนเนื่องจากลาพักผ่อน"></div>' +
+          '<div style="text-align:right"><button class="btn btn-maroon" type="submit">' + ic('plus') + 'บันทึกผู้ปฏิบัติงานแทน</button></div></form>' +
+        (c.delegations.length ? '<div class="table-wrap" style="margin-top:14px"><table class="tbl"><thead><tr><th>วันที่</th><th>ขั้นตอน</th><th>ผู้ปฏิบัติงานแทน</th><th></th></tr></thead><tbody>' +
+          c.delegations.map(x => '<tr' + (x.from <= c.today && c.today <= x.to ? ' style="background:#FFFBEA"' : '') + '><td>' + esc(x.from) + (x.to !== x.from ? ' – ' + esc(x.to) : '') + (x.from <= c.today && c.today <= x.to ? ' <span class="pill s-WAITING_DRIVER">วันนี้</span>' : '') + '</td><td>' + esc(stepName(x.stepId)) + '</td>' +
+            '<td>' + x.approvers.map(p => '<span class="lbl-row">' + avatar(p.photo, p.name, 22) + esc(p.name) + '</span>').join('') + (x.note ? '<div class="hint">' + esc(x.note) + '</div>' : '') + '</td>' +
+            '<td class="actions"><button class="icon-btn" data-dl="' + esc(x.id) + '" aria-label="ลบ">' + ic('trash') + '</button></td></tr>').join('') + '</tbody></table></div>' : '<p class="hint">ยังไม่มีการกำหนดผู้ปฏิบัติงานแทน</p>') + '</div>' +
+      '<div class="panel"><div class="panel-head"><h3>ผู้อนุมัติวันนี้</h3><span class="hint">' + esc(c.today) + '</span></div>' +
+        (c.todayWho.length ? c.todayWho.map(w => '<div class="today-who"><span class="tl-no" style="--c:' + colors[(w.no - 1) % colors.length] + '">' + w.no + '</span><div><b>' + esc(w.name) + '</b>' + (w.source === 'ACTING' ? ' <span class="pill s-PENDING_APPROVAL">ผู้แทน</span>' : '') +
+          '<div>' + (w.approvers.length ? w.approvers.map(p => '<span class="lbl-row">' + avatar(p.photo, p.name, 24) + esc(p.name) + '</span>').join('') : '<span class="hint" style="color:var(--bad)">ยังไม่กำหนด — เรื่องจะค้างที่ขั้นนี้</span>') + '</div></div></div>').join('')
+          : '<p class="hint">ยังไม่ได้เปิดใช้การอนุมัติหลายขั้น</p>') + '</div></div>';
+    const syncNames = () => { $$('[data-name]').forEach(x => { c.steps[+x.dataset.name].name = x.value; }); $$('[data-act]').forEach(x => { c.steps[+x.dataset.act].active = x.checked; }); };
+    $$('[data-find]').forEach(inp => {
+      const i = +inp.dataset.find;
+      Staff.attach(inp, document.querySelector('[data-list="' + i + '"]'), p => {
+        syncNames();
+        if (p.m === 0) return UI.toast(p.n + ' ยังไม่มีอีเมล — ไม่สามารถรับแจ้งเตือนได้', 'err');
+        if (!c.steps[i].approvers.some(a => a.email === p.e)) c.steps[i].approvers.push({ email: p.e, name: p.n, photo: p.ph });
+        Pages._renderApCfg(); setTimeout(() => { const n = document.querySelector('[data-find="' + i + '"]'); if (n) n.focus(); }, 0);
+      });
+    });
+    $$('[data-rm]').forEach(x => x.onclick = () => { syncNames(); const [i, j] = x.dataset.rm.split(':').map(Number); c.steps[i].approvers.splice(j, 1); Pages._renderApCfg(); });
+    $$('[data-up]').forEach(x => x.onclick = () => { syncNames(); const i = +x.dataset.up; [c.steps[i - 1], c.steps[i]] = [c.steps[i], c.steps[i - 1]]; Pages._renderApCfg(); });
+    $$('[data-dn]').forEach(x => x.onclick = () => { syncNames(); const i = +x.dataset.dn; [c.steps[i + 1], c.steps[i]] = [c.steps[i], c.steps[i + 1]]; Pages._renderApCfg(); });
+    $$('[data-del]').forEach(x => x.onclick = async () => { syncNames(); const i = +x.dataset.del; if (!await UI.confirm('ลบขั้นที่ ' + (i + 1), 'ลบ "' + esc(c.steps[i].name) + '" ออกจากขั้นตอน (มีผลเมื่อกดบันทึก)', { ok: 'ลบขั้นนี้', danger: true, noGuard: true })) return; c.steps.splice(i, 1); Pages._renderApCfg(); });
+    $('#apAdd').onclick = () => { syncNames(); c.steps.push({ id: '', name: 'ขั้นตอนใหม่', active: true, approvers: [] }); Pages._renderApCfg(); const l = $$('[data-name]').pop(); if (l) { l.focus(); l.select(); } };
+    $('#apOn').onchange = () => { c.enabled = $('#apOn').checked; };
+    $('#apSave').onclick = async () => {
+      syncNames(); c.enabled = $('#apOn').checked;
+      const noApprover = c.steps.filter(st => st.active && !st.approvers.length).map(st => st.name);
+      if (c.enabled && noApprover.length && !await UI.confirm('ยังไม่กำหนดผู้อนุมัติ', 'ขั้น "' + esc(noApprover.join('", "')) + '" ยังไม่มีผู้อนุมัติ เรื่องจะค้างที่ขั้นนั้น (ผู้ดูแลกดข้ามได้) บันทึกต่อหรือไม่?', { ok: 'บันทึกต่อ', noGuard: true })) return;
+      try {
+        UI.loading(true);
+        const r = await call('saveApprovalConfig', { enabled: c.enabled, steps: c.steps.map(st => ({ id: st.id, name: st.name, active: st.active !== false, approvers: st.approvers.map(a => a.email) })) });
+        UI.loading(false); UI.toast('บันทึกขั้นตอนการอนุมัติแล้ว', 'ok'); S.settings.multiApproval = r.enabled; Pages.approvalCfg(r);
+      } catch (e) { UI.err(e); }
+    };
+    // delegation form
+    const dlPeople = [];
+    const drawDl = () => { $('#dlChips').innerHTML = dlPeople.map((p, j) => '<span class="chip">' + avatar(p.ph, p.n, 22) + esc(p.n) + '<button type="button" data-dlrm="' + j + '">✕</button></span>').join(''); $$('[data-dlrm]').forEach(x => x.onclick = () => { dlPeople.splice(+x.dataset.dlrm, 1); drawDl(); }); };
+    Staff.attach($('#dlFind'), $('#dlList'), p => { if (p.m === 0) return UI.toast(p.n + ' ยังไม่มีอีเมล', 'err'); if (!dlPeople.some(x => x.e === p.e)) dlPeople.push(p); $('#dlFind').value = ''; drawDl(); });
+    $('#dlF').onsubmit = async e => {
+      e.preventDefault();
+      const f = UI.formData(e.target);
+      try { UI.loading(true); const r = await call('saveDelegation', { stepId: f.stepId, from: f.from, to: f.to, note: f.note, approvers: dlPeople.map(p => p.e) }); UI.loading(false); UI.toast('บันทึกผู้ปฏิบัติงานแทนแล้ว', 'ok'); Pages.approvalCfg(r); }
+      catch (err) { UI.err(err); }
+    };
+    $$('[data-dl]').forEach(x => x.onclick = async () => {
+      if (!await UI.confirm('ลบรายการผู้ปฏิบัติงานแทน', 'ยืนยันการลบ', { ok: 'ลบ', danger: true })) return;
+      try { UI.loading(true); const r = await call('deleteDelegation', x.dataset.dl); UI.loading(false); Pages.approvalCfg(r); } catch (err) { UI.err(err); }
     });
   },
 

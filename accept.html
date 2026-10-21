@@ -25,6 +25,13 @@
     .btn[disabled]{opacity:.6}
     .btn.ghost{background:#fff;color:#646464;border:1.5px solid #E2E1DD;font-size:15px;padding:12px}
     .btn.bad{background:#9B1C1C;color:#fff;font-size:15px;padding:12px}
+    .btn.ok{background:#1F7A3F;color:#fff}
+    .btn.pulse{box-shadow:0 0 0 4px rgba(31,122,63,.25)}
+    .ap-tl{display:flex;flex-direction:column;gap:6px;margin:0 0 14px}
+    .ap-st{display:flex;gap:10px;align-items:center;font-size:14px;padding:6px 10px;border-radius:10px;background:#F6F5F2}
+    .ap-st span{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#ddd;color:#555;font-weight:700;flex:none}
+    .ap-st small{display:block;color:#76716D}
+    .ap-st.DONE span{background:#1F7A3F;color:#fff} .ap-st.CURRENT{background:#EEEAFB} .ap-st.CURRENT span{background:#6D5BD0;color:#fff} .ap-st.REJECTED span{background:#9B1C1C;color:#fff}
     .msg{border-radius:14px;padding:16px;font-family:'Prompt',sans-serif;font-size:17px;text-align:center}
     .msg.ok{background:#E2F3E7;color:var(--ok)} .msg.bad{background:#FBE6E4;color:var(--bad)} .msg.info{background:var(--gold-soft);color:#7A5A00}
     .carimg{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;margin-bottom:14px;display:block;background:#eee}
@@ -62,8 +69,43 @@
   }
   const errText = e => String((e && e.message) || e).replace(/^(Exception|Error):\s*/, '');
   const ACTION = (location.search.match(/[?&]a=(\w+)/) || [])[1] || '';
+  /* ---------- หน้าพิจารณาของผู้อนุมัติ (ลิงก์จากอีเมล) ---------- */
+  function renderApprove() {
+    const b = INFO.booking, tl = INFO.timeline;
+    const steps = tl ? tl.steps.map(st => '<div class="ap-st ' + st.state + '"><span>' + st.no + '</span><div><b>' + esc(st.name) + '</b>' +
+      (st.log ? '<small>' + (st.log.action === 'REJECT' ? 'ไม่อนุมัติ' : st.log.action === 'SKIP' ? 'ข้าม' : 'อนุมัติ') + ' • ' + esc(st.log.name) + '</small>' : st.state === 'CURRENT' ? '<small>รอพิจารณา</small>' : '') + '</div></div>').join('') : '';
+    let html = '<h1>พิจารณาคำขอใช้รถ</h1><p class="sub">' + esc(INFO.approverName) + ' • ขั้นที่ ' + INFO.step + (tl ? '/' + tl.total : '') + ' • เลขที่ ' + esc(b.id) + '</p>' +
+      (steps ? '<div class="ap-tl">' + steps + '</div>' : '') +
+      (b.carPhoto ? '<img class="carimg" src="' + esc(b.carPhoto) + '" alt="" onerror="this.remove()">' : '') +
+      '<div class="when">' + fmt(b.start) + '<br>ถึง ' + fmt(b.end) + '</div>' +
+      '<dl><dt>ผู้ขอ</dt><dd><b>' + esc(b.requesterName) + '</b>' + (b.requesterPosition ? ' • ' + esc(b.requesterPosition) : '') + '</dd><dt>หน่วยงาน</dt><dd>' + esc(b.department || '-') + '</dd>' +
+      '<dt>สถานที่ไป</dt><dd><b>' + esc(b.destination) + '</b></dd><dt>วัตถุประสงค์</dt><dd>' + esc(b.purpose) + '</dd>' +
+      '<dt>ภารกิจ</dt><dd>' + esc(TH[b.missionType] || b.missionType) + '</dd><dt>ผู้โดยสาร</dt><dd>' + esc(b.passengers) + ' คน</dd>' +
+      '<dt>รถ</dt><dd>' + esc(b.carPlate || 'ยังไม่ระบุ') + '</dd><dt>คนขับ</dt><dd>' + (b.noDriver ? 'ไม่ใช้พนักงานขับรถ' : esc(b.driverName || 'ยังไม่มีผู้รับงาน')) + '</dd></dl>';
+    if (INFO.state === 'OPEN') {
+      html += '<div id="acts"><textarea id="note" placeholder="ความเห็น (ไม่บังคับสำหรับการอนุมัติ / จำเป็นเมื่อไม่อนุมัติ)" style="width:100%;min-height:64px;border:1.5px solid #E2E1DD;border-radius:12px;padding:10px;font:inherit;margin-bottom:10px"></textarea>' +
+        '<button class="btn ok" id="ap">✓ อนุมัติขั้นที่ ' + INFO.step + '</button>' +
+        '<button class="btn bad" id="rj" style="margin-top:8px">✕ ไม่อนุมัติ</button></div>';
+    } else html += '<div class="msg info">' + esc(INFO.message) + '</div>';
+    body.innerHTML = html;
+    const acts = document.getElementById('acts');
+    if (!acts) return;
+    if (ACTION === 'reject') document.getElementById('note').focus();
+    if (ACTION === 'approve') document.getElementById('ap').classList.add('pulse');
+    const doIt = (fn, needNote) => {
+      const note = document.getElementById('note').value.trim();
+      if (needNote && !note) { document.getElementById('note').focus(); document.getElementById('note').style.borderColor = '#9B1C1C'; return; }
+      acts.querySelectorAll('button').forEach(x => x.disabled = true);
+      run(fn, [TOKEN, note]).then(r => { acts.innerHTML = '<div class="msg ' + (fn === 'approveByToken' ? 'ok' : 'info') + '">' + esc(r.message) + '</div>'; })
+        .catch(e => { acts.innerHTML = '<div class="msg bad">' + esc(errText(e)) + '</div>'; });
+    };
+    document.getElementById('ap').onclick = () => doIt('approveByToken', false);
+    document.getElementById('rj').onclick = () => doIt('rejectByToken', true);
+  }
+
   function render() {
     if (!INFO.ok) { body.innerHTML = '<div class="msg bad">' + esc(INFO.message) + '</div>'; return; }
+    if (INFO.kind === 'approve') return renderApprove();
     const b = INFO.booking;
     let html = '<h1>' + (INFO.state === 'OPEN' ? 'งานขับรถใหม่สำหรับคุณ' : 'รายละเอียดงาน') + '</h1>' +
       '<p class="sub">คุณ' + esc(INFO.driverName) + ' • เลขที่ ' + esc(b.id) + (b.status === 'PENDING_APPROVAL' ? ' • <b style="color:#401D1B">รออนุมัติ</b>' : '') + '</p>' +
