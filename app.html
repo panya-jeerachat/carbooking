@@ -145,6 +145,17 @@ img.avatar[data-zoom]{cursor:zoom-in}
 .tl-log{margin-top:6px;font-size:13.5px}
 .tl-side{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
 .tl-act{background:#6D5BD0;color:#fff}
+.tl-note{display:flex;gap:8px;align-items:flex-start;background:var(--info-soft);color:var(--info);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:4px}
+.tl-admin{margin-top:8px;font-size:13.5px;background:#FFF8E6;border-radius:10px;padding:10px 12px}
+.tl-admin b{font-family:var(--font-head);display:block;margin-bottom:4px;color:var(--maroon)}
+.tl-step.BYPASS{opacity:.85;border-left-style:dashed}
+.st-opts{display:flex;flex-direction:column;gap:6px}
+.st-opt{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}
+.st-opt.on{border-color:var(--maroon);background:var(--gold-soft)}
+.st-opt input{margin-top:4px;accent-color:var(--maroon)}
+.st-opt b{font-family:var(--font-head);font-weight:500;display:block}
+.st-opt small{color:var(--muted)}
+.ro-note{display:inline-flex;align-items:center;gap:6px;margin-right:auto;color:var(--info)}
 .ap-steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13.5px}
 .ap-steps span{background:var(--paper);border-radius:999px;padding:3px 12px}
 .ap-steps span.mine{background:#6D5BD0;color:#fff;font-family:var(--font-head)}
@@ -545,7 +556,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
 /* =====================================================================
  *  EN-MSU Fleet — Client (Single Page App ใน Apps Script HtmlService)
  * ===================================================================== */
-const CLIENT_VERSION = '2569.10-r11';   // ต้องตรงกับ APP.VERSION ใน Code.gs
+const CLIENT_VERSION = '2569.10-r12';   // ต้องตรงกับ APP.VERSION ใน Code.gs
 const S = { token: null, user: null, settings: window.PUBLIC || {}, cars: [], drivers: [], page: null,
             charts: [], timer: null, cal: { mode: 'month', date: null, resource: 'car' }, filters: {} };
 
@@ -941,7 +952,7 @@ const App = {
   },
   async boot() {
     const b = await call('getBootstrap');
-    S.user = b.user; S.settings = b.settings; S.cars = b.cars; S.drivers = b.drivers; S.approverSteps = b.approverSteps || [];
+    S.user = b.user; S.settings = b.settings; S.cars = b.cars; S.drivers = b.drivers; S.approverSteps = b.approverSteps || []; S.isApprover = !!b.isApprover;
     App.versionCheck(b.serverVersion);
     $('#loginView').classList.add('hidden'); $('#appView').classList.remove('hidden');
     $('#whoName').textContent = S.user.name;
@@ -954,7 +965,7 @@ const App = {
   },
   renderMenu() {
     let items = (MENUS[S.user.role] || []).slice();
-    if (S.user.role !== 'admin' && (S.approverSteps || []).length) items = [['การพิจารณา'], ['approvals', 'รายการรออนุมัติ', 'check']].concat(items);
+    if (S.user.role !== 'admin' && (S.isApprover || (S.approverSteps || []).length)) items = [['การพิจารณา'], ['approvals', 'รายการรออนุมัติ', 'check'], ['report', 'รายงานการใช้รถ', 'chart']].concat(items);
     $('#menu').innerHTML = items.map(m => m.length === 1
       ? '<div class="menu-group">' + esc(m[0]) + '</div>'
       : '<a data-page="' + m[0] + '" tabindex="0">' + ic(m[2]) + '<span>' + esc(m[1]) + '</span><span class="count hidden" data-count="' + m[0] + '"></span></a>').join('');
@@ -1421,7 +1432,7 @@ const Pages = {
     if (admin && b.status === 'WAITING_DRIVER') acts.push('<button class="btn btn-gold" data-a="resend">' + ic('send') + (b.preferredDriverId ? 'ส่งให้คนขับที่ว่างทุกคน' : 'แจ้งคนขับอีกครั้ง') + '</button>');
     // --- แก้ไข ---
     if (b.canEdit && b.status !== 'COMPLETED' && b.status !== 'DELETED') acts.push('<button class="btn btn-ghost" data-a="editinfo">' + ic('edit') + 'แก้ไขข้อมูล</button>');
-    const canAssign = active && (admin || (u.role === 'driver' && (b.createdBy === u.userId || b.driverId === u.driverId)));
+    const canAssign = active && (admin || (u.role === 'driver' && !b.approved && b.status !== 'CONFIRMED' && (b.createdBy === u.userId || b.driverId === u.driverId)));
     if (canAssign) acts.push('<button class="btn btn-ghost" data-a="edit">' + ic('car') + 'เปลี่ยนรถ/คนขับ</button>');
     const myTrip = admin || (u.role === 'driver' && b.driverId === u.driverId);
     if (myTrip && b.status === 'CONFIRMED') acts.push('<button class="btn btn-ok" data-a="complete">' + ic('fuel') + 'ปิดงาน + บันทึกระยะทาง/น้ำมัน</button>');
@@ -1430,6 +1441,8 @@ const Pages = {
     if (active && (admin || own || b.createdBy === u.userId)) acts.push('<button class="btn btn-ghost" data-a="cancel" style="color:var(--bad)">ยกเลิกการจอง</button>');
     if (b.canDelete) acts.push('<button class="btn btn-ghost" data-a="delete" style="color:var(--bad)">' + ic('trash') + 'ลบ</button>');
     if (admin && b.status === 'DELETED') acts.push('<button class="btn btn-gold" data-a="restore">กู้คืนรายการ</button>');
+    if (admin) acts.push('<button class="btn btn-ghost" data-a="status">' + ic('refresh') + 'ปรับสถานะ/ขั้นตอน</button>');
+    if (!admin && !b.canEdit && b.status !== 'PENDING_APPROVAL') acts.unshift('<span class="hint ro-note">' + ic('check') + 'ดูอย่างเดียว — รายการที่อนุมัติแล้วแก้ไขได้เฉพาะผู้ดูแลระบบ</span>');
 
     const row = (k, v) => '<dt>' + k + '</dt><dd>' + v + '</dd>';
     const m = UI.modal({
@@ -1490,6 +1503,8 @@ const Pages = {
         if (a === 'restore') { UI.loading(true); await call('restoreBooking', b.id); UI.loading(false); done('กู้คืนแล้ว (สถานะยกเลิก)'); }
         if (a === 'changecar') { m.close(); Pages.approveWithCar(b, reload); }
         if (a === 'print') Pages._print(b);
+        if (a === 'status') { m.close(); Pages.adminStatus(b, reload); }
+        if (a === 'tostep') { m.close(); Pages.adminStatus(b, reload, Number(btn.dataset.step)); }
       } catch (e) { UI.err(e); }
     });
   },
@@ -1498,7 +1513,7 @@ const Pages = {
   _timelineHtml(tl, b) {
     const admin = isAdmin();
     const colors = ['#6D5BD0', '#7BA7E8', '#F2B36B', '#5FBFA4', '#E07A9B', '#8E8E8E'];
-    const ST = { DONE: ['อนุมัติแล้ว', 's-CONFIRMED'], CURRENT: ['รอพิจารณา', 's-WAITING_DRIVER'], TODO: ['ยังไม่ถึงขั้นนี้', 's-COMPLETED'], REJECTED: ['ไม่อนุมัติ', 's-CANCELLED'] };
+    const ST = { DONE: ['อนุมัติแล้ว', 's-CONFIRMED'], CURRENT: ['รอพิจารณา', 's-WAITING_DRIVER'], TODO: ['ยังไม่ถึงขั้นนี้', 's-COMPLETED'], REJECTED: ['ไม่อนุมัติ', 's-CANCELLED'], BYPASS: ['ไม่ผ่านขั้นตอน', 's-COMPLETED'] };
     return '<div class="tl-box"><div class="tl-title">' + ic('check') + '<b>ขั้นตอนการพิจารณา</b><span class="hint">' + tl.total + ' ขั้น เรียงตามลำดับ</span></div>' +
       tl.steps.map((st, i) => {
         const c = colors[i % colors.length], s = ST[st.state] || ST.TODO, lg = st.log;
@@ -1510,8 +1525,46 @@ const Pages = {
             (lg.as === 'ACTING' ? ' (แทน)' : lg.as === 'ADMIN' ? ' (ผู้ดูแลระบบ)' : '') + ' • ' + fDT(lg.at) + (lg.note ? '<br><span class="hint">“' + esc(lg.note) + '”</span>' : '') + '</div>' : '') +
           '</div><div class="tl-side"><span class="pill ' + s[1] + '">' + s[0] + '</span>' +
           (st.state === 'CURRENT' && admin && b.status === 'PENDING_APPROVAL' ? '<button class="btn btn-sm tl-act" data-a="notify">' + ic('send') + 'แจ้งผู้พิจารณา</button><button class="btn btn-ghost btn-sm" data-a="skip">↷ ข้ามขั้นนี้</button>' : '') +
+          (admin && st.state !== 'CURRENT' && st.state !== 'TODO' || (admin && st.state === 'TODO' && b.status !== 'PENDING_APPROVAL') ? '<button class="btn btn-ghost btn-sm" data-a="tostep" data-step="' + st.no + '">↺ ' + (st.state === 'BYPASS' || st.state === 'TODO' ? 'เริ่มพิจารณาที่ขั้นนี้' : 'ย้อนกลับมาขั้นนี้') + '</button>' : '') +
           '</div></div>';
-      }).join('') + '</div>';
+      }).join('') +
+      (tl.bypass ? '<div class="tl-note">' + ic('refresh') + '<span>รายการนี้ดำเนินการ' + (b.approvedBy ? ' (อนุมัติโดย ' + esc(b.approvedBy) + ')' : '') + ' ก่อนเปิดใช้ขั้นตอนอนุมัติหลายขั้น จึงไม่มีผลการพิจารณาในแต่ละขั้น' +
+        (admin ? ' — ผู้ดูแลกด "เริ่มพิจารณาที่ขั้นนี้" เพื่อส่งเข้าขั้นตอนอนุมัติได้' : '') + '</span></div>' : '') +
+      ((tl.adminNotes || []).length ? '<div class="tl-admin"><b>การปรับโดยผู้ดูแลระบบ</b>' + tl.adminNotes.map(n => '<div>• ' + esc(n.note) + ' <span class="hint">— ' + esc(n.name) + ' ' + fDT(n.at) + '</span></div>').join('') + '</div>' : '') +
+      '</div>';
+  },
+
+  /** ผู้ดูแล: ปรับสถานะ / ส่งกลับขั้นตอนอนุมัติ (แก้ไขย้อนกลับได้ทุกกรณี) */
+  adminStatus(b, reload, presetStep) {
+    const tl = b.timeline, multi = !!tl;
+    const opts = [];
+    if (multi) tl.steps.forEach(st => opts.push(['TO_STEP:' + st.no, 'ส่งกลับเข้าขั้นตอนอนุมัติ — ขั้นที่ ' + st.no + ': ' + st.name, 'สถานะเป็น "รออนุมัติ" ล้างผลพิจารณาตั้งแต่ขั้นนี้ และส่งอีเมลถึงผู้อนุมัติขั้นนี้']));
+    else opts.push(['PENDING_APPROVAL', 'กลับเป็นรออนุมัติ', 'ล้างผลอนุมัติเดิม รอผู้ดูแลอนุมัติใหม่']);
+    opts.push(['WAITING_DRIVER', 'กลับไปรอพนักงานขับรถรับงาน', 'ล้างคนขับปัจจุบัน และส่งงานถึงคนขับที่ว่างทุกคน']);
+    opts.push(['CONFIRMED', 'ยืนยันแล้ว', 'ต้องมีรถ และมีคนขับหรือเลือกไม่ใช้คนขับ']);
+    opts.push(['COMPLETED', 'เสร็จสิ้น', '']);
+    opts.push(['CANCELLED', 'ยกเลิก', 'คืนรถ/คนขับให้ว่าง']);
+    opts.push(['REJECTED', 'ไม่อนุมัติ', 'คืนรถ/คนขับให้ว่าง']);
+    const pre = presetStep ? 'TO_STEP:' + presetStep : '';
+    const m = UI.modal({
+      title: 'ปรับสถานะ/ขั้นตอน • ' + b.id,
+      body: '<p class="hint" style="margin-top:0">สถานะปัจจุบัน: ' + pill(b.status) + (tl && b.status === 'PENDING_APPROVAL' ? ' ขั้นที่ ' + tl.current + '/' + tl.total : '') + ' • ทุกการปรับบันทึกในประวัติพร้อมเหตุผล</p>' +
+        '<form id="asF"><div class="st-opts">' + opts.map(o => '<label class="st-opt' + (o[0] === pre ? ' on' : '') + '"><input type="radio" name="act" value="' + o[0] + '"' + (o[0] === pre ? ' checked' : '') + '><span><b>' + esc(o[1]) + '</b>' + (o[2] ? '<small>' + esc(o[2]) + '</small>' : '') + '</span></label>').join('') + '</div>' +
+        '<div class="field" style="margin-top:12px"><label>เหตุผล *</label><textarea class="input" name="reason" placeholder="เช่น ยืนยันก่อนเปิดใช้ขั้นตอน ต้องผ่านการพิจารณาใหม่"></textarea></div>' +
+        '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="notify" checked> ส่งอีเมลแจ้งผู้เกี่ยวข้องตามสถานะใหม่</label></form>',
+      foot: '<button class="btn btn-ghost" data-close>ยกเลิก</button><button class="btn btn-maroon" id="asOk">' + ic('check') + 'ปรับสถานะ</button>'
+    });
+    $$('.st-opt input', m.el).forEach(x => x.onchange = () => $$('.st-opt', m.el).forEach(l => l.classList.toggle('on', l.querySelector('input').checked)));
+    m.el.querySelector('#asOk').onclick = async () => {
+      const f = m.el.querySelector('#asF'), sel = f.querySelector('input[name=act]:checked');
+      if (!sel) return UI.toast('กรุณาเลือกสถานะที่ต้องการ', 'err');
+      const [action, step] = sel.value.split(':');
+      try {
+        UI.loading(true);
+        await call('adminSetStatus', b.id, { action: action, step: Number(step) || 0, reason: f.reason.value.trim(), notify: f.notify.checked });
+        UI.loading(false); m.close(); UI.toast('ปรับสถานะแล้ว', 'ok'); (reload || (() => App.go(S.page)))();
+      } catch (e) { UI.err(e); }
+    };
   },
 
   _print(b) {
