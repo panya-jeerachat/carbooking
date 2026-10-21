@@ -46,6 +46,34 @@
     .car-ph svg{width:46%;height:auto}
     .car-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
     .drv{display:flex;align-items:center;gap:10px}
+    .car{cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:left;font:inherit;color:inherit}
+    .car:hover,.drvc:hover,.step[data-step]:hover{transform:translateY(-2px);box-shadow:0 14px 30px -18px rgba(64,29,27,.45)}
+    .drivers{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+    .drvc{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:18px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;cursor:pointer;transition:transform .15s,box-shadow .15s;font:inherit;color:inherit}
+    .drvc b{font-family:var(--head);font-weight:500}
+    .drvc .meta{font-size:13.5px;color:var(--muted)}
+    .drvc.ON_TRIP{border-color:var(--gold);background:linear-gradient(180deg,var(--gold-soft),#fff 60%)}
+    .LEAVE i{background:#999}
+    .kpi{border:0;text-align:left;cursor:pointer;font:inherit;transition:transform .15s}
+    .kpi:hover{transform:translateY(-1px);box-shadow:0 0 0 2px var(--gold-deep) inset}
+    .step[data-step]{cursor:pointer;transition:transform .15s,box-shadow .15s}
+    .im-hero{display:grid;grid-template-columns:minmax(0,1.3fr) 1fr;gap:16px;align-items:start}
+    .im-hero .car-ph{aspect-ratio:16/10}
+    .im-dl{margin:0;display:grid;grid-template-columns:110px 1fr;gap:6px 10px;font-size:15px}
+    .im-dl dt{color:var(--muted)} .im-dl dd{margin:0}
+    .im-sec{font-family:var(--head);font-weight:600;color:var(--maroon);margin:6px 0 0;font-size:16px}
+    .sch{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+    .sch div{display:grid;grid-template-columns:150px 1fr auto;gap:10px;padding:10px 12px;border-top:1px solid #F0EFEB;font-size:14.5px;align-items:center}
+    .sch div:first-child{border-top:0}
+    .sch b{font-family:var(--head);color:var(--maroon);font-weight:600}
+    .im-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+    .mini{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+    .mini button{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px;align-items:center;cursor:pointer;font:inherit;text-align:center}
+    .mini button:hover{border-color:var(--gold-deep)}
+    .mini .car-ph{aspect-ratio:16/10}
+    .big-ava{display:flex;justify-content:center}
+    .step-detail ol{margin:0;padding-left:20px;line-height:1.9}
+    @media (max-width:640px){ .im-hero{grid-template-columns:1fr} .sch div{grid-template-columns:1fr} }
     .car-ph img{cursor:zoom-in}
     .lb{position:fixed;inset:0;z-index:300;background:rgba(20,20,20,.85);display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
     .lb img{max-width:100%;max-height:86vh;border-radius:12px}
@@ -62,6 +90,10 @@
     .icon-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:#fff;display:inline-grid;place-items:center;cursor:pointer;color:var(--graphite)}
     .icon-btn:hover{border-color:var(--slate)}
 
+.req-ok{background:var(--ok-soft);color:var(--ok);border-bottom:1px solid #bfe3cb}
+    .req-ok .wrap{display:flex;align-items:center;gap:10px;padding-top:12px;padding-bottom:12px;font-family:var(--head)}
+    .req-ok b{font-size:18px}
+    .req-ok button{margin-left:auto;border:0;background:none;color:var(--ok);font-size:18px;cursor:pointer}
     .notice{background:var(--maroon);color:#f1e3e0;font-size:14.5px}
     .notice .wrap{display:flex;align-items:center;gap:10px;padding-top:9px;padding-bottom:9px}
     .notice svg{color:var(--gold)}
@@ -240,6 +272,7 @@
       <nav aria-label="เมนูหลัก">
         <a href="#calendar">ปฏิทิน</a>
         <a href="#fleet">สถานะรถ</a>
+        <a href="#drivers">พนักงานขับรถ</a>
         <a href="#how">ขั้นตอนการขอใช้รถ</a>
         <a href="request.html" class="ext-nav">หน่วยงานอื่นขอใช้รถ</a>
       </nav>
@@ -256,6 +289,8 @@
       <b>ระบบทางการของคณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม</b>
     </div>
   </div>
+
+  <div class="req-ok hidden" id="reqOk" role="status"><div class="wrap"><span>✔ ส่งคำขอใช้รถเรียบร้อยแล้ว เลขที่ <b id="reqId"></b> — เจ้าหน้าที่จะแจ้งผลทางอีเมล</span><button type="button" id="reqClose" aria-label="ปิด">✕</button></div></div>
 
   <!-- ===== ปฏิทิน (เนื้อหาหลัก) ===== -->
   <main class="wrap">
@@ -279,10 +314,10 @@
           <div class="panel" aria-live="polite">
             <div class="live-head"><span class="pulse" aria-hidden="true"></span><h2>สถานะตอนนี้</h2><span class="live-time" id="updated">กำลังโหลด…</span></div>
             <div class="kpis">
-              <div class="kpi hl"><b id="kCars">–</b><span>รถว่างพร้อมใช้</span></div>
-              <div class="kpi"><b id="kDrivers">–</b><span>คนขับว่าง</span></div>
-              <div class="kpi"><b id="kToday">–</b><span>งานวันนี้</span></div>
-              <div class="kpi"><b id="kDone">–</b><span>เสร็จสิ้นเดือนนี้</span></div>
+              <button type="button" class="kpi hl" data-kpi="cars"><b id="kCars">–</b><span>รถว่างพร้อมใช้ ›</span></button>
+              <button type="button" class="kpi" data-kpi="drivers"><b id="kDrivers">–</b><span>คนขับว่าง ›</span></button>
+              <button type="button" class="kpi" data-kpi="today"><b id="kToday">–</b><span>งานวันนี้ ›</span></button>
+              <button type="button" class="kpi" data-kpi="done"><b id="kDone">–</b><span>เสร็จสิ้นเดือนนี้ ›</span></button>
             </div>
           </div>
           <div class="panel">
@@ -304,17 +339,22 @@
     </section>
 
     <section class="block" id="fleet">
-      <div class="sec-head"><h2>สถานะรถของคณะ</h2><p>อัปเดตอัตโนมัติทุก 1 นาที</p></div>
+      <div class="sec-head"><h2>สถานะรถของคณะ</h2><p>กดที่การ์ดเพื่อดูรูปขนาดใหญ่ รายละเอียด และตารางการใช้รถ • อัปเดตอัตโนมัติทุก 1 นาที</p></div>
       <div class="fleet" id="fleetList"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    </section>
+
+    <section class="block" id="drivers">
+      <div class="sec-head"><h2>พนักงานขับรถ</h2><p>กดที่การ์ดเพื่อดูรายละเอียดและตารางงาน • ผู้ขอใช้รถเลือกพนักงานขับรถได้ในแบบฟอร์ม</p></div>
+      <div class="drivers" id="driverList"><div class="skeleton"></div><div class="skeleton"></div></div>
     </section>
 
     <section class="block" id="how">
       <div class="sec-head"><h2>ขั้นตอนการขอใช้รถ</h2></div>
       <div class="steps">
-        <div class="step"><h3>เข้าสู่ระบบ</h3><p>กด "เข้าสู่ระบบเจ้าหน้าที่" ใช้ชื่อผู้ใช้ของระบบ หรือสมัครบัญชีผู้ขอใช้รถครั้งแรก</p></div>
-        <div class="step"><h3>เลือกเวลาและรถ</h3><p>ระบบแสดงเฉพาะรถที่ว่างในช่วงเวลานั้น กรอกสถานที่และวัตถุประสงค์</p></div>
-        <div class="step"><h3>พนักงานขับรถรับงาน</h3><p>ระบบส่งอีเมลถึงพนักงานขับรถที่ว่าง คนแรกที่กดรับจะได้งาน</p></div>
-        <div class="step"><h3>รับอีเมลยืนยัน</h3><p>คุณได้รับอีเมลแจ้งชื่อและเบอร์โทรพนักงานขับรถ ติดตามสถานะได้ในระบบ</p></div>
+        <div class="step" data-step="0" tabindex="0" role="button"><h3>เข้าสู่ระบบ</h3><p>กด "เข้าสู่ระบบเจ้าหน้าที่" ใช้ชื่อผู้ใช้ของระบบ หรือสมัครบัญชีผู้ขอใช้รถครั้งแรก</p></div>
+        <div class="step" data-step="1" tabindex="0" role="button"><h3>เลือกเวลา รถ และพนักงานขับรถ</h3><p>ระบบแสดงรูปรถจริง ป้ายทะเบียน และพนักงานขับรถที่ว่างจริงในช่วงเวลานั้นให้เลือก</p></div>
+        <div class="step" data-step="2" tabindex="0" role="button"><h3>พนักงานขับรถรับงาน</h3><p>ระบบส่งงานถึงคนขับที่คุณเลือก หรือคนขับที่ว่างทุกคน คนแรกที่กดรับจะได้งาน</p></div>
+        <div class="step" data-step="3" tabindex="0" role="button"><h3>รับอีเมลยืนยัน</h3><p>คุณได้รับอีเมลแจ้งชื่อและเบอร์โทรพนักงานขับรถ ติดตามสถานะได้ในระบบ</p></div>
       </div>
     </section>
   </main>
@@ -330,6 +370,14 @@
       พัฒนาโดย นายปัญญา จีระฉัตร | นักวิชาการโสตทัศนศึกษา | <a href="mailto:panya.j@msu.ac.th">panya.j@msu.ac.th</a>
     </div>
   </footer>
+
+  <!-- ===== Popup รายละเอียดทั่วไป (รถ / คนขับ / สถิติ / ขั้นตอน) ===== -->
+  <div class="modal-bg hidden" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="imTitle">
+    <div class="modal day-modal">
+      <div class="dm-head"><h2 id="imTitle">–</h2><button class="m-close" data-close aria-label="ปิด"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+      <div class="dm-body" id="imBody"></div>
+    </div>
+  </div>
 
   <!-- ===== Popup รายละเอียดวัน ===== -->
   <div class="modal-bg hidden" id="dayModal" role="dialog" aria-modal="true" aria-labelledby="dmTitle">
@@ -517,13 +565,103 @@
         '<span class="sub">' + (b.start <= now && b.end > now ? 'กำลังเดินทาง • ' : '') + esc(STATUS[b.status] || b.status) + '</span></button>').join('')
         : '<div class="empty-s">วันนี้ยังไม่มีรายการใช้รถ</div>';
       $$('.ti').forEach(b => b.addEventListener('click', () => openDay(todayKey)));
-      $('#fleetList').innerHTML = board.fleet.length ? board.fleet.map(c =>
-        '<div class="car ' + esc(c.state) + '">' + carPic(c.photo, c.plateNo + ' • ' + c.carType) + '<span class="plate"><span class="no">' + esc(c.plateNo) + '</span><span class="pv">' + esc(c.province || '') + '</span></span>' +
+      $('#fleetList').innerHTML = board.fleet.length ? board.fleet.map((c, i) =>
+        '<button type="button" class="car ' + esc(c.state) + '" data-car="' + i + '">' + carCard(c.photo) + '<span class="plate"><span class="no">' + esc(c.plateNo) + '</span><span class="pv">' + esc(c.province || '') + '</span></span>' +
         '<div class="meta">' + esc(c.carType) + (c.seats ? ' • ' + esc(c.seats) + ' ที่นั่ง' : '') + '</div>' +
         '<div class="state ' + esc(c.state) + '"><i></i>' + esc(ST[c.state] || c.state) + '</div>' +
-        '<div class="meta">' + (c.next ? 'งานถัดไป ' + dShort(c.next.start) + ' ' + tm(c.next.start) + '–' + tm(c.next.end) + ' น.' : 'ยังไม่มีงานที่จะถึง') + '</div></div>').join('')
+        '<div class="meta">' + (c.next ? 'งานถัดไป ' + dShort(c.next.start) + ' ' + tm(c.next.start) + '–' + tm(c.next.end) + ' น.' : 'ยังไม่มีงานที่จะถึง') + '</div></button>').join('')
         : '<p class="empty-s">ยังไม่มีข้อมูลรถ</p>';
+      $$('[data-car]').forEach(b => b.addEventListener('click', () => openCar(board.fleet[+b.dataset.car])));
+      const ds = board.drivers || [];
+      $('#driverList').innerHTML = ds.length ? ds.map((d, i) =>
+        '<button type="button" class="drvc ' + esc(d.state) + '" data-drv="' + i + '">' + avatar(d.photo, d.fullName, 84) + '<b>' + esc(d.fullName) + '</b>' +
+        '<span class="meta">' + (d.nickname ? esc(d.nickname) + ' • ' : '') + esc(GEN[d.gender] || 'ไม่ระบุเพศ') + '</span>' +
+        '<span class="state ' + esc(d.state) + '"><i></i>' + esc(DST[d.state] || d.state) + '</span></button>').join('')
+        : '<p class="empty-s">ยังไม่มีข้อมูลพนักงานขับรถ</p>';
+      $$('[data-drv]').forEach(b => b.addEventListener('click', () => openDriver(ds[+b.dataset.drv])));
     }
+
+    /* ===================== Popup รายละเอียด ===================== */
+    const DST = { READY: 'ว่าง', ON_TRIP: 'กำลังปฏิบัติงาน', LEAVE: 'ลา/ไม่ว่าง' };
+    const carCard = url => '<div class="car-ph">' + (url ? '<img src="' + esc(url) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + CAR_SVG + '</div>';
+    function openInfo(title, html) {
+      lastFocus = document.activeElement;
+      $('#imTitle').innerHTML = title; $('#imBody').innerHTML = html;
+      $('#infoModal').classList.remove('hidden');
+      setTimeout(() => $('#infoModal .m-close').focus(), 30);
+    }
+    function closeInfo() { $('#infoModal').classList.add('hidden'); if (lastFocus) lastFocus.focus(); }
+    function upcoming(filter) {
+      const seen = {}, list = [];
+      (board.today || []).concat(board.week || []).forEach(b => { const k = b.start + '|' + b.car; if (!seen[k] && filter(b) && b.end > Date.now()) { seen[k] = 1; list.push(b); } });
+      return list.sort((a, b) => a.start - b.start);
+    }
+    const dname = id => { const d = (board.drivers || []).find(x => x.id === id); return d ? d.fullName : ''; };
+    const schedHtml = (list, mode) => list.length ? '<div class="sch">' + list.map(b =>
+      '<div><b>' + dShort(b.start) + ' ' + tm(b.start) + '–' + tm(b.end) + '</b><span>' + (b.destination ? esc(b.destination) : esc(MISSION_T[b.missionType] || '')) +
+      (mode === 'car' ? (b.driverId ? ' • ' + esc(dname(b.driverId)) : ' • รอคนขับ') : ' • ' + esc(String(b.car).split(' (')[0])) + '</span>' +
+      '<span class="pill s-' + esc(b.status) + '">' + esc(STATUS[b.status] || b.status) + '</span></div>').join('') + '</div>'
+      : '<p class="empty-s">ไม่มีงานที่จะถึงใน 7 วันข้างหน้า — ว่างให้จอง</p>';
+    const MISSION_T = { INTERNAL: 'ภายใน', EXTERNAL: 'ภายนอก' };
+    function openCar(c) {
+      if (!c) return;
+      openInfo(esc(c.plateNo) + '<small>' + esc(c.carType) + (c.model ? ' • ' + esc(c.model) : '') + '</small>',
+        '<div class="im-hero">' + carPic(c.photo, c.plateNo + ' • ' + c.carType) +
+        '<div><span class="plate"><span class="no">' + esc(c.plateNo) + '</span><span class="pv">' + esc(c.province || '') + '</span></span>' +
+        '<dl class="im-dl" style="margin-top:12px"><dt>ประเภท</dt><dd>' + esc(c.carType) + '</dd>' + (c.model ? '<dt>ยี่ห้อ/รุ่น</dt><dd>' + esc(c.model) + '</dd>' : '') +
+        (c.color ? '<dt>สี</dt><dd>' + esc(c.color) + '</dd>' : '') + '<dt>ที่นั่ง</dt><dd>' + esc(c.seats || '-') + ' ที่นั่ง</dd>' +
+        '<dt>ตอนนี้</dt><dd><span class="state ' + esc(c.state) + '"><i></i>' + esc(ST[c.state] || c.state) + '</span></dd></dl></div></div>' +
+        '<p class="im-sec">ตารางการใช้รถคันนี้ (7 วันข้างหน้า)</p>' + schedHtml(upcoming(b => b.carId === c.id), 'car') +
+        '<div class="im-cta"><button class="btn btn-maroon btn-sm" data-login-i>เข้าสู่ระบบเพื่อจองคันนี้</button>' +
+        (board.settings && board.settings.allowExternal === false ? '' : '<a class="btn btn-ghost btn-sm" href="request.html?car=' + encodeURIComponent(c.id) + '">หน่วยงานอื่นขอใช้คันนี้</a>') + '</div>');
+      bindLoginBtn();
+    }
+    function openDriver(d) {
+      if (!d) return;
+      openInfo(esc(d.fullName) + '<small>พนักงานขับรถ คณะวิศวกรรมศาสตร์</small>',
+        '<div class="im-hero"><div class="big-ava">' + (d.photo ? '<img class="avatar" src="' + esc(d.photo) + '" data-zoom="' + esc(d.photo) + '" data-cap="' + esc(d.fullName) + '" style="width:180px;height:180px" alt="">' : avatar('', d.fullName, 180)) + '</div>' +
+        '<dl class="im-dl"><dt>ชื่อ</dt><dd><b>' + esc(d.fullName) + '</b></dd>' + (d.nickname ? '<dt>ชื่อเล่น</dt><dd>' + esc(d.nickname) + '</dd>' : '') +
+        '<dt>เพศ</dt><dd>' + esc(GEN[d.gender] || 'ไม่ระบุ') + '</dd><dt>ตอนนี้</dt><dd><span class="state ' + esc(d.state) + '"><i></i>' + esc(DST[d.state] || d.state) + '</span></dd>' +
+        '<dt>งานถัดไป</dt><dd>' + (d.next ? dShort(d.next.start) + ' ' + tm(d.next.start) + '–' + tm(d.next.end) + ' น.' : 'ยังไม่มี') + '</dd>' +
+        '<dt>เดือนนี้</dt><dd>ให้บริการแล้ว ' + (d.monthDone || 0) + ' เที่ยว</dd></dl></div>' +
+        '<p class="im-sec">ตารางงาน (7 วันข้างหน้า)</p>' + schedHtml(upcoming(b => b.driverId === d.id), 'driver') +
+        '<div class="im-cta"><button class="btn btn-maroon btn-sm" data-login-i>เข้าสู่ระบบเพื่อจอง</button>' +
+        (board.settings && board.settings.allowExternal === false ? '' : '<a class="btn btn-ghost btn-sm" href="request.html?driver=' + encodeURIComponent(d.id) + '">หน่วยงานอื่นขอใช้รถกับคนขับคนนี้</a>') + '</div>');
+      bindLoginBtn();
+    }
+    function bindLoginBtn() {
+      $$('[data-login-i]').forEach(b => b.addEventListener('click', () => { closeInfo(); const m = store.get(KEY); if (MODE_NAME[m]) go(m); else openChooser(); }));
+    }
+    function listPopup(kind) {
+      if (!board) return;
+      if (kind === 'today') return openDay(todayKey);
+      if (kind === 'cars') {
+        openInfo('รถของคณะ<small>ว่างพร้อมใช้ ' + board.stats.carsReady + ' จาก ' + board.stats.carsTotal + ' คัน • กดเพื่อดูรายละเอียด</small>',
+          '<div class="mini">' + board.fleet.map((c, i) => '<button type="button" data-mc="' + i + '">' + carCard(c.photo) + '<b>' + esc(c.plateNo) + '</b><span class="state ' + esc(c.state) + '"><i></i>' + esc(ST[c.state] || c.state) + '</span></button>').join('') + '</div>');
+        $$('[data-mc]').forEach(b => b.addEventListener('click', () => openCar(board.fleet[+b.dataset.mc])));
+      } else if (kind === 'drivers') {
+        const ds = board.drivers || [];
+        openInfo('พนักงานขับรถ<small>ว่างตอนนี้ ' + board.stats.driversReady + ' จาก ' + board.stats.driversTotal + ' คน</small>',
+          '<div class="mini">' + ds.map((d, i) => '<button type="button" data-md="' + i + '">' + avatar(d.photo, d.fullName, 64) + '<b>' + esc(d.fullName) + '</b><span class="state ' + esc(d.state) + '"><i></i>' + esc(DST[d.state] || d.state) + '</span></button>').join('') + '</div>');
+        $$('[data-md]').forEach(b => b.addEventListener('click', () => openDriver(ds[+b.dataset.md])));
+      } else {
+        openInfo('งานที่เสร็จสิ้นเดือนนี้<small>' + board.stats.monthDone + ' เที่ยว</small>',
+          '<p>เดือนนี้คณะให้บริการรถและพนักงานขับรถเสร็จสิ้นแล้ว <b>' + board.stats.monthDone + '</b> เที่ยว</p>' +
+          '<div class="mini">' + (board.drivers || []).filter(d => d.monthDone).sort((a, b) => b.monthDone - a.monthDone).map(d => '<button type="button" disabled style="cursor:default">' + avatar(d.photo, d.fullName, 56) + '<b>' + esc(d.fullName) + '</b><span class="meta">' + d.monthDone + ' เที่ยว</span></button>').join('') + '</div>');
+      }
+    }
+    $$('[data-kpi]').forEach(b => b.addEventListener('click', () => listPopup(b.dataset.kpi)));
+    const STEPS = [
+      ['เข้าสู่ระบบ', '<ol><li>กดปุ่ม <b>เข้าสู่ระบบเจ้าหน้าที่</b> มุมขวาบน</li><li>เลือกวิธีเข้าสู่ระบบ: บัญชี @msu.ac.th หรือแบบไม่ผูกบัญชี Google</li><li>พิมพ์ชื่อ 1-3 ตัวอักษร แล้วเลือกชื่อของคุณ ระบบกรอกอีเมลให้</li><li>รหัสผ่านเริ่มต้นแจ้งโดยผู้ดูแลระบบ เปลี่ยนได้ที่ "บัญชีของฉัน"</li><li>หน่วยงานภายนอกคณะ ไม่ต้องมีบัญชี — ใช้ปุ่ม <b>หน่วยงานอื่นขอใช้รถ</b></li></ol>'],
+      ['เลือกเวลา รถ และพนักงานขับรถ', '<ol><li>เลือกวัน-เวลาเริ่มและสิ้นสุด ระบบตรวจตารางทันที</li><li>เลือกรถจากรูปจริงและป้ายทะเบียน รถที่ไม่ว่างหรือที่นั่งไม่พอจะเลือกไม่ได้</li><li>เลือกพนักงานขับรถที่ว่าง (ไม่บังคับ) หรือให้ระบบจัดให้</li><li>กรอกสถานที่ วัตถุประสงค์ จำนวนผู้โดยสาร แล้วตรวจสรุปก่อนส่ง</li><li>ข้อมูลที่กรอกถูกบันทึกเป็นร่างอัตโนมัติ เผลอปิดหน้าก็กู้คืนได้</li></ol>'],
+      ['พนักงานขับรถรับงาน', '<ol><li>ถ้าเลือกพนักงานขับรถไว้ ระบบส่งงานให้คนนั้นก่อน</li><li>ถ้าไม่ได้เลือก หรือคนที่เลือกไม่รับภายในเวลาที่กำหนด ระบบส่งให้คนขับที่ว่างทุกคน</li><li>คนแรกที่กดรับจะได้งาน ระบบกันการรับงานซ้อน</li><li>คำขอจากหน่วยงานภายนอกต้องผ่านการอนุมัติก่อน</li></ol>'],
+      ['รับอีเมลยืนยัน', '<ol><li>อีเมลยืนยันแจ้งชื่อ เพศ เบอร์โทรพนักงานขับรถ และรูปรถ</li><li>ติดตามสถานะได้ที่ "การจองของฉัน" หรือปฏิทินหน้านี้</li><li>หลังเดินทาง พนักงานขับรถบันทึกระยะทางและค่าน้ำมัน</li></ol>']
+    ];
+    $$('[data-step]').forEach(b => {
+      const open = () => { const st = STEPS[+b.dataset.step]; openInfo((+b.dataset.step + 1) + '. ' + st[0] + '<small>ขั้นตอนการขอใช้รถ</small>', '<div class="step-detail">' + st[1] + '</div>'); };
+      b.addEventListener('click', open);
+      b.addEventListener('keydown', e => { if (e.key === 'Enter') open(); });
+    });
     $('#todayDetail').addEventListener('click', () => openDay(todayKey));
 
     /* ===================== เข้าสู่ระบบ ===================== */
@@ -540,17 +678,25 @@
 
     /* ---------- ปิด modal ---------- */
     $$('.modal-bg').forEach(bg => bg.addEventListener('click', e => {
-      if (e.target === bg || e.target.closest('[data-close]')) bg.id === 'dayModal' ? closeDay() : closeChooser();
+      if (e.target === bg || e.target.closest('[data-close]')) bg.id === 'dayModal' ? closeDay() : bg.id === 'infoModal' ? closeInfo() : closeChooser();
     }));
     document.addEventListener('keydown', e => {
       if (!$('#dayModal').classList.contains('hidden')) {
         if (e.key === 'Escape') closeDay();
         if (e.key === 'ArrowLeft') stepDay(-1);
         if (e.key === 'ArrowRight') stepDay(1);
-      } else if (e.key === 'Escape' && !$('#chooser').classList.contains('hidden')) closeChooser();
+      } else if (e.key === 'Escape' && !$('#infoModal').classList.contains('hidden')) closeInfo();
+      else if (e.key === 'Escape' && !$('#chooser').classList.contains('hidden')) closeChooser();
     });
 
     if (CFG.FACULTY_URL) $('#facHome').href = CFG.FACULTY_URL;
+    // กลับมาจากแบบฟอร์มหน่วยงานภายนอก -> แสดงเลขที่คำขอ
+    const rq = new URLSearchParams(location.search).get('req');
+    if (rq && /^[A-Za-z0-9-]{4,30}$/.test(rq)) {
+      $('#reqId').textContent = rq; $('#reqOk').classList.remove('hidden');
+      $('#reqClose').onclick = () => $('#reqOk').classList.add('hidden');
+      try { history.replaceState(null, '', location.pathname); } catch (e) {}
+    }
     document.addEventListener('click', e => {
       const z = e.target.closest && e.target.closest('[data-zoom]'); if (!z) return;
       e.preventDefault(); e.stopPropagation();

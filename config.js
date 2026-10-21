@@ -10,7 +10,7 @@ window.FLEET_CONFIG = {
   DOMAIN: 'msu.ac.th',
 
   // หน้าหลักของระบบบนเว็บคณะ (ใช้ทำลิงก์ "กลับหน้าหลัก")
-  HOME_URL: 'index.html',
+  HOME_URL: 'https://eng.msu.ac.th/carbooking/',
 
   // หน้าเข้าระบบแบบไม่ผูกบัญชี Google (อยู่โฟลเดอร์เดียวกัน)
   APP_URL: 'app.html',

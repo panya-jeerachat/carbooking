@@ -46,7 +46,10 @@ svg:not([width]){width:18px;height:18px;flex:none}
 .login-art h1{color:#fff;font-size:clamp(30px,3.6vw,52px);font-weight:700;max-width:12em;position:relative;letter-spacing:-.01em}
 .login-art p{position:relative;max-width:30em;color:#d9d9d9;font-size:17px}
 .login-art .org{position:relative;font-family:var(--font-head);color:var(--gold);font-weight:500}
-.login-panel{display:flex;align-items:center;justify-content:center;padding:32px;background:var(--white)}
+.login-panel{position:relative;display:flex;align-items:center;justify-content:center;padding:32px;background:var(--white)}
+.home-pill{position:absolute;top:20px;right:24px;display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;background:var(--gold-soft);color:var(--maroon);text-decoration:none;font-family:var(--font-head);font-weight:500;font-size:14.5px;border:1.5px solid transparent}
+.home-pill:hover{background:var(--gold);border-color:var(--gold-deep)}
+.side-foot a.btn{flex:0 0 auto;padding:6px 10px;text-decoration:none}
 .login-box{width:100%;max-width:400px}
 .login-box img{width:100%;max-width:300px;display:block;margin:0 auto 28px}
 .login-box h2{font-size:24px;margin-bottom:6px}
@@ -70,6 +73,52 @@ svg:not([width]){width:18px;height:18px;flex:none}
 .car-ph svg{width:46%;height:auto;max-height:60%}
 .car-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
 .car-ph.xs{width:64px;border-radius:8px} .car-ph.sm{width:120px;border-radius:10px} .car-ph.lg{width:100%;max-width:340px}
+.car-ph .zoom-ic{position:absolute;right:6px;top:6px;z-index:2;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--maroon);display:grid;place-items:center;cursor:zoom-in;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.car-ph .zoom-ic svg{width:15px;height:15px}
+.car-ph.xs .zoom-ic{display:none}
+.car-ph .no-ph{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:11.5px;color:#A9A49E}
+.car-ph.xs .no-ph,.car-ph.sm .no-ph{display:none}
+img.avatar[data-zoom]{cursor:zoom-in}
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.media-grid.people{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+.media-card{border:1.5px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#fff}
+.media-card.missing{border-style:dashed;border-color:var(--gold-deep);background:#FFFDF5}
+.mc-body{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.mc-body.center{align-items:center;text-align:center}
+.mc-ava{display:flex;justify-content:center;padding-top:6px}
+.miss-badge{display:inline-block;background:var(--bad);color:#fff;border-radius:999px;font-size:11.5px;padding:0 7px;margin-left:4px}
+.ver-warn{position:sticky;top:0;z-index:150;display:flex;gap:10px;align-items:center;background:var(--bad);color:#fff;padding:10px 18px;font-size:14px}
+.ver-warn b{color:#FFE9A0}
+.media-link .panel-head h3{display:flex;align-items:center;gap:8px}
+.step-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:26px 0 12px}
+.step-head:first-child{margin-top:0}
+.step-head h3{font-size:18px}
+.step-head > .hint{margin-left:auto}
+.step-no{width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--maroon);display:grid;place-items:center;font-family:var(--font-head);font-weight:700;flex:none}
+.drv-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.drv-opt{border:2px solid var(--line);border-radius:var(--r-md);padding:14px 10px;background:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;transition:border-color .15s}
+.drv-opt:hover{border-color:var(--gold-deep)}
+.drv-opt.on{border-color:var(--maroon);box-shadow:0 0 0 4px rgba(64,29,27,.12)}
+.drv-opt[disabled]{opacity:.45;cursor:not-allowed;background:var(--paper)}
+.drv-opt b{font-family:var(--font-head);font-weight:500;font-size:14.5px}
+.drv-opt.auto{border-style:dashed}
+.drv-opt .why,.car-opt .why{font-size:12.5px;color:var(--bad)}
+.ok-tag{font-size:12px;font-family:var(--font-head);background:var(--ok-soft);color:var(--ok);border-radius:999px;padding:1px 10px}
+.summary{margin:18px 0 6px;border:2px solid var(--gold);border-radius:var(--r-md);background:var(--gold-soft);padding:14px 16px}
+.sum-head{display:flex;align-items:center;gap:6px;font-family:var(--font-head);font-weight:600;color:var(--maroon);margin-bottom:10px}
+.sum-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px}
+.sum-grid > div{background:#fff;border-radius:12px;padding:10px;display:flex;gap:10px;align-items:center;min-width:0}
+.sum-grid b{display:block;font-family:var(--font-head);font-weight:600;color:var(--maroon)}
+.sum-grid .hint{display:block;font-size:12.5px}
+.sum-time{flex-direction:column;align-items:flex-start!important;gap:2px!important}
+.sum-miss{color:var(--bad);font-family:var(--font-head)}
+.draft-bar{display:flex;align-items:center;gap:10px;background:var(--info-soft);color:var(--info);border-radius:var(--r-md);padding:10px 14px;margin-bottom:14px;flex-wrap:wrap}
+.draft-bar .btn{margin-left:auto}
+.leave-ask{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bad-soft);color:var(--bad);padding:10px 22px;font-size:14.5px}
+.leave-ask span{margin-right:auto;font-family:var(--font-head)}
+.modal.nudge{animation:nudge .35s}
+@keyframes nudge{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@media (max-width:860px){ .sum-grid{grid-template-columns:1fr} .step-head > .hint{margin-left:0} }
 .lbl-row{display:flex;align-items:center;gap:10px;min-width:0}
 .lbl-row > div{min-width:0}
 .tl-row .lbl .lbl-row b{display:block}
@@ -363,6 +412,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
     </div>
 
     <div class="login-panel">
+      <a class="home-pill" data-home href="index.html" target="_top"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg><span>หน้าหลัก</span></a>
       <div class="login-box">
         <img class="logo-img" alt="คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม">
 
@@ -379,7 +429,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
           <button class="btn btn-maroon btn-block" type="submit" id="lgBtn">เข้าสู่ระบบ</button>
           <div class="switch-link" id="regLink">นักศึกษา/ไม่มีรายชื่อในระบบ? <button type="button" onclick="UI.showRegister(true)">สมัครใช้งาน</button></div>
           <div class="switch-link"><a id="extLink" class="hidden" href="request.html">หน่วยงานอื่น ขอใช้รถ (ไม่ต้องมีบัญชี)</a></div>
-          <div class="switch-link"><a id="homeLink" class="hidden" href="index.html">← กลับหน้าหลักระบบ</a></div>
+          <div class="switch-link"><a id="homeLink" data-home href="index.html" target="_top">← กลับหน้าหลัก (ปฏิทินการใช้รถ)</a></div>
         </form>
 
         <form id="registerForm" class="hidden" autocomplete="on">
@@ -415,6 +465,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
       <div class="who"><div id="whoPic"></div><div><b id="whoName">-</b><span id="whoDept"></span><br><span class="role-tag" id="whoRole">-</span></div></div>
       <nav class="menu" id="menu"></nav>
       <div class="side-foot">
+        <a class="btn btn-sm" data-home href="index.html" target="_top" title="หน้าหลัก (ข้อมูลสาธารณะ)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></a>
         <button class="btn btn-sm" onclick="App.go('profile')">บัญชีของฉัน</button>
         <button class="btn btn-sm" onclick="App.logout()">ออกจากระบบ</button>
       </div>
@@ -445,6 +496,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
 /* =====================================================================
  *  EN-MSU Fleet — Client (Single Page App ใน Apps Script HtmlService)
  * ===================================================================== */
+const CLIENT_VERSION = '2569.10-r9';   // ต้องตรงกับ APP.VERSION ใน Code.gs
 const S = { token: null, user: null, settings: window.PUBLIC || {}, cars: [], drivers: [], page: null,
             charts: [], timer: null, cal: { mode: 'month', date: null, resource: 'car' }, filters: {} };
 
@@ -478,6 +530,7 @@ const ICON = {
   edit: '<path d="M12 20h9M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>',
   trash: '<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>',
   send: '<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+  zoom: '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/>',
   chart: '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-6"/>',
   camera: '<path d="M4 7h3l2-3h6l2 3h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="4"/>',
   fuel: '<path d="M3 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M3 11h11M14 8l4 3v7a2 2 0 0 0 4 0V9l-3-3"/>',
@@ -494,6 +547,7 @@ const OFF = 7 * 3600e3; // เวลาไทย UTC+7 (ไม่มี DST)
 const bk = ms => new Date(ms + OFF);
 const p2 = n => String(n).padStart(2, '0');
 function toInput(ms) { const d = bk(ms); return d.getUTCFullYear() + '-' + p2(d.getUTCMonth() + 1) + '-' + p2(d.getUTCDate()) + 'T' + p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()); }
+function toMs(local) { const m = String(local || '').match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) - OFF : NaN; }
 function ymdKey(ms) { return toInput(ms).slice(0, 10); }
 function fTime(ms) { const d = bk(ms); return p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()); }
 function fDate(ms) { const d = bk(ms); return d.getUTCDate() + ' ' + MONTHS_S[d.getUTCMonth()] + ' ' + String(d.getUTCFullYear() + 543).slice(2); }
@@ -510,13 +564,25 @@ function plate(no, pv, sm) { return '<span class="plate' + (sm ? ' sm' : '') + '
 function initials(name) { const t = String(name || '').replace(/^(ศาสตราจารย์|รองศาสตราจารย์|ผู้ช่วยศาสตราจารย์|อาจารย์|นาย|นางสาว|นาง)\s*(ดร\.)?\s*/, '').trim(); return esc(t.slice(0, 1) || '?'); }
 function avatar(url, name, size) {
   const s = size || 40;
-  return url ? '<img class="avatar" src="' + esc(url) + '" alt="" loading="lazy" style="width:' + s + 'px;height:' + s + 'px" onerror="this.outerHTML=\'<span class=&quot;avatar ph&quot; style=&quot;width:' + s + 'px;height:' + s + 'px&quot;>' + initials(name) + '</span>\'">'
+  return url ? '<img class="avatar" data-zoom="' + esc(url) + '" data-cap="' + esc(name || '') + '" src="' + esc(url) + '" alt="" loading="lazy" style="width:' + s + 'px;height:' + s + 'px" onerror="this.outerHTML=\'<span class=&quot;avatar ph&quot; style=&quot;width:' + s + 'px;height:' + s + 'px&quot;>' + initials(name) + '</span>\'">'
              : '<span class="avatar ph" style="width:' + s + 'px;height:' + s + 'px;font-size:' + Math.round(s * 0.42) + 'px">' + initials(name) + '</span>';
 }
 const CAR_SVG = '<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 28h52M10 28V20l7-10h30l7 10v8"/><circle cx="18" cy="30" r="5"/><circle cx="46" cy="30" r="5"/><path d="M20 10v9M44 10v9M10 20h44"/></svg>';
-function carPic(url, cls) {
-  return '<div class="car-ph ' + (cls || '') + '">' + (url ? '<img src="' + esc(url) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + CAR_SVG + '</div>';
+function carPic(url, cls, caption) {
+  return '<div class="car-ph ' + (cls || '') + '">' +
+    (url ? '<img src="' + esc(url) + '" alt="" loading="lazy" onerror="this.parentNode.querySelector(\'.zoom-ic\').remove();this.remove()">' +
+      '<span class="zoom-ic" role="button" tabindex="0" title="ดูรูปขนาดใหญ่" aria-label="ดูรูปขนาดใหญ่" data-zoom="' + esc(url) + '" data-cap="' + esc(caption || '') + '">' + ic('zoom') + '</span>'
+      : '<span class="no-ph">ยังไม่มีรูป</span>') + CAR_SVG + '</div>';
 }
+/** ดูรูปขนาดใหญ่ (กดที่รูปรถ/รูปบุคคลที่มี data-zoom) */
+document.addEventListener('click', e => {
+  const z = e.target.closest && e.target.closest('[data-zoom]');
+  if (!z || e.target.closest('.pic-btn')) return;
+  e.preventDefault(); e.stopPropagation();
+  const m = UI.modal({ title: z.dataset.cap || 'รูปภาพ', wide: true,
+    body: '<img src="' + esc(z.dataset.zoom) + '" alt="" style="width:100%;max-height:72vh;object-fit:contain;border-radius:12px;background:#111;display:block">' });
+  return m;
+}, true);
 /** อ่านไฟล์รูป ย่อด้วย canvas (หมุนตาม EXIF อัตโนมัติ) แล้วคืน data URL แบบ JPEG */
 function shrinkImage(file, maxSide) {
   return new Promise((resolve, reject) => {
@@ -611,16 +677,38 @@ const UI = {
     setTimeout(() => t.remove(), type === 'err' ? 6000 : 3500);
   },
   err(e) { UI.loading(false); UI.toast(e && e.message ? e.message : String(e), 'err'); },
-  modal({ title, body, foot, wide, locked }) {
+  modal({ title, body, foot, wide, locked, noGuard }) {
     const bg = document.createElement('div');
     bg.className = 'modal-bg';
     bg.innerHTML = '<div class="modal' + (wide ? ' wide' : '') + '" role="dialog" aria-modal="true">' +
       '<div class="modal-head"><h3>' + esc(title) + '</h3>' + (locked ? '' : '<button class="icon-btn" data-close aria-label="ปิด">' + ic('x') + '</button>') + '</div>' +
       '<div class="modal-body">' + (body || '') + '</div>' + (foot ? '<div class="modal-foot">' + foot + '</div>' : '') + '</div>';
     const close = () => { bg.remove(); document.removeEventListener('keydown', onKey); };
-    const onKey = e => { if (e.key === 'Escape' && !locked) close(); };
+    // กันข้อมูลหาย: ฟอร์มในหน้าต่างจะไม่ปิดเมื่อคลิกนอกกรอบ และถามก่อนปิดถ้ามีการแก้ไข
+    const hasForm = !noGuard && !!bg.querySelector('.modal-body input:not([type=hidden]),.modal-body textarea,.modal-body select');
+    let dirty = false;
+    bg.addEventListener('input', () => { dirty = true; });
+    bg.addEventListener('change', () => { dirty = true; });
+    const tryClose = () => {
+      if (!hasForm || !dirty) return close();
+      if (bg.querySelector('.leave-ask')) return;
+      const ask = document.createElement('div');
+      ask.className = 'leave-ask';
+      ask.innerHTML = '<span>มีข้อมูลที่ยังไม่ได้บันทึก ต้องการปิดหรือไม่?</span><button type="button" class="btn btn-ghost btn-sm" data-stay>กรอกต่อ</button><button type="button" class="btn btn-bad btn-sm" data-leave>ปิดโดยไม่บันทึก</button>';
+      bg.querySelector('.modal-head').after(ask);
+      ask.querySelector('[data-stay]').onclick = ev => { ev.stopPropagation(); ask.remove(); };
+      ask.querySelector('[data-leave]').onclick = ev => { ev.stopPropagation(); close(); };
+    };
+    const onKey = e => { if (e.key === 'Escape' && !locked && bg === $('#modalRoot').lastElementChild) tryClose(); };
     document.addEventListener('keydown', onKey);
-    bg.addEventListener('click', e => { if (!locked && (e.target === bg || e.target.closest('[data-close]'))) close(); });
+    bg.addEventListener('click', e => {
+      if (locked) return;
+      if (e.target === bg) {                         // คลิกนอกกรอบ
+        if (hasForm) { const md = bg.querySelector('.modal'); md.classList.remove('nudge'); void md.offsetWidth; md.classList.add('nudge'); return; }
+        return close();
+      }
+      if (e.target.closest('[data-close]')) tryClose();
+    });
     $('#modalRoot').appendChild(bg);
     const first = bg.querySelector('input,select,textarea,button.btn');
     if (first) setTimeout(() => first.focus(), 30);
@@ -630,7 +718,7 @@ const UI = {
     opts = opts || {};
     return new Promise(resolve => {
       const m = UI.modal({
-        title,
+        title, noGuard: true,
         body: '<p style="margin-top:0">' + message + '</p>' + (opts.input ? '<div class="field"><label>' + esc(opts.input) + '</label><textarea class="input" id="cfInput"></textarea></div>' : ''),
         foot: '<button class="btn btn-ghost" data-close>ยกเลิก</button><button class="btn ' + (opts.danger ? 'btn-bad' : 'btn-maroon') + '" id="cfOk">' + esc(opts.ok || 'ยืนยัน') + '</button>'
       });
@@ -711,9 +799,9 @@ const Staff = {
 const MENUS = {
   admin: [
     ['ภาพรวม'], ['dashboard', 'แดชบอร์ด', 'dashboard'], ['calendar', 'ปฏิทินการใช้รถ', 'calendar'],
-    ['งานจอง'], ['newBooking', 'จองรถ', 'plus'], ['bookings', 'รายการจองทั้งหมด', 'list'],
+    ['งานจอง'], ['newBooking', 'จองรถ', 'plus'], ['bookings', 'รายการจองทั้งหมด', 'list'], ['myBookings', 'การจองของฉัน', 'list'],
     ['รายงาน'], ['report', 'รายงานการใช้รถ', 'chart'],
-    ['ข้อมูลหลัก'], ['cars', 'รถยนต์', 'car'], ['drivers', 'พนักงานขับรถ', 'wheel'], ['users', 'ผู้ใช้งาน', 'users'], ['settings', 'ตั้งค่าระบบ', 'gear']
+    ['ข้อมูลหลัก'], ['media', 'รูปภาพรถ/บุคลากร', 'camera'], ['cars', 'รถยนต์', 'car'], ['drivers', 'พนักงานขับรถ', 'wheel'], ['users', 'ผู้ใช้งาน', 'users'], ['settings', 'ตั้งค่าระบบ', 'gear']
   ],
   requester: [
     ['ภาพรวม'], ['dashboard', 'แดชบอร์ด', 'dashboard'], ['calendar', 'ปฏิทินการใช้รถ', 'calendar'],
@@ -725,7 +813,7 @@ const MENUS = {
 };
 const TITLES = { dashboard: 'แดชบอร์ด', calendar: 'ปฏิทินการใช้รถ', newBooking: 'จองรถ', bookings: 'รายการจองทั้งหมด',
   myBookings: 'การจองของฉัน', myJobs: 'งานของฉัน', cars: 'จัดการรถยนต์', drivers: 'จัดการพนักงานขับรถ',
-  users: 'จัดการผู้ใช้งาน', settings: 'ตั้งค่าระบบ', profile: 'บัญชีของฉัน', report: 'รายงานการใช้รถ ระยะทาง และค่าน้ำมัน' };
+  users: 'จัดการผู้ใช้งาน', settings: 'ตั้งค่าระบบ', profile: 'บัญชีของฉัน', report: 'รายงานการใช้รถ ระยะทาง และค่าน้ำมัน', media: 'ศูนย์จัดการรูปภาพ' };
 
 const App = {
   async init() {
@@ -740,13 +828,23 @@ const App = {
       $('#lgPass').focus();
     });
     $('#lgUser').addEventListener('input', () => $('#lgPicked').classList.add('hidden'));
-    if (!IS_GAS) api('getPublicInfo').then(p => { S.settings = Object.assign(S.settings, p); App.applyPublic(p); }).catch(() => {});
+    if (!IS_GAS) api('getPublicInfo').then(p => { S.settings = Object.assign(S.settings, p); App.applyPublic(p); App.versionCheck(p.version); }).catch(() => {});
     const t = store.get('fleet_token');
     if (t) {
       S.token = t;
       try { UI.loading(true); await App.boot(); } catch (e) { store.del('fleet_token'); App.showLogin(); }
       finally { UI.loading(false); }
     }
+  },
+  /** เตือนเมื่อไฟล์หน้าเว็บ (Scripts/Styles หรือ app.html) ไม่ใช่เวอร์ชันเดียวกับ Code.gs */
+  versionCheck(server) {
+    const old = $('#verWarn'); if (old) old.remove();
+    if (!server || server === CLIENT_VERSION) return;
+    const w = document.createElement('div');
+    w.id = 'verWarn'; w.className = 'ver-warn';
+    w.innerHTML = ic('refresh') + '<span><b>หน้าเว็บเป็นคนละเวอร์ชันกับเซิร์ฟเวอร์</b> (หน้าเว็บ ' + esc(CLIENT_VERSION) + ' / เซิร์ฟเวอร์ ' + esc(server) + ') — ' +
+      (IS_GAS ? 'วาง Scripts.html และ Styles.html ชุดใหม่ใน Apps Script แล้ว Deploy → New version' : 'อัปโหลด app.html ชุดใหม่ขึ้นเว็บคณะ') + ' จากนั้นกด Ctrl+F5</span>';
+    document.body.prepend(w);
   },
   applyPublic(p) {
     if (!p) return;
@@ -759,8 +857,9 @@ const App = {
       ext.classList.toggle('hidden', !p.allowExternal || !url);
       if (url) { ext.href = url; ext.target = '_top'; }
     }
-    const home = $('#homeLink'); if (home) home.classList.toggle('hidden', IS_GAS || !CFG.HOME_URL);
-    if (home && CFG.HOME_URL) home.href = CFG.HOME_URL;
+    // ปุ่ม "หน้าหลัก" ทุกจุด -> หน้าข้อมูลสาธารณะบนเว็บคณะ
+    const hu = App.homeUrl(p);
+    $$('[data-home]').forEach(a => { a.classList.toggle('hidden', !hu); if (hu) a.href = hu; });
   },
   tick() {
     const now = Date.now(), d = bk(now);
@@ -793,6 +892,7 @@ const App = {
   async boot() {
     const b = await call('getBootstrap');
     S.user = b.user; S.settings = b.settings; S.cars = b.cars; S.drivers = b.drivers;
+    App.versionCheck(b.serverVersion);
     $('#loginView').classList.add('hidden'); $('#appView').classList.remove('hidden');
     $('#whoName').textContent = S.user.name;
     $('#whoDept').textContent = S.user.department || '';
@@ -831,9 +931,13 @@ const App = {
     clearInterval(S.timer);
     S.timer = setInterval(() => { if (!$('#modalRoot').children.length && !document.hidden) fn(true); }, (sec || 60) * 1000);
   },
+  homeUrl(p) {
+    p = p || S.settings || {};
+    return IS_GAS ? (p.siteUrl || '') : (CFG.HOME_URL || p.siteUrl || 'index.html');
+  },
   /** ออกจากระบบแล้วกลับหน้าข้อมูลสาธารณะ (index.html บนเว็บคณะ) */
   async logout() {
-    const home = IS_GAS ? (S.settings.siteUrl || '') : (CFG.HOME_URL || 'index.html');
+    const home = App.homeUrl();
     try { await api('logout', S.token); } catch (e) {}
     App.forceLogout();
     if (home) {
@@ -1011,19 +1115,26 @@ const Pages = {
   },
 
   /* ---------- New booking ---------- */
+  /* ขั้นตอน: 1 เวลา → 2 เลือกรถ (รูปจริง+ทะเบียน) → 3 เลือกพนักงานขับรถ (ไม่บังคับ) → 4 รายละเอียด → สรุปก่อนส่ง
+     ข้อมูลที่กรอกถูกบันทึกเป็นร่างอัตโนมัติ — เผลอปิด/รีเฟรช/กดย้อนกลับ ก็กู้คืนได้ */
+  _draftKey() { return 'fleet_draft_booking_' + (S.user ? S.user.userId : ''); },
   newBooking() {
     const base = S.prefillDate || new Date(todayBkk().getTime() + 86400000); S.prefillDate = null;
     const ymd = ymdOf(base);
     const u = S.user;
-    $('#page').innerHTML = '<form class="panel" id="bkForm" novalidate>' +
-      '<div class="panel-head"><h3>1. เลือกช่วงเวลา</h3></div>' +
+    let draft = null;
+    try { draft = JSON.parse(localStorage.getItem(Pages._draftKey()) || 'null'); } catch (e) {}
+    $('#page').innerHTML = (draft ? '<div class="draft-bar" id="draftBar">' + ic('refresh') + '<span>กู้คืนข้อมูลที่กรอกค้างไว้เมื่อ ' + fDT(draft.savedAt) + ' แล้ว</span><button type="button" class="btn btn-ghost btn-sm" id="draftClear">เริ่มกรอกใหม่</button></div>' : '') +
+      '<form class="panel" id="bkForm" novalidate autocomplete="off">' +
+      '<div class="step-head"><span class="step-no">1</span><h3>เลือกช่วงเวลาที่ใช้รถ</h3></div>' +
       '<div class="grid2"><div class="field"><label>วัน-เวลาเริ่ม *</label><input type="datetime-local" class="input" name="start" value="' + ymd + 'T08:00" required></div>' +
       '<div class="field"><label>วัน-เวลาสิ้นสุด *</label><input type="datetime-local" class="input" name="end" value="' + ymd + 'T16:00" required></div></div>' +
       '<div id="availBar" class="avail-bar">เลือกช่วงเวลาเพื่อตรวจสอบรถและคนขับที่ว่าง</div>' +
-      '<div class="panel-head" style="margin-top:22px"><h3>2. เลือกรถที่ว่าง</h3></div>' +
-      '<p class="section-note">รถที่ถูกจองซ้อนหรืออยู่ระหว่างซ่อมจะเลือกไม่ได้</p>' +
+      '<div class="step-head"><span class="step-no">2</span><h3>เลือกรถที่ว่าง</h3><span class="hint">ดูรูปรถจริงและป้ายทะเบียน • ปุ่ม ' + ic('zoom') + ' ดูรูปใหญ่</span></div>' +
       '<div class="car-pick" id="carPick"></div><input type="hidden" name="carId">' +
-      '<div class="panel-head" style="margin-top:26px"><h3>3. รายละเอียดภารกิจ</h3></div>' +
+      '<div class="step-head"><span class="step-no">3</span><h3>เลือกพนักงานขับรถ <span class="hint">(ไม่บังคับ)</span></h3><span class="hint">แสดงเฉพาะสถานะว่างจริงในช่วงเวลาที่เลือก</span></div>' +
+      '<div class="drv-pick" id="drvPick"></div><input type="hidden" name="driverId">' +
+      '<div class="step-head"><span class="step-no">4</span><h3>รายละเอียดภารกิจ</h3></div>' +
       '<div class="field"><label>ประเภทภารกิจ *</label><div class="seg" id="mType"><button type="button" data-v="INTERNAL" class="on">ภายใน (ในจังหวัด/มหาวิทยาลัย)</button><button type="button" data-v="EXTERNAL">ภายนอก (ต่างจังหวัด)</button></div><input type="hidden" name="missionType" value="INTERNAL"></div>' +
       '<div class="grid2"><div class="field"><label>สถานที่ไป *</label><input class="input" name="destination" required placeholder="เช่น ศาลากลางจังหวัดขอนแก่น"></div>' +
       '<div class="field"><label>จำนวนผู้โดยสาร *</label><input type="number" min="1" class="input" name="passengers" value="1" required></div></div>' +
@@ -1032,10 +1143,17 @@ const Pages = {
       '<div class="field"><label>หน่วยงาน/ภาควิชา</label><input class="input" name="department" value="' + esc(u.department || '') + '"></div></div>' +
       '<input type="hidden" name="position" value="' + esc(u.position || '') + '">' +
       '<div class="field"><label>หมายเหตุ</label><input class="input" name="remark" placeholder="จุดนัดรับ, สัมภาระ ฯลฯ"></div>' +
-      '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px"><button type="reset" class="btn btn-ghost">ล้างฟอร์ม</button><button type="submit" class="btn btn-maroon" id="bkSubmit">' + ic('send') + 'ส่งคำขอจองรถ</button></div>' +
+      '<div class="summary" id="bkSummary"></div>' +
+      '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap"><button type="button" class="btn btn-ghost" id="bkReset">ล้างฟอร์ม</button><button type="submit" class="btn btn-maroon" id="bkSubmit">' + ic('send') + 'ส่งคำขอจองรถ</button></div>' +
       '</form>';
     const f = $('#bkForm');
-    $$('#mType button').forEach(b => b.onclick = () => { $$('#mType button').forEach(x => x.classList.remove('on')); b.classList.add('on'); f.missionType.value = b.dataset.v; });
+    // กู้คืนร่าง
+    if (draft && draft.v) Object.keys(draft.v).forEach(k => { if (f.elements[k] && k !== 'position') f.elements[k].value = draft.v[k]; });
+    const setMission = v => { $$('#mType button').forEach(x => x.classList.toggle('on', x.dataset.v === v)); f.missionType.value = v; };
+    setMission(f.missionType.value || 'INTERNAL');
+    $$('#mType button').forEach(b => b.onclick = () => { setMission(b.dataset.v); Pages._saveDraft(); });
+    if ($('#draftClear')) $('#draftClear').onclick = () => { Pages._clearDraft(); App.go('newBooking'); };
+    $('#bkReset').onclick = async () => { if (await UI.confirm('ล้างฟอร์ม', 'ล้างข้อมูลที่กรอกทั้งหมด?', { ok: 'ล้างข้อมูล', danger: true, noGuard: true })) { Pages._clearDraft(); App.go('newBooking'); } };
     let tmr;
     const check = () => { clearTimeout(tmr); tmr = setTimeout(Pages._checkAvail, 300); };
     f.start.addEventListener('change', () => {
@@ -1043,44 +1161,88 @@ const Pages = {
       check();
     });
     f.end.addEventListener('change', check);
-    f.addEventListener('reset', () => setTimeout(check, 0));
+    f.passengers.addEventListener('input', () => Pages._renderPick());
+    f.addEventListener('input', () => { Pages._saveDraft(); Pages._renderSummary(); });
+    f.addEventListener('change', () => Pages._saveDraft());
     f.addEventListener('submit', Pages._submitBooking);
+    S.dirtyGuard = () => { try { return S.page === 'newBooking' && !!localStorage.getItem(Pages._draftKey()); } catch (e) { return false; } };
     Pages._checkAvail();
   },
+  _saveDraft() {
+    const f = $('#bkForm'); if (!f) return;
+    const v = {}; ['start', 'end', 'carId', 'driverId', 'missionType', 'destination', 'passengers', 'purpose', 'phone', 'department', 'remark'].forEach(k => v[k] = f.elements[k].value);
+    const touched = v.destination || v.purpose || v.remark || v.carId || v.driverId;
+    try { if (touched) localStorage.setItem(Pages._draftKey(), JSON.stringify({ v, savedAt: Date.now() })); } catch (e) {}
+  },
+  _clearDraft() { try { localStorage.removeItem(Pages._draftKey()); } catch (e) {} },
   async _checkAvail() {
     const f = $('#bkForm'); if (!f) return;
-    const bar = $('#availBar'), pick = $('#carPick');
+    const bar = $('#availBar');
     if (!f.start.value || !f.end.value || f.end.value <= f.start.value) {
-      bar.className = 'avail-bar warn'; bar.textContent = 'เวลาสิ้นสุดต้องมากกว่าเวลาเริ่ม'; pick.innerHTML = ''; f.carId.value = ''; return;
+      bar.className = 'avail-bar warn'; bar.textContent = 'เวลาสิ้นสุดต้องมากกว่าเวลาเริ่ม'; S.avail = null; Pages._renderPick(); return;
     }
-    bar.className = 'avail-bar'; bar.textContent = 'กำลังตรวจสอบตารางรถและคนขับ…';
+    bar.className = 'avail-bar'; bar.textContent = 'กำลังตรวจสอบตารางรถและพนักงานขับรถ…';
     try {
       const a = await call('getAvailability', f.start.value, f.end.value);
+      if (!$('#bkForm')) return;
+      S.avail = a;
       const freeCars = a.cars.filter(c => c.available).length;
       bar.className = 'avail-bar ' + (freeCars && a.freeDriverCount ? 'good' : 'warn');
-      bar.innerHTML = ic(freeCars && a.freeDriverCount ? 'check' : 'x') + '<span>รถว่าง <b>' + freeCars + '</b> คัน • พนักงานขับรถว่าง <b>' + a.freeDriverCount + '</b> จาก ' + a.totalDrivers + ' คน' +
+      bar.innerHTML = ic(freeCars && a.freeDriverCount ? 'check' : 'x') + '<span>' + fRange(toMs(f.start.value), toMs(f.end.value)) + ' • รถว่าง <b>' + freeCars + '</b> คัน • พนักงานขับรถว่าง <b>' + a.freeDriverCount + '</b> จาก ' + a.totalDrivers + ' คน' +
         (a.freeDriverCount ? '' : ' — ยังจองได้ ผู้ดูแลจะจัดคนขับให้ภายหลัง') + '</span>';
-      const keep = f.carId.value;
-      pick.innerHTML = a.cars.length ? a.cars.map(c => '<button type="button" class="car-opt' + (c.id === keep && c.available ? ' on' : '') + '" data-id="' + esc(c.id) + '" data-seats="' + esc(c.seats) + '"' + (c.available ? '' : ' disabled') + '>' +
-        carPic(c.photo) + plate(c.plateNo, c.province, true) + '<div><b style="font-family:var(--font-head)">' + esc(c.carType) + '</b> • ' + esc(c.seats) + ' ที่นั่ง</div>' +
-        '<div class="hint">' + esc((c.brand || '') + ' ' + (c.model || '')) + '</div>' + (c.available ? '' : '<div class="why">' + esc(c.reason) + '</div>') + '</button>').join('')
-        : UI.empty('ยังไม่มีรถในระบบ', ' ติดต่อผู้ดูแลระบบ');
-      if (!a.cars.some(c => c.id === keep && c.available)) f.carId.value = '';
-      $$('.car-opt', pick).forEach(b => b.onclick = () => { $$('.car-opt', pick).forEach(x => x.classList.remove('on')); b.classList.add('on'); f.carId.value = b.dataset.id; });
+      Pages._renderPick();
     } catch (e) { bar.className = 'avail-bar warn'; bar.textContent = e.message; }
+  },
+  _renderPick() {
+    const f = $('#bkForm'); if (!f) return;
+    const a = S.avail, pick = $('#carPick'), dp = $('#drvPick');
+    if (!a) { pick.innerHTML = '<p class="hint">เลือกช่วงเวลาก่อน</p>'; dp.innerHTML = ''; Pages._renderSummary(); return; }
+    const pax = Number(f.passengers.value || 0);
+    const carOk = c => c.available && !(Number(c.seats) && pax > Number(c.seats));
+    if (f.carId.value && !a.cars.some(c => c.id === f.carId.value && carOk(c))) f.carId.value = '';
+    pick.innerHTML = a.cars.length ? a.cars.map(c => {
+      const ok = carOk(c);
+      return '<button type="button" class="car-opt' + (c.id === f.carId.value ? ' on' : '') + '" data-id="' + esc(c.id) + '"' + (ok ? '' : ' disabled') + '>' +
+        carPic(c.photo, '', c.plateNo + ' • ' + c.carType) + plate(c.plateNo, c.province, true) +
+        '<div><b style="font-family:var(--font-head)">' + esc(c.carType) + '</b> • ' + esc(c.seats) + ' ที่นั่ง</div>' +
+        '<div class="hint">' + esc(((c.brand || '') + ' ' + (c.model || '')).trim()) + (c.color ? ' • สี' + esc(c.color) : '') + '</div>' +
+        (!c.available ? '<div class="why">' + esc(c.reason) + '</div>' : !ok ? '<div class="why">ที่นั่งไม่พอสำหรับ ' + pax + ' คน</div>' : '') + '</button>';
+    }).join('') : UI.empty('ยังไม่มีรถในระบบ', ' ติดต่อผู้ดูแลระบบ');
+    $$('.car-opt', pick).forEach(b => b.onclick = () => { f.carId.value = b.dataset.id; $$('.car-opt', pick).forEach(x => x.classList.toggle('on', x === b)); Pages._saveDraft(); Pages._renderSummary(); });
+    // คนขับ
+    const drivers = a.drivers || [];
+    if (f.driverId.value && !drivers.some(d => d.id === f.driverId.value && d.available)) f.driverId.value = '';
+    dp.innerHTML = '<button type="button" class="drv-opt auto' + (f.driverId.value ? '' : ' on') + '" data-id=""><span class="avatar ph" style="width:56px;height:56px;font-size:22px">✦</span><b>ให้ระบบจัดให้</b><span class="hint">ส่งงานถึงคนขับที่ว่างทุกคน คนแรกที่กดรับได้งาน</span></button>' +
+      drivers.map(d => '<button type="button" class="drv-opt' + (d.id === f.driverId.value ? ' on' : '') + '" data-id="' + esc(d.id) + '"' + (d.available ? '' : ' disabled') + '>' +
+        avatar(d.photo, d.fullName, 56) + '<b>' + esc(d.fullName) + '</b>' +
+        '<span class="hint">' + (d.nickname ? esc(d.nickname) + ' • ' : '') + (GENDER_TH[d.gender] ? GENDER_TH[d.gender] : 'ไม่ระบุเพศ') + '</span>' +
+        (d.available ? '<span class="ok-tag">ว่าง</span>' : '<span class="why">' + esc(d.reason) + '</span>') + '</button>').join('');
+    $$('.drv-opt', dp).forEach(b => b.onclick = () => { f.driverId.value = b.dataset.id; $$('.drv-opt', dp).forEach(x => x.classList.toggle('on', x === b)); Pages._saveDraft(); Pages._renderSummary(); });
+    Pages._renderSummary();
+  },
+  _renderSummary() {
+    const f = $('#bkForm'), el = $('#bkSummary'); if (!f || !el) return;
+    const a = S.avail || { cars: [], drivers: [] };
+    const c = a.cars.find(x => x.id === f.carId.value), d = (a.drivers || []).find(x => x.id === f.driverId.value);
+    el.innerHTML = '<div class="sum-head">' + ic('check') + ' สรุปก่อนส่งคำขอ</div><div class="sum-grid">' +
+      '<div class="sum-car">' + (c ? carPic(c.photo, 'sm', c.plateNo) + '<div><span class="hint">รถ</span><b>' + esc(c.plateNo) + '</b><div class="hint">' + esc(c.carType) + ' • ' + esc(c.seats) + ' ที่นั่ง</div></div>' : '<div class="sum-miss">ยังไม่ได้เลือกรถ</div>') + '</div>' +
+      '<div class="sum-drv">' + (d ? avatar(d.photo, d.fullName, 48) + '<div><span class="hint">พนักงานขับรถที่เลือก</span><b>' + drvName(d.fullName, d.gender) + '</b><div class="hint">ระบบส่งงานให้คนนี้ก่อน</div></div>' : '<span class="avatar ph" style="width:48px;height:48px">✦</span><div><span class="hint">พนักงานขับรถ</span><b>ให้ระบบจัดให้</b></div>') + '</div>' +
+      '<div class="sum-time"><span class="hint">ช่วงเวลา</span><b>' + (f.start.value && f.end.value && f.end.value > f.start.value ? fRange(toMs(f.start.value), toMs(f.end.value)) : '-') + '</b>' +
+      '<div class="hint">' + esc(f.destination.value || 'ยังไม่ระบุสถานที่') + ' • ' + esc(f.passengers.value || 0) + ' คน</div></div></div>';
   },
   async _submitBooking(e) {
     e.preventDefault();
     const f = e.target, d = UI.formData(f);
-    if (!d.carId) return UI.toast('กรุณาเลือกรถ', 'err');
-    if (!d.destination || !d.purpose) return UI.toast('กรุณากรอกสถานที่และวัตถุประสงค์', 'err');
+    if (!d.carId) { UI.toast('กรุณาเลือกรถ', 'err'); $('#carPick').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    if (!d.destination || !d.purpose) { UI.toast('กรุณากรอกสถานที่และวัตถุประสงค์', 'err'); (d.destination ? f.purpose : f.destination).focus(); return; }
     const btn = $('#bkSubmit'); btn.disabled = true;
     try {
       UI.loading(true);
       const r = await call('createBooking', d);
       UI.loading(false);
+      Pages._clearDraft();
       const msg = r.status === 'PENDING_APPROVAL' ? 'คำขออยู่ระหว่างรอผู้ดูแลอนุมัติ ระบบจะแจ้งผลทางอีเมล'
-        : r.notified ? 'ระบบส่งอีเมลแจ้งงานถึงพนักงานขับรถที่ว่าง ' + r.notified + ' คนแล้ว คุณจะได้รับอีเมลยืนยันเมื่อมีผู้รับงาน'
+        : r.notified ? (d.driverId ? 'ระบบส่งงานถึงพนักงานขับรถที่คุณเลือกแล้ว หากไม่รับภายในเวลาที่กำหนด ระบบจะส่งให้คนขับที่ว่างคนอื่น' : 'ระบบส่งอีเมลแจ้งงานถึงพนักงานขับรถที่ว่าง ' + r.notified + ' คนแล้ว') + ' คุณจะได้รับอีเมลยืนยันเมื่อมีผู้รับงาน'
         : 'ขณะนี้ไม่มีพนักงานขับรถว่าง ระบบแจ้งผู้ดูแลให้จัดคนขับแล้ว';
       const m = UI.modal({ title: 'ส่งคำขอแล้ว • ' + r.bookingId, body: '<p style="margin:0 0 10px">' + pill(r.status) + '</p><p>' + esc(msg) + '</p>',
         foot: '<button class="btn btn-ghost" data-close>จองเพิ่ม</button><button class="btn btn-maroon" id="goList">ดูรายการจอง</button>' });
@@ -1138,8 +1300,12 @@ const Pages = {
     const u = S.user, admin = isAdmin(), active = ['PENDING_APPROVAL', 'WAITING_DRIVER', 'CONFIRMED'].indexOf(b.status) > -1;
     const own = b.requesterId === u.userId;
     const acts = [];
-    if (admin && b.status === 'PENDING_APPROVAL') acts.push('<button class="btn btn-ok" data-a="approve">' + ic('check') + (b.carId ? 'อนุมัติ' : 'อนุมัติและเลือกรถ') + '</button>', '<button class="btn btn-bad" data-a="reject">ไม่อนุมัติ</button>');
-    if (admin && b.status === 'WAITING_DRIVER') acts.push('<button class="btn btn-gold" data-a="resend">' + ic('send') + 'แจ้งคนขับอีกครั้ง</button>');
+    if (admin && b.status === 'PENDING_APPROVAL') {
+      acts.push('<button class="btn btn-ok" data-a="approve">' + ic('check') + (b.carId ? 'อนุมัติ' : 'อนุมัติและเลือกรถ') + '</button>');
+      if (b.carId) acts.push('<button class="btn btn-ghost" data-a="changecar">' + ic('car') + 'เปลี่ยนรถแล้วอนุมัติ</button>');
+      acts.push('<button class="btn btn-bad" data-a="reject">ไม่อนุมัติ</button>');
+    }
+    if (admin && b.status === 'WAITING_DRIVER') acts.push('<button class="btn btn-gold" data-a="resend">' + ic('send') + (b.preferredDriverId ? 'ส่งให้คนขับที่ว่างทุกคน' : 'แจ้งคนขับอีกครั้ง') + '</button>');
     if (admin && active && b.carId) acts.push('<button class="btn btn-ghost" data-a="assign">' + ic('wheel') + (b.driverId ? 'เปลี่ยนคนขับ' : 'มอบหมายคนขับ') + '</button>');
     const myTrip = admin || (u.role === 'driver' && b.driverId === u.driverId);
     if (myTrip && b.status === 'CONFIRMED') acts.push('<button class="btn btn-ok" data-a="complete">' + ic('fuel') + 'ปิดงาน + บันทึกระยะทาง/น้ำมัน</button>');
@@ -1161,6 +1327,7 @@ const Pages = {
         row('ติดต่อ', esc(b.requesterPhone || '-') + (b.requesterEmail ? ' • ' + esc(b.requesterEmail) : '')) +
         row('รถ', b.carPlate ? esc(b.carPlate) : '<span class="hint">ยังไม่ระบุ' + (b.preferredCarType ? ' — ต้องการ ' + esc(b.preferredCarType) : '') + '</span>') +
         row('คนขับ', b.driverName ? '<b>' + drvName(b.driverName, b.driverGender) + '</b>' : '<span class="hint">ยังไม่มีผู้รับงาน</span>') +
+        (b.preferredDriverId && b.preferredDriverId !== b.driverId ? row('คนขับที่ผู้ขอเลือก', '<span class="lbl-row">' + avatar(b.preferredDriverPhoto, b.preferredDriverName, 28) + esc(b.preferredDriverName) + '</span>') : '') +
         (admin ? row('แจ้งงานถึง', esc(b.notifiedDrivers || '-')) + row('อนุมัติโดย', esc(b.approvedBy || '-')) : '') +
         (b.remark ? row('หมายเหตุ', '<span style="white-space:pre-line">' + esc(b.remark) + '</span>') : '') + '</dl>' +
         (b.trip ? '<div class="trip-box"><b>' + ic('fuel') + ' บันทึกการเดินทาง</b><div class="trip-grid">' +
@@ -1187,6 +1354,7 @@ const Pages = {
         if (a === 'complete' || a === 'log') { m.close(); Pages.tripLog(b, reload); }
         if (a === 'cancel') { const why = await UI.confirm('ยกเลิก ' + b.id, 'ระบบจะแจ้งผู้เกี่ยวข้องทางอีเมล', { input: 'เหตุผลการยกเลิก', ok: 'ยกเลิกการจอง', danger: true }); if (!why) return; UI.loading(true); await call('cancelBooking', b.id, why.trim()); UI.loading(false); done('ยกเลิกการจองแล้ว'); }
         if (a === 'assign') { m.close(); Pages.assignDriver(b, reload); }
+        if (a === 'changecar') { m.close(); Pages.approveWithCar(b, reload); }
       } catch (e) { UI.err(e); }
     });
   },
@@ -1249,7 +1417,8 @@ const Pages = {
           (c.available ? (Number(c.seats) && Number(c.seats) < Number(b.passengers) ? '<div class="why">ที่นั่งไม่พอ</div>' : '') : '<div class="why">' + esc(c.reason) + '</div>') + '</button>').join('') + '</div>',
       foot: '<button class="btn btn-ghost" data-close>ยกเลิก</button><button class="btn btn-ok" id="awOk">' + ic('check') + 'อนุมัติและแจ้งคนขับ</button>'
     });
-    let carId = '';
+    let carId = b.carId && a.cars.some(c => c.id === b.carId && c.available) ? b.carId : '';
+    if (carId) { const cur = m.el.querySelector('.car-opt[data-id="' + carId + '"]'); if (cur) cur.classList.add('on'); }
     $$('.car-opt', m.el).forEach(x => x.onclick = () => { $$('.car-opt', m.el).forEach(y => y.classList.remove('on')); x.classList.add('on'); carId = x.dataset.id; });
     m.el.querySelector('#awOk').onclick = async () => {
       if (!carId) return UI.toast('กรุณาเลือกรถ', 'err');
@@ -1606,12 +1775,67 @@ const Pages = {
     } catch (e) { UI.err(e); }
   },
 
+  /* ---------- Media center ---------- */
+  _upStat(el) {
+    if (!el) return;
+    call('getUploadStatus').then(r => {
+      el.innerHTML = '<span class="pill ' + (r.ok ? 's-CONFIRMED' : 's-CANCELLED') + '">' + (r.ok ? '✔ เซิร์ฟเวอร์เก็บรูปพร้อมใช้งาน' : '✖ เซิร์ฟเวอร์เก็บรูปยังไม่พร้อม') + '</span> ' +
+        '<span class="hint">' + esc(r.url) + ' — ' + esc(r.message) + (r.ok && r.maxMB ? ' • ไฟล์ละไม่เกิน ' + r.maxMB + ' MB' : '') + '</span>';
+    }).catch(e => { el.textContent = e.message; });
+  },
+  async media() {
+    const [boot, users] = await Promise.all([call('getBootstrap'), call('listUsers')]);
+    if (S.page !== 'media') return;
+    S.cars = boot.cars; S.drivers = boot.drivers;
+    const tab = S.mediaTab || 'cars';
+    const cars = boot.cars, drivers = boot.drivers;
+    const staff = users.filter(u => u.status === 'ACTIVE');
+    const noCar = cars.filter(c => !c.photo).length, noDrv = drivers.filter(d => !d.photo).length, noStaff = staff.filter(u => !u.photo).length;
+    const tabs = [['cars', 'รถยนต์', cars.length, noCar], ['drivers', 'พนักงานขับรถ', drivers.length, noDrv], ['staff', 'บุคลากร/ผู้ใช้งาน', staff.length, noStaff]];
+    let body = '';
+    if (tab === 'cars') {
+      body = '<p class="section-note">รูปรถจริงจะแสดงคู่กับป้ายทะเบียนในทุกหน้า: แดชบอร์ด ปฏิทิน หน้าเลือกรถตอนจอง แบบฟอร์มหน่วยงานภายนอก หน้าสาธารณะ และอีเมล • แนะนำถ่ายแนวนอนให้เห็นทั้งคัน</p>' +
+        '<div class="media-grid">' + cars.map(c => '<div class="media-card' + (c.photo ? '' : ' missing') + '">' + carPic(c.photo, '', c.plateNo + ' • ' + c.carType) +
+          '<div class="mc-body">' + plate(c.plateNo, c.province, true) + '<div class="hint">' + esc(c.carType) + ' • ' + esc(((c.brand || '') + ' ' + (c.model || '')).trim()) + ' • ' + esc(c.seats) + ' ที่นั่ง</div></div>' +
+          '<button class="btn ' + (c.photo ? 'btn-ghost' : 'btn-maroon') + ' btn-sm btn-block" data-up="car" data-id="' + esc(c.id) + '">' + ic('camera') + (c.photo ? 'เปลี่ยนรูป' : 'อัปโหลดรูปรถ') + '</button></div>').join('') + '</div>';
+    } else if (tab === 'drivers') {
+      body = '<p class="section-note">รูปพนักงานขับรถแสดงให้ผู้ขอใช้รถเห็นเมื่อมีผู้รับงาน (รายละเอียดการจอง อีเมล ปฏิทินสาธารณะ) • ปกติซิงค์จากฐานข้อมูลบุคลากรกลาง</p>' +
+        '<div class="media-grid people">' + drivers.map(d => '<div class="media-card' + (d.photo ? '' : ' missing') + '"><div class="mc-ava">' + avatar(d.photo, d.fullName, 96) + '</div>' +
+          '<div class="mc-body center"><b>' + drvName(d.fullName, d.gender) + '</b><div class="hint">' + esc(d.id) + (d.phone ? ' • ' + esc(d.phone) : '') + '</div></div>' +
+          '<button class="btn ' + (d.photo ? 'btn-ghost' : 'btn-maroon') + ' btn-sm btn-block" data-up="driver" data-id="' + esc(d.id) + '">' + ic('camera') + (d.photo ? 'เปลี่ยนรูป' : 'อัปโหลดรูป') + '</button></div>').join('') + '</div>';
+    } else {
+      const showAll = S.mediaAll;
+      const list = (showAll ? staff : staff.filter(u => !u.photo));
+      body = '<div class="filters" style="align-items:center"><button class="btn btn-gold btn-sm" id="mSync">' + ic('refresh') + 'ซิงค์รูปจากฐานข้อมูลกลาง</button>' +
+        '<label style="display:flex;gap:6px;align-items:center;font-size:14px"><input type="checkbox" id="mAll"' + (showAll ? ' checked' : '') + '> แสดงทุกคน (ปกติแสดงเฉพาะคนที่ยังไม่มีรูป)</label></div>' +
+        (list.length ? '<div class="media-grid people">' + list.map(u => '<div class="media-card' + (u.photo ? '' : ' missing') + '"><div class="mc-ava">' + avatar(u.photo, u.fullName, 96) + '</div>' +
+          '<div class="mc-body center"><b>' + esc(u.fullName) + '</b><div class="hint">' + esc(u.position || ROLE_TH[u.role] || '') + '</div><div class="hint">' + esc(u.email || u.username) + '</div></div>' +
+          '<button class="btn ' + (u.photo ? 'btn-ghost' : 'btn-maroon') + ' btn-sm btn-block" data-up="user" data-id="' + esc(u.id) + '">' + ic('camera') + (u.photo ? 'เปลี่ยนรูป' : 'อัปโหลดรูป') + '</button></div>').join('') + '</div>'
+          : UI.empty('บุคลากรทุกคนมีรูปแล้ว', ''));
+    }
+    $('#page').innerHTML = '<div class="panel"><div class="panel-head"><h3>' + ic('camera') + ' ศูนย์จัดการรูปภาพ</h3><div id="upStat2" class="hint"></div></div>' +
+      '<div class="seg" id="mTabs" style="margin-bottom:16px">' + tabs.map(t => '<button data-t="' + t[0] + '" class="' + (tab === t[0] ? 'on' : '') + '">' + t[1] + ' (' + t[2] + ')' +
+        (t[3] ? ' <span class="miss-badge">ไม่มีรูป ' + t[3] + '</span>' : ' ✔') + '</button>').join('') + '</div>' + body + '</div>';
+    Pages._upStat($('#upStat2'));
+    $$('#mTabs button').forEach(b => b.onclick = () => { S.mediaTab = b.dataset.t; Pages.media(); });
+    const mAll = $('#mAll'); if (mAll) mAll.onchange = () => { S.mediaAll = mAll.checked; Pages.media(); };
+    const ms = $('#mSync'); if (ms) ms.onclick = async () => {
+      try { UI.loading(true); const r = await call('syncDirectory', true); UI.loading(false); UI.toast(r.summary, 'ok'); Staff.list = null; Staff.loading = null; Pages.media(); } catch (e) { UI.err(e); }
+    };
+    $$('[data-up]').forEach(b => b.onclick = () => pickAndUpload(b.dataset.up, b.dataset.id, b.dataset.up === 'car' ? 1280 : 480)
+      .then(() => { UI.toast('อัปโหลดรูปแล้ว', 'ok'); Pages.media(); })
+      .catch(e => { if (e.message !== 'ยกเลิก') UI.err(e); }));
+  },
+
   /* ---------- Settings ---------- */
   async settings() {
     const [items, logs] = await Promise.all([call('getSettings'), call('getLogs')]);
     if (S.page !== 'settings') return;
-    const bool = ['REQUIRE_ADMIN_APPROVAL', 'ALLOW_SELF_REGISTER'];
-    $('#page').innerHTML = '<div class="panel"><div class="panel-head"><h3>ตั้งค่าระบบ</h3></div><form id="setF">' +
+    const bool = ['REQUIRE_ADMIN_APPROVAL', 'ALLOW_SELF_REGISTER', 'DIRECTORY_PUBLIC', 'ALLOW_EXTERNAL_REQUEST', 'PUBLIC_SHOW_DESTINATION'];
+    $('#page').innerHTML = '<div class="panel media-link"><div class="panel-head"><h3>' + ic('camera') + ' รูปภาพรถยนต์ บุคลากร และพนักงานขับรถ</h3>' +
+        '<button class="btn btn-gold btn-sm" onclick="App.go(\'media\')">เปิดศูนย์จัดการรูปภาพ</button></div>' +
+        '<div id="upStat" class="hint">กำลังตรวจสอบเซิร์ฟเวอร์เก็บรูป…</div></div>' +
+      '<div class="panel"><div class="panel-head"><h3>ตั้งค่าระบบ</h3></div><form id="setF">' +
       items.map(i => '<div class="field"><label>' + esc(i.key) + '</label>' +
         (bool.indexOf(i.key) > -1
           ? '<select class="input" name="' + esc(i.key) + '"><option value="TRUE"' + (String(i.value).toUpperCase() === 'TRUE' ? ' selected' : '') + '>เปิด (TRUE)</option><option value="FALSE"' + (String(i.value).toUpperCase() !== 'TRUE' ? ' selected' : '') + '>ปิด (FALSE)</option></select>'
@@ -1620,6 +1844,7 @@ const Pages = {
       '<div style="text-align:right"><button class="btn btn-maroon" type="submit">บันทึกการตั้งค่า</button></div></form></div>' +
       '<div class="panel"><div class="panel-head"><h3>บันทึกการใช้งานล่าสุด</h3></div><div class="table-wrap" style="max-height:420px"><table class="tbl"><thead><tr><th>เวลา</th><th>ผู้ใช้</th><th>การกระทำ</th><th>รายละเอียด</th></tr></thead><tbody>' +
       logs.map(l => '<tr><td>' + fDT(l.ts) + '</td><td>' + esc(l.user) + '</td><td>' + esc(l.action) + '</td><td>' + esc(l.detail) + '</td></tr>').join('') + '</tbody></table></div></div>';
+    Pages._upStat($('#upStat'));
     $('#setF').onsubmit = async e => {
       e.preventDefault();
       const d = UI.formData(e.target);
@@ -1669,6 +1894,13 @@ const Pages = {
   }
 };
 
+// เลื่อนล้อเมาส์บนช่องตัวเลขแล้วค่าเปลี่ยนเอง -> ปิด
+document.addEventListener('wheel', () => { const a = document.activeElement; if (a && a.type === 'number') a.blur(); }, { passive: true });
+// เตือนก่อนออกจากหน้า/รีเฟรช ถ้ามีฟอร์มที่กรอกค้าง (ร่างยังเก็บไว้ให้กู้คืน)
+window.addEventListener('beforeunload', e => {
+  const open = $('#modalRoot') && $('#modalRoot').querySelector('.modal-body input:not([type=hidden]),.modal-body textarea');
+  if ((S.dirtyGuard && S.dirtyGuard()) || open) { e.preventDefault(); e.returnValue = ''; }
+});
 window.addEventListener('load', App.init);
 </script>
 

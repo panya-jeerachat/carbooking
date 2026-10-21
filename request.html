@@ -51,6 +51,49 @@
     .avail.good{background:var(--ok-soft);color:var(--ok)} .avail.warn{background:var(--bad-soft);color:var(--bad)}
     .types{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
     .types span{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:999px;padding:2px 12px;font-size:13.5px;color:var(--ink)}
+    .cars{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+    .car-card{position:relative;border:2px solid var(--line);border-radius:16px;padding:10px;background:#fff;cursor:pointer;display:flex;flex-direction:column;gap:8px;text-align:left;transition:border-color .15s,box-shadow .15s}
+    .car-card:hover{border-color:var(--gold-deep)}
+    .car-card.on{border-color:var(--maroon);box-shadow:0 0 0 4px rgba(64,29,27,.14)}
+    .car-card.on::after{content:"✓ เลือกแล้ว";position:absolute;top:-10px;right:10px;background:var(--maroon);color:var(--gold);font-family:var(--head);font-size:12px;padding:1px 10px;border-radius:999px}
+    .car-card.off{opacity:.5;cursor:not-allowed;background:var(--paper)}
+    .car-card .why{font-size:12.5px;color:var(--bad);font-family:var(--head)}
+    .car-card.auto{justify-content:center;align-items:center;text-align:center;min-height:200px;border-style:dashed}
+    .auto-ic{width:54px;height:54px;border-radius:50%;background:var(--gold-soft);color:var(--maroon);display:grid;place-items:center;font-size:24px}
+    .car-ph{position:relative;width:100%;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#ECEBE7,#F7F6F3);display:grid;place-items:center;color:#BDB8B2}
+    .car-ph svg{width:46%;height:auto}
+    .car-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+    .zbtn{position:absolute;right:6px;top:6px;z-index:2;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--maroon);display:grid;place-items:center;font-size:16px;cursor:zoom-in;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+    .car-ph .np{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:11.5px;color:#A9A49E}
+    .plate{display:inline-flex;flex-direction:column;align-items:center;background:#fff;border:2px solid #222;border-radius:8px;padding:2px 12px 1px;min-width:110px;box-shadow:inset 0 0 0 2px #fff,inset 0 0 0 3px #bbb;align-self:flex-start}
+    .plate .no{font-family:var(--head);font-weight:700;font-size:17px;color:#111;line-height:1.1}
+    .plate .pv{font-size:10.5px;color:#333}
+    .car-card .meta{font-size:13.5px;color:var(--muted)}
+    .car-card .meta b{color:var(--ink);font-family:var(--head);font-weight:500}
+    .drivers{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+    .drv{position:relative;border:2px solid var(--line);border-radius:16px;padding:14px 10px;background:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+    .drv:hover{border-color:var(--gold-deep)}
+    .drv.on{border-color:var(--maroon);box-shadow:0 0 0 4px rgba(64,29,27,.14)}
+    .drv.on::after{content:"✓ เลือกแล้ว";position:absolute;top:-10px;right:10px;background:var(--maroon);color:var(--gold);font-family:var(--head);font-size:12px;padding:1px 10px;border-radius:999px}
+    .drv.off{opacity:.45;cursor:not-allowed;background:var(--paper)}
+    .drv.auto{border-style:dashed}
+    .drv b{font-family:var(--head);font-weight:500;font-size:14.5px}
+    .drv .why{font-size:12.5px;color:var(--bad)}
+    .ok{font-size:12px;font-family:var(--head);background:var(--ok-soft);color:var(--ok);border-radius:999px;padding:1px 10px}
+    .ava{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),var(--gold-deep));color:var(--maroon);font-family:var(--head);font-weight:600;font-size:24px}
+    .summary{border:2px solid var(--gold);background:var(--gold-soft);border-radius:16px;padding:14px;margin:6px 0 16px}
+    .summary > b{display:block;font-family:var(--head);color:var(--maroon);margin-bottom:10px}
+    .sg{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px}
+    .sg > div{background:#fff;border-radius:12px;padding:10px;display:flex;gap:10px;align-items:center;min-width:0}
+    .sg .car-ph{width:110px;flex:none}
+    .sg span{display:block;font-size:12.5px;color:var(--muted)}
+    .sg strong{display:block;font-family:var(--head);color:var(--maroon)}
+    .draft{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;background:#E5EEF7;color:#2D5B8A;border-radius:14px;padding:10px 16px}
+    .draft .btn{margin-left:auto}
+    @media (max-width:700px){ .sg{grid-template-columns:1fr} }
+    .lb{position:fixed;inset:0;z-index:200;background:rgba(20,20,20,.85);display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
+    .lb img{max-width:100%;max-height:86vh;border-radius:12px}
+    .lb span{position:absolute;bottom:20px;left:0;right:0;text-align:center;color:#fff;font-family:var(--head)}
     .check{display:flex;gap:10px;align-items:flex-start;font-size:15px;margin:6px 0 16px}
     .check input{width:20px;height:20px;margin-top:2px;accent-color:var(--maroon)}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:999px;padding:14px 28px;font-family:var(--head);font-weight:500;font-size:16px;cursor:pointer;text-decoration:none}
@@ -65,6 +108,9 @@
     .done .ic svg{width:34px;height:34px}
     .done h2{justify-content:center;font-size:24px}
     .done .id{font-family:var(--head);font-size:28px;color:var(--maroon);background:var(--gold-soft);display:inline-block;padding:4px 18px;border-radius:12px;margin:10px 0}
+    .redirect{margin:14px 0 0;color:var(--muted);font-size:14.5px}
+    .redirect b{color:var(--maroon)}
+    .redirect button{background:none;border:0;color:var(--maroon);text-decoration:underline;cursor:pointer;font:inherit}
     .closed{text-align:center;padding:40px 24px;color:var(--muted)}
     .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
     footer{margin-top:40px;background:var(--graphite-2);color:#bdbdbd;text-align:center;padding:18px;font-size:14px;line-height:1.8}
@@ -76,7 +122,7 @@
   <header class="top"><div class="wrap">
     <a href="index.html"><img src="logo.png" alt="คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม"></a>
     <span class="t"><b>ระบบจองรถยนต์และพนักงานขับรถ</b><span>คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม</span></span>
-    <a class="back" href="index.html">← ปฏิทินการใช้รถ</a>
+    <a class="back home-go" href="index.html">⌂ หน้าหลัก</a>
   </div></header>
 
   <section class="intro"><div class="wrap">
@@ -85,6 +131,7 @@
   </div></section>
 
   <main class="wrap">
+    <div class="draft hidden" id="draftBar"><span id="draftText"></span><button type="button" class="btn btn-ghost" id="draftClear" style="padding:6px 14px;font-size:14px">เริ่มกรอกใหม่</button></div>
     <div id="closed" class="panel closed hidden">ขณะนี้ปิดรับคำขอจากหน่วยงานภายนอก กรุณาติดต่อคณะวิศวกรรมศาสตร์โดยตรง</div>
 
     <form id="reqForm" novalidate>
@@ -109,12 +156,26 @@
           <div class="field"><label>วัน-เวลาเริ่ม <span class="req">*</span></label><input class="input" type="datetime-local" name="start" required></div>
           <div class="field"><label>วัน-เวลาสิ้นสุด <span class="req">*</span></label><input class="input" type="datetime-local" name="end" required></div>
         </div>
-        <div class="avail" id="avail">เลือกวัน-เวลาเพื่อดูจำนวนรถที่ว่าง</div>
-        <p class="hint" style="margin:6px 0 0">ต้องขอล่วงหน้าอย่างน้อย 24 ชั่วโมง • ผู้ดูแลจะจัดรถและพนักงานขับรถให้เมื่ออนุมัติ</p>
+        <div class="avail" id="avail">เลือกวัน-เวลาเพื่อดูรถที่ว่าง</div>
+        <p class="hint" style="margin:6px 0 0">ต้องขอล่วงหน้าอย่างน้อย 24 ชั่วโมง • เจ้าหน้าที่จะยืนยันรถและจัดพนักงานขับรถให้เมื่ออนุมัติ</p>
       </div>
 
       <div class="panel">
-        <h2><i>3</i>รายละเอียดการขอใช้รถ</h2>
+        <h2><i>3</i>เลือกรถที่ต้องการ</h2>
+        <p class="hint" style="margin:-6px 0 14px">ดูรูปรถจริงและป้ายทะเบียนประกอบการเลือก กดที่การ์ดเพื่อเลือกรถ กดปุ่ม ⤢ เพื่อดูรูปขนาดใหญ่ • รถที่ไม่ว่างในช่วงเวลาที่เลือกจะเลือกไม่ได้</p>
+        <div class="cars" id="cars"><div class="car-card auto on" data-id=""><div class="auto-ic">✦</div><b>ให้เจ้าหน้าที่จัดรถให้</b><span class="hint">เลือกรถที่เหมาะกับจำนวนผู้โดยสาร</span></div></div>
+        <input type="hidden" name="carId" value="">
+      </div>
+
+      <div class="panel">
+        <h2><i>4</i>เลือกพนักงานขับรถ <span style="font-weight:400;font-size:14px;color:var(--muted)">(ไม่บังคับ)</span></h2>
+        <p class="hint" style="margin:-6px 0 14px">แสดงสถานะว่างจริงตามวัน-เวลาที่เลือก • ถ้าเลือก ระบบจะส่งงานให้คนนั้นก่อนเมื่อคำขอได้รับอนุมัติ</p>
+        <div class="drivers" id="drivers"></div>
+        <input type="hidden" name="driverId" value="">
+      </div>
+
+      <div class="panel">
+        <h2><i>5</i>รายละเอียดการขอใช้รถ</h2>
         <div class="field"><label>ประเภทภารกิจ <span class="req">*</span></label>
           <div class="seg" id="mType"><button type="button" data-v="INTERNAL" class="on">ภายในจังหวัด</button><button type="button" data-v="EXTERNAL">ต่างจังหวัด</button></div>
           <input type="hidden" name="missionType" value="INTERNAL">
@@ -125,12 +186,10 @@
         </div>
         <div class="field"><label>รายละเอียดการขอใช้รถ / วัตถุประสงค์ <span class="req">*</span></label>
           <textarea class="input" name="purpose" required placeholder="เช่น นำคณะทำงาน 5 คน ไปประชุมโครงการความร่วมมือ ออกเดินทางจากหน้าอาคาร EN1"></textarea></div>
-        <div class="grid2">
-          <div class="field"><label>ประเภทรถที่ต้องการ</label><select class="input" name="carType" id="carType"><option value="">ไม่ระบุ (ให้เจ้าหน้าที่จัดให้)</option></select></div>
-          <div class="field"><label>หมายเหตุ</label><input class="input" name="remark" placeholder="จุดนัดรับ สัมภาระ ฯลฯ"></div>
-        </div>
+        <div class="field"><label>หมายเหตุ</label><input class="input" name="remark" placeholder="จุดนัดรับ สัมภาระ ฯลฯ"></div>
+        <div class="summary" id="summary"></div>
         <label class="check"><input type="checkbox" name="confirm" required> <span>ข้าพเจ้ายืนยันว่าข้อมูลข้างต้นเป็นความจริง และยินยอมให้คณะวิศวกรรมศาสตร์ใช้ข้อมูลนี้เพื่อติดต่อกลับเกี่ยวกับคำขอใช้รถ <span class="req" style="color:var(--bad)">*</span></span></label>
-        <div class="actions"><a class="btn btn-ghost" href="index.html">ยกเลิก</a><button class="btn btn-maroon" type="submit" id="send">
+        <div class="actions"><a class="btn btn-ghost home-go" href="index.html">ยกเลิก</a><button class="btn btn-maroon" type="submit" id="send">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>ส่งคำขอใช้รถ</button></div>
         <div class="alert bad hidden" id="err" role="alert"></div>
       </div>
@@ -141,8 +200,10 @@
       <h2>ส่งคำขอเรียบร้อยแล้ว</h2>
       <div class="id" id="doneId">–</div>
       <p>ระบบส่งอีเมลยืนยันการรับคำขอไปที่ <b id="doneMail"></b> แล้ว<br>เจ้าหน้าที่จะพิจารณาและแจ้งผลทางอีเมล เมื่อมีพนักงานขับรถรับงาน คุณจะได้รับชื่อและเบอร์โทรของพนักงานขับรถ</p>
+      <p><b id="doneCar"></b></p>
       <p class="hint">กรุณาเก็บเลขที่คำขอไว้สำหรับติดต่อสอบถาม</p>
-      <div class="actions" style="justify-content:center;margin-top:18px"><a class="btn btn-ghost" href="index.html">กลับหน้าปฏิทิน</a><a class="btn btn-maroon" href="request.html">ส่งคำขอใหม่</a></div>
+      <p class="redirect" id="redir">กำลังกลับหน้าหลักใน <b id="cd">10</b> วินาที… <button type="button" id="stay">อยู่หน้านี้</button></p>
+      <div class="actions" style="justify-content:center;margin-top:10px"><a class="btn btn-maroon home-go" href="index.html">กลับหน้าหลักทันที</a><a class="btn btn-ghost" href="request.html">ส่งคำขอใหม่</a></div>
     </div>
   </main>
 
@@ -152,6 +213,8 @@
   <script>
   (function () {
     const CFG = window.FLEET_CONFIG || {};
+    const HOME = CFG.HOME_URL || 'index.html';
+    document.querySelectorAll('.home-go').forEach(a => a.href = HOME);
     const $ = s => document.querySelector(s);
     const f = $('#reqForm');
     const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -175,6 +238,8 @@
       f.missionType.value = b.dataset.v;
     }));
 
+    const qs = new URLSearchParams(location.search);
+    const PRE = { car: qs.get('car') || '', driver: qs.get('driver') || '' };
     let tmr;
     function checkAvail() {
       clearTimeout(tmr);
@@ -185,14 +250,113 @@
         api('getPublicAvailability', [f.start.value, f.end.value]).then(r => {
           const free = r.types.reduce((n, t) => n + t.free, 0);
           a.className = 'avail ' + (free && r.freeDrivers ? 'good' : 'warn');
-          a.innerHTML = (free ? 'ช่วงเวลานี้มีรถว่าง <b>' + free + '</b> คัน • พนักงานขับรถว่าง <b>' + r.freeDrivers + '</b> คน' : 'ช่วงเวลานี้รถถูกจองเต็ม — ยังส่งคำขอได้ เจ้าหน้าที่จะติดต่อกลับเพื่อหาเวลาอื่น') +
+          a.innerHTML = (free ? 'ช่วงเวลานี้มีรถว่าง <b>' + free + '</b> คัน • พนักงานขับรถว่าง <b>' + r.freeDrivers + '</b> คน — เลือกรถได้ในขั้นที่ 3' : 'ช่วงเวลานี้รถถูกจองเต็ม — ยังส่งคำขอได้ เจ้าหน้าที่จะติดต่อกลับเพื่อหาเวลาอื่น') +
             '<div class="types">' + r.types.map(t => '<span>' + esc(t.type) + ' ว่าง ' + t.free + '/' + t.total + (t.seats ? ' • ' + t.seats + ' ที่นั่ง' : '') + '</span>').join('') + '</div>';
-          const sel = $('#carType'), keep = sel.value;
-          sel.innerHTML = '<option value="">ไม่ระบุ (ให้เจ้าหน้าที่จัดให้)</option>' + r.types.map(t => '<option value="' + esc(t.type) + '">' + esc(t.type) + (t.seats ? ' (สูงสุด ' + t.seats + ' ที่นั่ง)' : '') + (t.free ? '' : ' — ไม่ว่าง') + '</option>').join('');
-          sel.value = keep;
+          CARS = r.cars || []; DRIVERS = r.drivers || [];
+          // มาจากหน้าสาธารณะ "ขอใช้คันนี้ / คนขับคนนี้" -> เลือกไว้ให้ (ถ้าว่าง)
+          if (PRE.car && !f.carId.value) { f.carId.value = PRE.car; PRE.car = ''; }
+          if (PRE.driver && !f.driverId.value) { f.driverId.value = PRE.driver; PRE.driver = ''; }
+          renderCars(); renderDrivers();
         }).catch(e => { a.className = 'avail warn'; a.textContent = e.message; });
       }, 300);
     }
+    /* ---------- เลือกรถ (รูปจริง + ป้ายทะเบียน) ---------- */
+    let CARS = [];
+    const CAR_SVG = '<svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 28h52M10 28V20l7-10h30l7 10v8"/><circle cx="18" cy="30" r="5"/><circle cx="46" cy="30" r="5"/><path d="M20 10v9M44 10v9M10 20h44"/></svg>';
+    function renderCars() {
+      const pax = Number(f.passengers.value || 0), keep = f.carId.value;
+      let html = '<div class="car-card auto' + (keep ? '' : ' on') + '" data-id="" tabindex="0" role="button"><div class="auto-ic">✦</div><b>ให้เจ้าหน้าที่จัดรถให้</b><span class="hint">เลือกรถที่เหมาะกับจำนวนผู้โดยสาร</span></div>';
+      html += CARS.map(c => {
+        const tooSmall = c.available && c.seats && pax > c.seats;
+        const off = !c.available || tooSmall;
+        return '<div class="car-card' + (off ? ' off' : '') + (c.id === keep && !off ? ' on' : '') + '" data-id="' + esc(c.id) + '"' + (off ? ' aria-disabled="true"' : ' tabindex="0" role="button"') + '>' +
+          '<div class="car-ph">' + (c.photo ? '<img src="' + esc(c.photo) + '" alt="' + esc(c.plateNo) + '" onerror="this.remove()">' +
+            '<span class="zbtn" role="button" title="ดูรูปขนาดใหญ่" data-zoom="' + esc(c.photo) + '" data-cap="' + esc(c.plateNo + ' • ' + c.carType + (c.model ? ' • ' + c.model : '')) + '">⤢</span>' : '<span class="np">ยังไม่มีรูป</span>') + CAR_SVG + '</div>' +
+          '<span class="plate"><span class="no">' + esc(c.plateNo) + '</span><span class="pv">' + esc(c.province) + '</span></span>' +
+          '<div class="meta"><b>' + esc(c.carType) + '</b>' + (c.seats ? ' • ' + c.seats + ' ที่นั่ง' : '') + (c.model ? '<br>' + esc(c.model) + (c.color ? ' • สี' + esc(c.color) : '') : '') + '</div>' +
+          (!c.available ? '<div class="why">' + esc(c.reason || 'ไม่ว่าง') + '</div>' : tooSmall ? '<div class="why">ที่นั่งไม่พอสำหรับ ' + pax + ' คน</div>' : '') + '</div>';
+      }).join('');
+      $('#cars').innerHTML = html;
+      if (keep && !CARS.some(c => c.id === keep && c.available && !(c.seats && pax > c.seats))) { f.carId.value = ''; $('#cars .auto').classList.add('on'); }
+      document.querySelectorAll('#cars .car-card:not(.off)').forEach(el => {
+        const pick = () => { document.querySelectorAll('#cars .car-card').forEach(x => x.classList.remove('on')); el.classList.add('on'); f.carId.value = el.dataset.id; saveDraft(); renderSummary(); };
+        el.addEventListener('click', e => { if (e.target.closest('[data-zoom]')) return; pick(); });
+        el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+      });
+    }
+    f.passengers.addEventListener('input', () => { if (CARS.length) renderCars(); });
+
+    /* ---------- เลือกพนักงานขับรถ ---------- */
+    let DRIVERS = [];
+    const GEN = { M: 'ชาย', F: 'หญิง' };
+    const ava = (url, name) => url ? '<img class="ava" src="' + esc(url) + '" alt="" data-zoom="' + esc(url) + '" data-cap="' + esc(name) + '" onerror="this.outerHTML=\'<span class=&quot;ava&quot;>' + esc(String(name || '?').slice(0, 1)) + '</span>\'">'
+      : '<span class="ava">' + esc(String(name || '?').replace(/^(นาย|นางสาว|นาง)\s*/, '').slice(0, 1)) + '</span>';
+    function renderDrivers() {
+      const keep = f.driverId.value;
+      if (keep && !DRIVERS.some(d => d.id === keep && d.available)) f.driverId.value = '';
+      $('#drivers').innerHTML = '<div class="drv auto' + (f.driverId.value ? '' : ' on') + '" data-id="" tabindex="0" role="button"><span class="ava">✦</span><b>ให้เจ้าหน้าที่จัดให้</b><span class="hint">ส่งงานถึงคนขับที่ว่าง</span></div>' +
+        DRIVERS.map(d => '<div class="drv' + (d.available ? '' : ' off') + (d.id === f.driverId.value ? ' on' : '') + '" data-id="' + esc(d.id) + '"' + (d.available ? ' tabindex="0" role="button"' : ' aria-disabled="true"') + '>' +
+          ava(d.photo, d.fullName) + '<b>' + esc(d.fullName) + '</b><span class="hint">' + (d.nickname ? esc(d.nickname) + ' • ' : '') + esc(GEN[d.gender] || 'ไม่ระบุเพศ') + '</span>' +
+          (d.available ? '<span class="ok">ว่าง</span>' : '<span class="why">' + esc(d.reason) + '</span>') + '</div>').join('');
+      document.querySelectorAll('#drivers .drv:not(.off)').forEach(el => {
+        const pick = () => { document.querySelectorAll('#drivers .drv').forEach(x => x.classList.remove('on')); el.classList.add('on'); f.driverId.value = el.dataset.id; saveDraft(); renderSummary(); };
+        el.addEventListener('click', e => { if (e.target.closest('[data-zoom]')) return; pick(); });
+        el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+      });
+      renderSummary();
+    }
+    function renderSummary() {
+      const c = CARS.find(x => x.id === f.carId.value), d = DRIVERS.find(x => x.id === f.driverId.value);
+      const okT = f.start.value && f.end.value && f.end.value > f.start.value;
+      const fmt = v => { const [dd, tt] = v.split('T'); const [y, m, day] = dd.split('-'); return Number(day) + '/' + Number(m) + '/' + (Number(y) + 543) + ' ' + tt + ' น.'; };
+      $('#summary').innerHTML = '<b>สรุปคำขอของคุณ</b><div class="sg">' +
+        '<div>' + (c ? '<div class="car-ph">' + (c.photo ? '<img src="' + esc(c.photo) + '" alt="">' : '') + CAR_SVG + '</div><div><span>รถที่ขอ</span><strong>' + esc(c.plateNo) + '</strong><span>' + esc(c.carType) + ' • ' + c.seats + ' ที่นั่ง</span></div>'
+          : '<div><span>รถ</span><strong>ให้เจ้าหน้าที่จัดให้</strong></div>') + '</div>' +
+        '<div>' + (d ? ava(d.photo, d.fullName) + '<div><span>พนักงานขับรถที่ขอ</span><strong>' + esc(d.fullName) + '</strong><span>' + esc(GEN[d.gender] || '') + '</span></div>'
+          : '<span class="ava">✦</span><div><span>พนักงานขับรถ</span><strong>ให้เจ้าหน้าที่จัดให้</strong></div>') + '</div>' +
+        '<div style="flex-direction:column;align-items:flex-start;gap:2px"><span>ช่วงเวลา</span><strong>' + (okT ? fmt(f.start.value) + '<br>ถึง ' + fmt(f.end.value) : '-') + '</strong>' +
+        '<span>' + esc(f.destination.value || 'ยังไม่ระบุสถานที่') + ' • ' + esc(f.passengers.value || 0) + ' คน</span></div></div>';
+    }
+
+    /* ---------- ร่างอัตโนมัติ: เผลอปิด/รีเฟรช/ย้อนกลับ ข้อมูลไม่หาย ---------- */
+    const DKEY = 'fleet_ext_draft';
+    const FIELDS = ['name', 'position', 'agency', 'email', 'phone', 'start', 'end', 'missionType', 'destination', 'passengers', 'purpose', 'remark', 'carId', 'driverId'];
+    let submitted = false;
+    function saveDraft() {
+      const v = {}; FIELDS.forEach(k => v[k] = f.elements[k] ? f.elements[k].value : '');
+      if (!(v.name || v.agency || v.email || v.phone || v.destination || v.purpose)) return;
+      try { localStorage.setItem(DKEY, JSON.stringify({ v, at: Date.now() })); } catch (e) {}
+    }
+    function clearDraft() { try { localStorage.removeItem(DKEY); } catch (e) {} }
+    try {
+      const dr = JSON.parse(localStorage.getItem(DKEY) || 'null');
+      if (dr && dr.v && Date.now() - dr.at < 14 * 86400000) {
+        FIELDS.forEach(k => { if (f.elements[k] && dr.v[k] !== undefined && dr.v[k] !== '') f.elements[k].value = dr.v[k]; });
+        document.querySelectorAll('#mType button').forEach(x => x.classList.toggle('on', x.dataset.v === f.missionType.value));
+        const t = new Date(dr.at);
+        $('#draftText').textContent = 'กู้คืนข้อมูลที่คุณกรอกค้างไว้ (' + t.toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) + ') ให้แล้ว';
+        $('#draftBar').classList.remove('hidden');
+      }
+    } catch (e) {}
+    $('#draftClear').addEventListener('click', () => { clearDraft(); submitted = true; location.reload(); });
+    f.addEventListener('input', () => { saveDraft(); renderSummary(); });
+    f.addEventListener('change', saveDraft);
+    document.querySelectorAll('#mType button').forEach(b => b.addEventListener('click', saveDraft));
+    document.addEventListener('wheel', () => { const a = document.activeElement; if (a && a.type === 'number') a.blur(); }, { passive: true });
+    window.addEventListener('beforeunload', e => {
+      if (submitted) return;
+      if (f.name.value || f.agency.value || f.destination.value || f.purpose.value) { e.preventDefault(); e.returnValue = ''; }
+    });
+    // ดูรูปใหญ่
+    document.addEventListener('click', e => {
+      const z = e.target.closest('[data-zoom]'); if (!z) return;
+      e.preventDefault(); e.stopPropagation();
+      const lb = document.createElement('div'); lb.className = 'lb';
+      lb.innerHTML = '<img src="' + esc(z.dataset.zoom) + '" alt=""><span>' + esc(z.dataset.cap || '') + '</span>';
+      lb.onclick = () => lb.remove(); document.body.appendChild(lb);
+    }, true);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { const lb = document.querySelector('.lb'); if (lb) lb.remove(); } });
+
     f.start.addEventListener('change', () => { if (f.end.value <= f.start.value) f.end.value = f.start.value.slice(0, 11) + p2(Math.min(23, Number(f.start.value.slice(11, 13)) + 4)) + ':00'; checkAvail(); });
     f.end.addEventListener('change', checkAvail);
     checkAvail();
@@ -227,8 +391,15 @@
       data.confirm = f.confirm.checked;
       const btn = $('#send'); btn.disabled = true; btn.lastChild.textContent = 'กำลังส่งคำขอ…';
       api('submitExternalRequest', [data]).then(r => {
+        submitted = true; clearDraft();
         $('#doneId').textContent = r.bookingId; $('#doneMail').textContent = data.email;
+        $('#doneCar').textContent = (r.carPlate ? 'รถที่ขอ: ' + r.carPlate : 'เจ้าหน้าที่จะจัดรถให้') + (r.driverName ? ' • พนักงานขับรถที่ขอ: ' + r.driverName : '') + ' (รอเจ้าหน้าที่ยืนยัน)';
         f.classList.add('hidden'); $('#done').classList.remove('hidden'); window.scrollTo(0, 0);
+        // กลับหน้าหลัก (ข้อมูลสาธารณะ) อัตโนมัติ พร้อมเลขที่คำขอ
+        const back = HOME + (HOME.indexOf('?') > -1 ? '&' : '?') + 'req=' + encodeURIComponent(r.bookingId);
+        document.querySelectorAll('#done .home-go').forEach(a => a.href = back);
+        let n = 10; const tick = setInterval(() => { n--; $('#cd').textContent = n; if (n <= 0) { clearInterval(tick); location.href = back; } }, 1000);
+        $('#stay').onclick = () => { clearInterval(tick); $('#redir').textContent = 'คุณสามารถกลับหน้าหลักได้ด้วยปุ่มด้านล่าง'; };
       }).catch(e2 => { err.textContent = e2.message; err.classList.remove('hidden'); })
         .finally(() => { btn.disabled = false; btn.lastChild.textContent = 'ส่งคำขอใช้รถ'; });
     });
