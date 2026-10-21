@@ -78,8 +78,8 @@
   function renderApprove() {
     const b = INFO.booking, tl = INFO.timeline;
     const steps = tl ? tl.steps.map(st => '<div class="ap-st ' + st.state + '"><span>' + st.no + '</span><div><b>' + esc(st.name) + '</b>' +
-      (st.log ? '<small>' + (st.log.action === 'REJECT' ? 'ไม่อนุมัติ' : st.log.action === 'SKIP' ? 'ข้าม' : 'อนุมัติ') + ' • ' + esc(st.log.name) + '</small>' : st.state === 'CURRENT' ? '<small>รอพิจารณา</small>' : '') + '</div></div>').join('') : '';
-    let html = '<h1>พิจารณาคำขอใช้รถ</h1><p class="sub">' + esc(INFO.approverName) + ' • ขั้นที่ ' + INFO.step + (tl ? '/' + tl.total : '') + ' • เลขที่ ' + esc(b.id) + '</p>' +
+      (st.log ? '<small>' + (st.log.action === 'REJECT' ? 'ไม่อนุมัติ' : st.log.action === 'SKIP' ? 'ข้าม' : 'อนุมัติ') + ' • ' + esc(st.log.name) + (st.log.as === 'ACTING' ? ' รักษาการแทน' + esc(st.log.actingTitle || '') : '') + '</small>' : st.state === 'CURRENT' ? '<small>รอพิจารณา</small>' : '') + '</div></div>').join('') : '';
+    let html = '<h1>พิจารณาคำขอใช้รถ</h1><p class="sub">' + esc(INFO.approverName) + (INFO.actingFor ? ' <b style="color:#401D1B">รักษาการแทน ' + esc(INFO.stepName || INFO.actingFor) + '</b>' : '') + ' • ขั้นที่ ' + INFO.step + (tl ? '/' + tl.total : '') + ' • เลขที่ ' + esc(b.id) + '</p>' +
       (steps ? '<div class="ap-tl">' + steps + '</div>' : '') +
       (b.carPhoto ? '<img class="carimg" src="' + esc(b.carPhoto) + '" alt="" onerror="this.remove()">' : '') +
       '<div class="when">' + fmt(b.start) + '<br>ถึง ' + fmt(b.end) + '</div>' +

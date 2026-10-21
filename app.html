@@ -162,6 +162,8 @@ img.avatar[data-zoom]{cursor:zoom-in}
 .att-meta b{font-family:var(--font-head);font-weight:500;word-break:break-word}
 .att-ops{display:flex;gap:4px}
 .att-empty{margin:0 0 8px}
+.acting{display:inline-block;background:#401D1B;color:#F9BE02;border-radius:999px;padding:0 9px;font-size:12px;font-family:var(--font-head)}
+.ap-dele{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .tl-note{display:flex;gap:8px;align-items:flex-start;background:var(--info-soft);color:var(--info);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:4px}
 .tl-admin{margin-top:8px;font-size:13.5px;background:#FFF8E6;border-radius:10px;padding:10px 12px}
 .tl-admin b{font-family:var(--font-head);display:block;margin-bottom:4px;color:var(--maroon)}
@@ -504,7 +506,6 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
           </div>
           <div class="field"><label for="lgPass">รหัสผ่าน</label><input id="lgPass" type="password" class="input" autocomplete="current-password" required></div>
           <button class="btn btn-maroon btn-block" type="submit" id="lgBtn">เข้าสู่ระบบ</button>
-          <div class="switch-link" id="regLink">นักศึกษา/ไม่มีรายชื่อในระบบ? <button type="button" onclick="UI.showRegister(true)">สมัครใช้งาน</button></div>
           <div class="switch-link"><a id="extLink" class="hidden" href="request.html">หน่วยงานอื่น ขอใช้รถ (ไม่ต้องมีบัญชี)</a></div>
           <div class="switch-link"><a id="homeLink" data-home href="index.html" target="_top">← กลับหน้าหลัก (ปฏิทินการใช้รถ)</a></div>
         </form>
@@ -573,7 +574,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
 /* =====================================================================
  *  EN-MSU Fleet — Client (Single Page App ใน Apps Script HtmlService)
  * ===================================================================== */
-const CLIENT_VERSION = '2569.10-r13';   // ต้องตรงกับ APP.VERSION ใน Code.gs
+const CLIENT_VERSION = '2569.10-r14';   // ต้องตรงกับ APP.VERSION ใน Code.gs
 const S = { token: null, user: null, settings: window.PUBLIC || {}, cars: [], drivers: [], page: null,
             charts: [], timer: null, cal: { mode: 'month', date: null, resource: 'car' }, filters: {} };
 
@@ -927,12 +928,13 @@ const MENUS = {
   ],
   driver: [
     ['ภาพรวม'], ['dashboard', 'แดชบอร์ด', 'dashboard'], ['myJobs', 'งานของฉัน', 'job'], ['calendar', 'ปฏิทินการใช้รถ', 'calendar'],
-    ['บันทึกคำขอ'], ['newBooking', 'จองรถ (จากหนังสือ)', 'plus'], ['myBookings', 'รายการที่ฉันบันทึก', 'list']
+    ['บันทึกคำขอ'], ['newBooking', 'จองรถ (จากหนังสือ)', 'plus'], ['myBookings', 'รายการที่ฉันบันทึก', 'list'],
+    ['รายงาน'], ['report', 'รายงานการใช้รถ', 'chart']
   ]
 };
 const TITLES = { dashboard: 'แดชบอร์ด', calendar: 'ปฏิทินการใช้รถ', newBooking: 'จองรถ', bookings: 'รายการจองทั้งหมด',
   myBookings: 'การจองของฉัน', myJobs: 'งานของฉัน', cars: 'จัดการรถยนต์', drivers: 'จัดการพนักงานขับรถ',
-  users: 'จัดการผู้ใช้งาน', settings: 'ตั้งค่าระบบ', profile: 'บัญชีของฉัน', report: 'รายงานการใช้รถ ระยะทาง และค่าน้ำมัน', media: 'ศูนย์จัดการรูปภาพ', approvals: 'รายการรออนุมัติ', approvalCfg: 'ขั้นตอนการอนุมัติและผู้ปฏิบัติงานแทน' };
+  users: 'จัดการผู้ใช้งาน', settings: 'ตั้งค่าระบบ', profile: 'บัญชีของฉัน', report: 'รายงานการใช้รถ ระยะทาง และค่าน้ำมัน', media: 'ศูนย์จัดการรูปภาพ', approvals: 'รายการรออนุมัติ', approvalCfg: 'ขั้นตอนการอนุมัติและผู้รักษาการแทน' };
 
 const App = {
   async init() {
@@ -1592,7 +1594,7 @@ const Pages = {
           done(r.message || 'อนุมัติแล้ว');
         }
         if (a === 'reject') { const why = await UI.confirm('ไม่อนุมัติ ' + b.id, 'ระบบจะแจ้งผู้ขอและพนักงานขับรถทางอีเมล', { input: 'เหตุผล', required: true, ok: 'ไม่อนุมัติ', danger: true }); if (!why) return; UI.loading(true); const r = await call('rejectStep', b.id, why.trim()); UI.loading(false); done(r.message); }
-        if (a === 'skip') { const why = await UI.confirm('ข้ามขั้นที่ ' + tl.current, 'ใช้เมื่อผู้อนุมัติขั้นนี้ไม่อยู่และไม่มีผู้ปฏิบัติงานแทน (บันทึกในประวัติ)', { input: 'เหตุผล', required: true, ok: 'ข้ามขั้นนี้' }); if (!why) return; UI.loading(true); const r = await call('skipStep', b.id, why.trim()); UI.loading(false); done(r.message); }
+        if (a === 'skip') { const why = await UI.confirm('ข้ามขั้นที่ ' + tl.current, 'ใช้เมื่อผู้อนุมัติขั้นนี้ไม่อยู่และไม่มีผู้รักษาการแทน (บันทึกในประวัติ)', { input: 'เหตุผล', required: true, ok: 'ข้ามขั้นนี้' }); if (!why) return; UI.loading(true); const r = await call('skipStep', b.id, why.trim()); UI.loading(false); done(r.message); }
         if (a === 'notify') { UI.loading(true); await call('resendStep', b.id); UI.loading(false); UI.toast('ส่งอีเมลถึงผู้พิจารณาขั้นปัจจุบันแล้ว', 'ok'); }
         if (a === 'editinfo') { m.close(); Pages.editInfo(b, reload); }
         if (a === 'edit') { m.close(); Pages.editAssignment(b, reload); }
@@ -1605,6 +1607,12 @@ const Pages = {
         if (a === 'print') Pages._print(b);
         if (a === 'status') { m.close(); Pages.adminStatus(b, reload); }
         if (a === 'tostep') { m.close(); Pages.adminStatus(b, reload, Number(btn.dataset.step)); }
+        if (a === 'delegate') { const st = tl.steps[Number(btn.dataset.step) - 1]; m.close(); Pages.quickDelegate({ id: st.id, no: st.no, name: st.name, defaults: st.defaults, acting: st.source === 'ACTING' ? st.approvers : [] }, () => Pages.bookingDetail(b, reload)); }
+        if (a === 'undelegate') {
+          const st = tl.steps[Number(btn.dataset.step) - 1];
+          if (!await UI.confirm('ยกเลิกผู้รักษาการแทนวันนี้', 'ขั้น "' + esc(st.name) + '" จะกลับไปเป็นของผู้อนุมัติประจำ และส่งอีเมลแจ้งเรื่องที่ค้าง', { ok: 'ยืนยัน' })) return;
+          UI.loading(true); await call('clearDelegationToday', st.id); UI.loading(false); m.close(); UI.toast('กลับเป็นผู้อนุมัติประจำแล้ว', 'ok'); Pages.bookingDetail(b, reload);
+        }
       } catch (e) { UI.err(e); }
     });
   },
@@ -1620,11 +1628,14 @@ const Pages = {
         return '<div class="tl-step ' + st.state + '" style="--c:' + c + '"><span class="tl-no">' + st.no + '</span><div class="tl-main">' +
           '<div class="tl-name"><span class="tl-badge">ขั้นที่ ' + st.no + '</span><b>' + esc(st.name) + '</b></div>' +
           '<div class="tl-who">' + (st.approvers.length ? st.approvers.map(p => '<span class="chip">' + avatar(p.photo, p.name, 22) + esc(p.name) + '</span>').join('') : '<span class="hint" style="color:var(--bad)">ยังไม่กำหนดผู้อนุมัติ</span>') +
-            (st.source === 'ACTING' && st.state === 'CURRENT' ? '<span class="pill s-PENDING_APPROVAL">ปฏิบัติงานแทนวันนี้</span>' : '') + '</div>' +
+            (st.source === 'ACTING' && st.state === 'CURRENT' ? '<span class="pill s-PENDING_APPROVAL">รักษาการแทนวันนี้</span>' : '') + '</div>' +
           (lg ? '<div class="tl-log">' + (lg.action === 'SKIP' ? 'ข้ามขั้นโดย ' : lg.action === 'REJECT' ? 'ไม่อนุมัติโดย ' : 'อนุมัติโดย ') + '<b>' + esc(lg.name) + '</b>' +
-            (lg.as === 'ACTING' ? ' (แทน)' : lg.as === 'ADMIN' ? ' (ผู้ดูแลระบบ)' : '') + ' • ' + fDT(lg.at) + (lg.note ? '<br><span class="hint">“' + esc(lg.note) + '”</span>' : '') + '</div>' : '') +
+            (lg.as === 'ACTING' ? ' <span class="acting">รักษาการแทน' + esc(lg.actingTitle || st.name) + '</span>' + (lg.actingFor ? ' <span class="hint">(แทน ' + esc(lg.actingFor) + ')</span>' : '') : lg.as === 'ADMIN' ? ' (ผู้ดูแลระบบ)' : '') + ' • ' + fDT(lg.at) + (lg.note ? '<br><span class="hint">“' + esc(lg.note) + '”</span>' : '') + '</div>' : '') +
           '</div><div class="tl-side"><span class="pill ' + s[1] + '">' + s[0] + '</span>' +
           (st.state === 'CURRENT' && admin && b.status === 'PENDING_APPROVAL' ? '<button class="btn btn-sm tl-act" data-a="notify">' + ic('send') + 'แจ้งผู้พิจารณา</button><button class="btn btn-ghost btn-sm" data-a="skip">↷ ข้ามขั้นนี้</button>' : '') +
+          (st.state === 'CURRENT' && b.status === 'PENDING_APPROVAL' && (admin || (st.defaults || []).some(x => x.email === b.me)) ?
+            '<button class="btn btn-gold btn-sm" data-a="delegate" data-step="' + st.no + '">' + ic('users') + (st.source === 'ACTING' ? 'เปลี่ยนผู้รักษาการแทน' : 'กำหนดผู้รักษาการแทน') + '</button>' +
+            (st.source === 'ACTING' ? '<button class="btn btn-ghost btn-sm" data-a="undelegate" data-step="' + st.no + '">กลับเป็นผู้อนุมัติประจำ</button>' : '') : '') +
           (admin && st.state !== 'CURRENT' && st.state !== 'TODO' || (admin && st.state === 'TODO' && b.status !== 'PENDING_APPROVAL') ? '<button class="btn btn-ghost btn-sm" data-a="tostep" data-step="' + st.no + '">↺ ' + (st.state === 'BYPASS' || st.state === 'TODO' ? 'เริ่มพิจารณาที่ขั้นนี้' : 'ย้อนกลับมาขั้นนี้') + '</button>' : '') +
           '</div></div>';
       }).join('') +
@@ -1632,6 +1643,38 @@ const Pages = {
         (admin ? ' — ผู้ดูแลกด "เริ่มพิจารณาที่ขั้นนี้" เพื่อส่งเข้าขั้นตอนอนุมัติได้' : '') + '</span></div>' : '') +
       ((tl.adminNotes || []).length ? '<div class="tl-admin"><b>การปรับโดยผู้ดูแลระบบ</b>' + tl.adminNotes.map(n => '<div>• ' + esc(n.note) + ' <span class="hint">— ' + esc(n.name) + ' ' + fDT(n.at) + '</span></div>').join('') + '</div>' : '') +
       '</div>';
+  },
+
+  /** กำหนด/เปลี่ยนผู้รักษาการแทนของขั้นได้ทันที (ผู้ดูแล หรือผู้อนุมัติประจำขั้น) */
+  quickDelegate(step, after) {
+    const today = ymdOf(todayBkk());
+    const people = [];
+    const m = UI.modal({
+      title: 'ผู้รักษาการแทน — ขั้นที่ ' + step.no + ': ' + step.name,
+      body: '<p class="hint" style="margin-top:0">ผู้อนุมัติประจำ: <b>' + esc((step.defaults || []).map(x => x.name).join(', ') || 'ยังไม่กำหนด') + '</b>' +
+          (step.acting && step.acting.length ? ' • ผู้รักษาการวันนี้: <b>' + esc(step.acting.map(x => x.name).join(', ')) + '</b>' : '') + '</p>' +
+        '<form id="qdF"><div class="field ac-wrap"><label>ผู้รักษาการแทน (พิมพ์ชื่อ 1-3 ตัวอักษร) *</label><input class="input" id="qdFind" autocomplete="off" placeholder="เช่น รองคณบดี…"><div class="ac-list hidden" id="qdList"></div><div class="chips" id="qdChips"></div></div>' +
+        '<div class="grid2"><div class="field"><label>ตั้งแต่วันที่</label><input type="date" class="input" name="from" value="' + today + '"></div><div class="field"><label>ถึงวันที่</label><input type="date" class="input" name="to" value="' + today + '"></div></div>' +
+        '<div class="field"><label>เหตุผล/หมายเหตุ</label><input class="input" name="note" placeholder="เช่น คณบดีไปราชการต่างประเทศ"></div>' +
+        '<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="replace" checked> แทนที่ผู้รักษาการเดิมในช่วงวันนี้ (เปลี่ยนตัวทันที)</label>' +
+        '<p class="hint">ในช่วงวันที่กำหนด สิทธิ์อนุมัติขั้นนี้เป็นของผู้รักษาการแทนเท่านั้น ระบบส่งอีเมลเรื่องที่ค้างให้ทันที และบันทึกในหลักฐานว่า "รักษาการแทน' + esc(step.name) + '"</p></form>',
+      foot: '<button class="btn btn-ghost" data-close>ยกเลิก</button><button class="btn btn-maroon" id="qdOk">' + ic('check') + 'บันทึกผู้รักษาการแทน</button>'
+    });
+    const draw = () => { $('#qdChips', m.el).innerHTML = people.map((p, j) => '<span class="chip">' + avatar(p.ph, p.n, 22) + esc(p.n) + (p.p ? ' <span class="hint">' + esc(p.p) + '</span>' : '') + '<button type="button" data-qrm="' + j + '">✕</button></span>').join('');
+      $$('[data-qrm]', m.el).forEach(x => x.onclick = () => { people.splice(+x.dataset.qrm, 1); draw(); }); };
+    Staff.attach(m.el.querySelector('#qdFind'), m.el.querySelector('#qdList'), p => {
+      if (p.m === 0) return UI.toast(p.n + ' ยังไม่มีอีเมล — รับแจ้งเตือนไม่ได้', 'err');
+      if (!people.some(x => x.e === p.e)) people.push(p); m.el.querySelector('#qdFind').value = ''; draw();
+    });
+    m.el.querySelector('#qdOk').onclick = async () => {
+      const f = UI.formData(m.el.querySelector('#qdF'));
+      if (!people.length) return UI.toast('กรุณาเลือกผู้รักษาการแทน', 'err');
+      try {
+        UI.loading(true);
+        await call('saveDelegation', { stepId: step.id, from: f.from, to: f.to || f.from, note: f.note, approvers: people.map(p => p.e), replace: !!m.el.querySelector('[name=replace]').checked });
+        UI.loading(false); m.close(); UI.toast('บันทึกผู้รักษาการแทนแล้ว ระบบส่งอีเมลแจ้งแล้ว', 'ok'); if (after) after();
+      } catch (e) { UI.err(e); }
+    };
   },
 
   /** ผู้ดูแล: ปรับสถานะ / ส่งกลับขั้นตอนอนุมัติ (แก้ไขย้อนกลับได้ทุกกรณี) */
@@ -1677,7 +1720,7 @@ const Pages = {
        ['ช่วงเวลา', fRange(b.start, b.end)], ['สถานที่ไป', b.destination], ['วัตถุประสงค์', b.purpose], ['ผู้โดยสาร', b.passengers + ' คน'], ['รถ', b.carPlate || '-'],
        ['พนักงานขับรถ', b.noDriver ? 'ไม่ใช้พนักงานขับรถ' : (b.driverName || '-')], ['สถานะ', STATUS_TH[b.status] || b.status]]
         .map(r => '<tr><td>' + r[0] + '</td><td>' + esc(r[1] || '-') + '</td></tr>').join('') +
-      (tl ? tl.steps.map(st => '<tr><td>ขั้นที่ ' + st.no + ' ' + esc(st.name) + '</td><td>' + (st.log ? esc((st.log.action === 'REJECT' ? 'ไม่อนุมัติ' : st.log.action === 'SKIP' ? 'ข้าม' : 'อนุมัติ') + ' — ' + st.log.name + ' ' + fDT(st.log.at) + (st.log.note ? ' “' + st.log.note + '”' : '')) : '-') + '</td></tr>').join('') : '') +
+      (tl ? tl.steps.map(st => '<tr><td>ขั้นที่ ' + st.no + ' ' + esc(st.name) + '</td><td>' + (st.log ? esc((st.log.action === 'REJECT' ? 'ไม่อนุมัติ' : st.log.action === 'SKIP' ? 'ข้าม' : 'อนุมัติ') + ' — ' + st.log.name + (st.log.as === 'ACTING' ? ' รักษาการแทน' + (st.log.actingTitle || st.name) : '') + ' ' + fDT(st.log.at) + (st.log.note ? ' “' + st.log.note + '”' : '')) : '-') + '</td></tr>').join('') : '') +
       ((b.attachments || []).length ? '<tr><td>เอกสารแนบ</td><td>' + b.attachments.map(a => esc(a.name)).join('<br>') + '</td></tr>' : '') +
       '</table><p style="font-size:12px;color:#777">พิมพ์จากระบบ EN-MSU Fleet ' + fDT(Date.now()) + '</p><scr' + 'ipt>window.print()<\/scr' + 'ipt></body></html>');
     w.document.close();
@@ -1729,7 +1772,8 @@ const Pages = {
     };
     $('#page').innerHTML = '<div class="panel"><div class="panel-head"><h3>' + ic('check') + ' รายการรออนุมัติ</h3>' +
         (d.myStepNames.length ? '<span class="hint">วันนี้คุณพิจารณา: <b>' + d.myStepNames.map(esc).join(', ') + '</b></span>' : (d.isAdmin ? '<span class="hint">คุณเห็นทุกขั้นในฐานะผู้ดูแลระบบ</span>' : '<span class="hint">วันนี้คุณไม่ได้รับมอบหมายให้พิจารณาขั้นใด</span>')) + '</div>' +
-      (d.enabled ? '<div class="ap-steps">' + d.steps.map(s2 => '<span class="' + (s2.mine ? 'mine' : '') + '">' + s2.no + '. ' + esc(s2.name) + (s2.source === 'ACTING' ? ' (มีผู้แทนวันนี้)' : '') + '</span>').join('<i>›</i>') + '</div>' : '') +
+      (d.enabled ? '<div class="ap-steps">' + d.steps.map(s2 => '<span class="' + (s2.mine ? 'mine' : '') + '">' + s2.no + '. ' + esc(s2.name) + (s2.source === 'ACTING' ? ' • รักษาการ: ' + esc(s2.acting.join(', ')) : '') + '</span>').join('<i>›</i>') + '</div>' +
+        (d.steps.some(s2 => s2.isDefault || d.isAdmin) ? '<div class="ap-dele">' + d.steps.filter(s2 => s2.isDefault || d.isAdmin).map(s2 => '<button class="btn btn-ghost btn-sm" data-qd="' + s2.no + '">' + ic('users') + (s2.source === 'ACTING' ? 'เปลี่ยนผู้รักษาการแทน' : 'มอบหมายผู้รักษาการแทน') + ' ขั้นที่ ' + s2.no + '</button>').join('') + '</div>' : '') : '') +
       '<div class="seg" id="apTab" style="margin:10px 0 14px"><button data-t="pending" class="' + (tab === 'pending' ? 'on' : '') + '">รอฉันพิจารณา (' + d.pending.length + ')</button><button data-t="done" class="' + (tab === 'done' ? 'on' : '') + '">ที่ฉันพิจารณาแล้ว (' + d.done.length + ')</button></div>' +
       (tab === 'pending' ? (d.pending.length ? '<div class="ap-list">' + d.pending.map(card).join('') + '</div>' : UI.empty('ไม่มีเรื่องรอพิจารณา', ' ระบบจะส่งอีเมลแจ้งเมื่อมีเรื่องเข้ามาในขั้นของคุณ'))
         : (d.done.length ? '<div class="table-wrap"><table class="tbl"><thead><tr><th>เลขที่</th><th>ช่วงเวลา</th><th>สถานที่</th><th>ผู้ขอ</th><th>การพิจารณาของฉัน</th><th>สถานะปัจจุบัน</th></tr></thead><tbody>' +
@@ -1737,6 +1781,7 @@ const Pages = {
             '<td>' + (b.myLog ? (b.myLog.action === 'REJECT' ? '✕ ไม่อนุมัติ' : b.myLog.action === 'SKIP' ? '↷ ข้าม' : '✓ อนุมัติ') + ' ขั้นที่ ' + b.myLog.step + '<div class="hint">' + fDT(b.myLog.at) + '</div>' : '-') + '</td><td>' + pill(b.status) + '</td></tr>').join('') + '</tbody></table></div>'
           : UI.empty('ยังไม่มีประวัติการพิจารณา', ''))) + '</div>';
     $$('#apTab button').forEach(x => x.onclick = () => { S.apTab = x.dataset.t; Pages.approvals(); });
+    $$('[data-qd]').forEach(x => x.onclick = () => { const s2 = d.steps[+x.dataset.qd - 1]; Pages.quickDelegate({ id: s2.id, no: s2.no, name: s2.name, defaults: [], acting: s2.acting.map(n => ({ name: n })) }, () => Pages.approvals()); });
     const find = id => d.pending.concat(d.done).find(b => b.id === id);
     $$('[data-view]').forEach(x => x.onclick = e => { e.stopPropagation(); Pages.bookingDetail(find(x.dataset.view), () => Pages.approvals()); });
     $$('.ap-card').forEach(x => x.onclick = e => { if (e.target.closest('button,[data-zoom]')) return; Pages.bookingDetail(find(x.dataset.bk), () => Pages.approvals()); });
@@ -1780,17 +1825,17 @@ const Pages = {
             '<span class="ac-wrap chip-add"><input class="input" data-find="' + i + '" placeholder="+ เพิ่มผู้อนุมัติ (พิมพ์ชื่อ)" autocomplete="off"><div class="ac-list hidden" data-list="' + i + '"></div></span></div></div>' +
           '<div class="cfg-ops"><button class="icon-btn" data-up="' + i + '" title="เลื่อนขึ้น"' + (i ? '' : ' disabled') + '>▲</button><button class="icon-btn" data-dn="' + i + '" title="เลื่อนลง"' + (i < c.steps.length - 1 ? '' : ' disabled') + '>▼</button><button class="icon-btn" data-del="' + i + '" title="ลบขั้นนี้">' + ic('trash') + '</button></div></div>').join('') + '</div>' +
         '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><button class="btn btn-ghost" id="apAdd">' + ic('plus') + 'เพิ่มขั้นตอน</button><button class="btn btn-maroon" id="apSave" style="margin-left:auto">' + ic('check') + 'บันทึกขั้นตอน</button></div></div>' +
-      '<div class="layout-2"><div class="panel"><div class="panel-head"><h3>ผู้ปฏิบัติงานแทน (รายวัน)</h3></div>' +
-        '<p class="section-note">วันที่กำหนดไว้ สิทธิ์อนุมัติของขั้นนั้นเป็นของผู้ปฏิบัติงานแทนเท่านั้น และระบบส่งเรื่องที่ค้างในขั้นนั้นให้ผู้แทนทันที</p>' +
+      '<div class="layout-2"><div class="panel"><div class="panel-head"><h3>ผู้รักษาการแทน (รายวัน)</h3></div>' +
+        '<p class="section-note">วันที่กำหนดไว้ สิทธิ์อนุมัติของขั้นนั้นเป็นของผู้รักษาการแทนเท่านั้น และระบบส่งเรื่องที่ค้างในขั้นนั้นให้ผู้แทนทันที</p>' +
         '<form id="dlF"><div class="grid3"><div class="field"><label>ขั้นตอน</label><select class="input" name="stepId">' + c.steps.map((st, i) => '<option value="' + esc(st.id) + '">' + (i + 1) + '. ' + esc(st.name) + '</option>').join('') + '</select></div>' +
           '<div class="field"><label>ตั้งแต่วันที่</label><input type="date" class="input" name="from" value="' + c.today + '"></div><div class="field"><label>ถึงวันที่</label><input type="date" class="input" name="to" value="' + c.today + '"></div></div>' +
-          '<div class="field ac-wrap"><label>ผู้ปฏิบัติงานแทน (พิมพ์ชื่อ 1-3 ตัวอักษร)</label><input class="input" id="dlFind" autocomplete="off"><div class="ac-list hidden" id="dlList"></div><div class="chips" id="dlChips"></div></div>' +
-          '<div class="field"><label>หมายเหตุ</label><input class="input" name="note" placeholder="เช่น ปฏิบัติงานแทนเนื่องจากลาพักผ่อน"></div>' +
-          '<div style="text-align:right"><button class="btn btn-maroon" type="submit">' + ic('plus') + 'บันทึกผู้ปฏิบัติงานแทน</button></div></form>' +
-        (c.delegations.length ? '<div class="table-wrap" style="margin-top:14px"><table class="tbl"><thead><tr><th>วันที่</th><th>ขั้นตอน</th><th>ผู้ปฏิบัติงานแทน</th><th></th></tr></thead><tbody>' +
+          '<div class="field ac-wrap"><label>ผู้รักษาการแทน (พิมพ์ชื่อ 1-3 ตัวอักษร)</label><input class="input" id="dlFind" autocomplete="off"><div class="ac-list hidden" id="dlList"></div><div class="chips" id="dlChips"></div></div>' +
+          '<div class="field"><label>หมายเหตุ</label><input class="input" name="note" placeholder="เช่น รักษาการแทนเนื่องจากไปราชการ/ลา"></div>' +
+          '<div style="text-align:right"><button class="btn btn-maroon" type="submit">' + ic('plus') + 'บันทึกผู้รักษาการแทน</button></div></form>' +
+        (c.delegations.length ? '<div class="table-wrap" style="margin-top:14px"><table class="tbl"><thead><tr><th>วันที่</th><th>ขั้นตอน</th><th>ผู้รักษาการแทน</th><th></th></tr></thead><tbody>' +
           c.delegations.map(x => '<tr' + (x.from <= c.today && c.today <= x.to ? ' style="background:#FFFBEA"' : '') + '><td>' + esc(x.from) + (x.to !== x.from ? ' – ' + esc(x.to) : '') + (x.from <= c.today && c.today <= x.to ? ' <span class="pill s-WAITING_DRIVER">วันนี้</span>' : '') + '</td><td>' + esc(stepName(x.stepId)) + '</td>' +
             '<td>' + x.approvers.map(p => '<span class="lbl-row">' + avatar(p.photo, p.name, 22) + esc(p.name) + '</span>').join('') + (x.note ? '<div class="hint">' + esc(x.note) + '</div>' : '') + '</td>' +
-            '<td class="actions"><button class="icon-btn" data-dl="' + esc(x.id) + '" aria-label="ลบ">' + ic('trash') + '</button></td></tr>').join('') + '</tbody></table></div>' : '<p class="hint">ยังไม่มีการกำหนดผู้ปฏิบัติงานแทน</p>') + '</div>' +
+            '<td class="actions"><button class="icon-btn" data-dl="' + esc(x.id) + '" aria-label="ลบ">' + ic('trash') + '</button></td></tr>').join('') + '</tbody></table></div>' : '<p class="hint">ยังไม่มีการกำหนดผู้รักษาการแทน</p>') + '</div>' +
       '<div class="panel"><div class="panel-head"><h3>ผู้อนุมัติวันนี้</h3><span class="hint">' + esc(c.today) + '</span></div>' +
         (c.todayWho.length ? c.todayWho.map(w => '<div class="today-who"><span class="tl-no" style="--c:' + colors[(w.no - 1) % colors.length] + '">' + w.no + '</span><div><b>' + esc(w.name) + '</b>' + (w.source === 'ACTING' ? ' <span class="pill s-PENDING_APPROVAL">ผู้แทน</span>' : '') +
           '<div>' + (w.approvers.length ? w.approvers.map(p => '<span class="lbl-row">' + avatar(p.photo, p.name, 24) + esc(p.name) + '</span>').join('') : '<span class="hint" style="color:var(--bad)">ยังไม่กำหนด — เรื่องจะค้างที่ขั้นนี้</span>') + '</div></div></div>').join('')
@@ -1828,11 +1873,11 @@ const Pages = {
     $('#dlF').onsubmit = async e => {
       e.preventDefault();
       const f = UI.formData(e.target);
-      try { UI.loading(true); const r = await call('saveDelegation', { stepId: f.stepId, from: f.from, to: f.to, note: f.note, approvers: dlPeople.map(p => p.e) }); UI.loading(false); UI.toast('บันทึกผู้ปฏิบัติงานแทนแล้ว', 'ok'); Pages.approvalCfg(r); }
+      try { UI.loading(true); const r = await call('saveDelegation', { stepId: f.stepId, from: f.from, to: f.to, note: f.note, approvers: dlPeople.map(p => p.e) }); UI.loading(false); UI.toast('บันทึกผู้รักษาการแทนแล้ว', 'ok'); Pages.approvalCfg(r); }
       catch (err) { UI.err(err); }
     };
     $$('[data-dl]').forEach(x => x.onclick = async () => {
-      if (!await UI.confirm('ลบรายการผู้ปฏิบัติงานแทน', 'ยืนยันการลบ', { ok: 'ลบ', danger: true })) return;
+      if (!await UI.confirm('ลบรายการผู้รักษาการแทน', 'ยืนยันการลบ', { ok: 'ลบ', danger: true })) return;
       try { UI.loading(true); const r = await call('deleteDelegation', x.dataset.dl); UI.loading(false); Pages.approvalCfg(r); } catch (err) { UI.err(err); }
     });
   },
@@ -2354,7 +2399,7 @@ const Pages = {
         '<button class="btn btn-gold btn-sm" onclick="App.go(\'media\')">เปิดศูนย์จัดการรูปภาพ</button></div>' +
         '<div id="upStat" class="hint">กำลังตรวจสอบเซิร์ฟเวอร์เก็บรูป…</div></div>' +
       '<div class="panel"><div class="panel-head"><h3>ตั้งค่าระบบ</h3></div><form id="setF">' +
-      items.filter(i => i.key !== 'REQUIRE_ADMIN_APPROVAL').map(i => '<div class="field"><label>' + esc(i.key) + '</label>' +
+      items.filter(i => i.key !== 'REQUIRE_ADMIN_APPROVAL' && i.key !== 'ALLOW_SELF_REGISTER').map(i => '<div class="field"><label>' + esc(i.key) + '</label>' +
         (i.key === 'APPROVAL_MODE'
           ? '<select class="input" name="APPROVAL_MODE">' + [['DRIVER_FIRST', 'แจ้งคนขับทันที → คนขับกดรับ → รออนุมัติ → อนุมัติ (แนะนำ)'], ['APPROVE_FIRST', 'อนุมัติก่อน → แจ้งคนขับ → คนขับกดรับ'], ['NONE', 'ไม่ต้องอนุมัติ (คนขับกดรับแล้วยืนยันทันที)']]
               .map(o => '<option value="' + o[0] + '"' + (String(i.value).toUpperCase() === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select>'
