@@ -32,6 +32,9 @@
     .ap-st span{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#ddd;color:#555;font-weight:700;flex:none}
     .ap-st small{display:block;color:#76716D}
     .ap-st.DONE span{background:#1F7A3F;color:#fff} .ap-st.CURRENT{background:#EEEAFB} .ap-st.CURRENT span{background:#6D5BD0;color:#fff} .ap-st.REJECTED span{background:#9B1C1C;color:#fff}
+    .atts{display:flex;flex-direction:column;gap:6px;margin:-8px 0 18px;padding:10px 12px;background:#F6F5F2;border-radius:12px}
+    .atts b{font-family:'Prompt',sans-serif;color:#401D1B;font-size:14px}
+    .atts a{color:#2D5B8A;word-break:break-word}
     .msg{border-radius:14px;padding:16px;font-family:'Prompt',sans-serif;font-size:17px;text-align:center}
     .msg.ok{background:#E2F3E7;color:var(--ok)} .msg.bad{background:#FBE6E4;color:var(--bad)} .msg.info{background:var(--gold-soft);color:#7A5A00}
     .carimg{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;margin-bottom:14px;display:block;background:#eee}
@@ -69,6 +72,8 @@
   }
   const errText = e => String((e && e.message) || e).replace(/^(Exception|Error):\s*/, '');
   const ACTION = (location.search.match(/[?&]a=(\w+)/) || [])[1] || '';
+  const attHtml = b => (b.attachments && b.attachments.length) ? '<div class="atts"><b>เอกสารแนบ (' + b.attachments.length + ')</b>' +
+    b.attachments.map(a => '<a href="' + esc(a.url) + '" target="_blank" rel="noopener">' + (a.type === 'pdf' ? '📄 ' : '🖼 ') + esc(a.name) + '</a>').join('') + '</div>' : '';
   /* ---------- หน้าพิจารณาของผู้อนุมัติ (ลิงก์จากอีเมล) ---------- */
   function renderApprove() {
     const b = INFO.booking, tl = INFO.timeline;
@@ -81,7 +86,7 @@
       '<dl><dt>ผู้ขอ</dt><dd><b>' + esc(b.requesterName) + '</b>' + (b.requesterPosition ? ' • ' + esc(b.requesterPosition) : '') + '</dd><dt>หน่วยงาน</dt><dd>' + esc(b.department || '-') + '</dd>' +
       '<dt>สถานที่ไป</dt><dd><b>' + esc(b.destination) + '</b></dd><dt>วัตถุประสงค์</dt><dd>' + esc(b.purpose) + '</dd>' +
       '<dt>ภารกิจ</dt><dd>' + esc(TH[b.missionType] || b.missionType) + '</dd><dt>ผู้โดยสาร</dt><dd>' + esc(b.passengers) + ' คน</dd>' +
-      '<dt>รถ</dt><dd>' + esc(b.carPlate || 'ยังไม่ระบุ') + '</dd><dt>คนขับ</dt><dd>' + (b.noDriver ? 'ไม่ใช้พนักงานขับรถ' : esc(b.driverName || 'ยังไม่มีผู้รับงาน')) + '</dd></dl>';
+      '<dt>รถ</dt><dd>' + esc(b.carPlate || 'ยังไม่ระบุ') + '</dd><dt>คนขับ</dt><dd>' + (b.noDriver ? 'ไม่ใช้พนักงานขับรถ' : esc(b.driverName || 'ยังไม่มีผู้รับงาน')) + '</dd></dl>' + attHtml(b);
     if (INFO.state === 'OPEN') {
       html += '<div id="acts"><textarea id="note" placeholder="ความเห็น (ไม่บังคับสำหรับการอนุมัติ / จำเป็นเมื่อไม่อนุมัติ)" style="width:100%;min-height:64px;border:1.5px solid #E2E1DD;border-radius:12px;padding:10px;font:inherit;margin-bottom:10px"></textarea>' +
         '<button class="btn ok" id="ap">✓ อนุมัติขั้นที่ ' + INFO.step + '</button>' +
@@ -114,7 +119,7 @@
       '<dl><dt>สถานที่ไป</dt><dd><b>' + esc(b.destination) + '</b></dd><dt>ภารกิจ</dt><dd>' + esc(TH[b.missionType] || b.missionType) + '</dd>' +
       '<dt>วัตถุประสงค์</dt><dd>' + esc(b.purpose) + '</dd><dt>รถ</dt><dd>' + esc(b.carPlate || 'รอเจ้าหน้าที่จัดรถ') + '</dd>' +
       '<dt>ผู้จอง</dt><dd>' + esc(b.requesterName) + (b.department ? ' • ' + esc(b.department) : '') + (b.requesterPhone ? ' • ' + esc(b.requesterPhone) : '') + '</dd>' +
-      '<dt>ผู้โดยสาร</dt><dd>' + esc(b.passengers) + ' คน</dd></dl>';
+      '<dt>ผู้โดยสาร</dt><dd>' + esc(b.passengers) + ' คน</dd></dl>' + attHtml(b);
     if (INFO.state === 'OPEN') {
       html += '<div id="acts"><button class="btn" id="go">✋ รับงานนี้</button>' +
         '<p class="sub" style="text-align:center;margin:10px 0 14px;font-size:13px">' + (b.approved ? 'กดรับแล้วงานจะยืนยันทันที' : 'กดรับแล้วสถานะเป็น "รออนุมัติ" และระบบกันเวลาของคุณไว้ให้งานนี้') + ' • คนที่กดรับก่อนได้งาน</p>' +

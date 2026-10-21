@@ -145,6 +145,23 @@ img.avatar[data-zoom]{cursor:zoom-in}
 .tl-log{margin-top:6px;font-size:13.5px}
 .tl-side{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
 .tl-act{background:#6D5BD0;color:#fff}
+.att-box{border:1.5px dashed var(--line);border-radius:var(--r-md);padding:12px;background:#FCFBF8}
+.att-sec{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+.att-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.att-head b{font-family:var(--font-head);color:var(--maroon)}
+.att-head .btn{margin-left:auto}
+.att-list{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+.att-item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:#fff}
+.att-ic{width:52px;height:52px;border-radius:10px;display:grid;place-items:center;overflow:hidden;text-decoration:none;flex:none}
+.att-ic.pdf{background:#FBE6E4;color:var(--bad);font-family:var(--font-head);font-size:11px;grid-template-rows:auto auto;gap:0}
+.att-ic.pdf svg{width:22px;height:22px}
+.att-ic.img{background:var(--paper)}
+.att-ic.img img{width:100%;height:100%;object-fit:cover}
+.att-meta{display:flex;flex-direction:column;min-width:0}
+.att-meta a{text-decoration:none;color:var(--ink)}
+.att-meta b{font-family:var(--font-head);font-weight:500;word-break:break-word}
+.att-ops{display:flex;gap:4px}
+.att-empty{margin:0 0 8px}
 .tl-note{display:flex;gap:8px;align-items:flex-start;background:var(--info-soft);color:var(--info);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:4px}
 .tl-admin{margin-top:8px;font-size:13.5px;background:#FFF8E6;border-radius:10px;padding:10px 12px}
 .tl-admin b{font-family:var(--font-head);display:block;margin-bottom:4px;color:var(--maroon)}
@@ -556,7 +573,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
 /* =====================================================================
  *  EN-MSU Fleet — Client (Single Page App ใน Apps Script HtmlService)
  * ===================================================================== */
-const CLIENT_VERSION = '2569.10-r12';   // ต้องตรงกับ APP.VERSION ใน Code.gs
+const CLIENT_VERSION = '2569.10-r13';   // ต้องตรงกับ APP.VERSION ใน Code.gs
 const S = { token: null, user: null, settings: window.PUBLIC || {}, cars: [], drivers: [], page: null,
             charts: [], timer: null, cal: { mode: 'month', date: null, resource: 'car' }, filters: {} };
 
@@ -594,6 +611,8 @@ const ICON = {
   chart: '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-6"/>',
   camera: '<path d="M4 7h3l2-3h6l2 3h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="4"/>',
   fuel: '<path d="M3 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M3 11h11M14 8l4 3v7a2 2 0 0 0 4 0V9l-3-3"/>',
+  clip: '<path d="m21 12-8.5 8.5a6 6 0 0 1-8.5-8.5L12.5 3.5a4 4 0 0 1 5.7 5.7l-8.5 8.5a2 2 0 0 1-2.8-2.8L15 6.8"/>',
+  pdf: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 14h8M8 17h5"/>',
   download: '<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',
   refresh: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>'
 };
@@ -680,6 +699,45 @@ function pickAndUpload(kind, refId, maxSide) {
     };
     inp.click();
   });
+}
+
+/* ===== เอกสารแนบ (PDF/JPG/PNG) ===== */
+const ATT_MAX_MB = 10;
+/** เลือกไฟล์ 1 ไฟล์ -> คืน {name, data} (รูปย่อให้อัตโนมัติ, PDF ส่งตามจริง) */
+function pickDocFile() {
+  return new Promise((resolve, reject) => {
+    const inp = document.createElement('input'); inp.type = 'file';
+    inp.accept = 'application/pdf,image/jpeg,image/png,image/webp,.pdf,.jpg,.jpeg,.png';
+    inp.onchange = () => {
+      const f = inp.files && inp.files[0]; if (!f) return reject(new Error('ยกเลิก'));
+      const isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+      if (!isPdf && !/^image\//.test(f.type)) return reject(new Error('รองรับเฉพาะ PDF, JPG, PNG'));
+      if (isPdf && f.size > ATT_MAX_MB * 1048576) return reject(new Error('ไฟล์ PDF ใหญ่เกิน ' + ATT_MAX_MB + ' MB — กรุณาบีบอัดหรือแยกไฟล์'));
+      if (isPdf) {
+        const rd = new FileReader();
+        rd.onload = () => resolve({ name: f.name, data: String(rd.result).replace(/^data:[^;]*;/, 'data:application/pdf;') });
+        rd.onerror = () => reject(new Error('อ่านไฟล์ไม่ได้'));
+        rd.readAsDataURL(f);
+      } else shrinkImage(f, 2200).then(d => resolve({ name: f.name.replace(/\.[^.]+$/, '') + '.jpg', data: d }))
+        .catch(() => reject(new Error('อ่านรูปไม่ได้ (ไฟล์ HEIC จาก iPhone ให้เปลี่ยนเป็น JPG ก่อน)')));
+    };
+    inp.click();
+  });
+}
+const fmtKB = kb => kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : Math.round(kb || 0) + ' KB';
+/** รายการไฟล์แนบ */
+function attListHtml(list, opt) {
+  opt = opt || {};
+  if (!list || !list.length) return '<p class="hint att-empty">' + (opt.empty || 'ยังไม่มีเอกสารแนบ') + '</p>';
+  return '<div class="att-list">' + list.map(a => '<div class="att-item">' +
+    (a.type === 'pdf' ? '<a class="att-ic pdf" href="' + esc(a.url) + '" target="_blank" rel="noopener">' + ic('pdf') + '<span>PDF</span></a>'
+                      : '<a class="att-ic img" href="' + esc(a.url) + '" target="_blank" rel="noopener"><img src="' + esc(a.url) + '" alt="" loading="lazy" onerror="this.remove()"></a>') +
+    '<div class="att-meta"><a href="' + esc(a.url) + '" target="_blank" rel="noopener"><b>' + esc(a.name) + '</b></a>' +
+    '<span class="hint">' + (a.sizeKB ? fmtKB(a.sizeKB) + ' • ' : '') + (a.byName ? esc(a.byName) + ' • ' : '') + (a.at ? fDT(a.at) : '') +
+      (a.stage === 'EVIDENCE' ? ' • <span class="pill s-CONFIRMED" style="font-size:11px">หลักฐานหลังปฏิบัติงาน</span>' : a.stage === 'REQUEST' ? ' • <span class="pill s-COMPLETED" style="font-size:11px">ประกอบคำขอ</span>' : '') + '</span>' +
+      (a.note ? '<span class="hint">“' + esc(a.note) + '”</span>' : '') + '</div>' +
+    '<div class="att-ops"><a class="icon-btn" href="' + esc(a.url) + '" target="_blank" rel="noopener" title="เปิดดู">' + ic('zoom') + '</a>' +
+      (opt.canRemove && opt.canRemove(a) ? '<button type="button" class="icon-btn" data-attdel="' + esc(a.id) + '" title="ลบไฟล์">' + ic('trash') + '</button>' : '') + '</div></div>').join('') + '</div>';
 }
 
 function carById(id) { return S.cars.find(c => c.id === id); }
@@ -1216,6 +1274,8 @@ const Pages = {
       '<div class="field"><label>หน่วยงาน/ภาควิชา</label><input class="input" name="department" value="' + esc(u.department || '') + '"></div></div>' +
       '<input type="hidden" name="position" value="' + esc(u.position || '') + '">' +
       '<div class="field"><label>หมายเหตุ</label><input class="input" name="remark" placeholder="จุดนัดรับ, สัมภาระ ฯลฯ"></div>' +
+      '<div class="step-head"><span class="step-no">5</span><h3>เอกสารประกอบ <span class="hint">(ไม่บังคับ แต่แนะนำ)</span></h3><span class="hint">PDF / JPG / PNG ไฟล์ละไม่เกิน ' + ATT_MAX_MB + ' MB • แนบได้หลายไฟล์ ทีละไฟล์</span></div>' +
+      '<div class="att-box"><div id="bkAtt"></div><button type="button" class="btn btn-ghost btn-sm" id="bkAttBtn">' + ic('clip') + 'แนบไฟล์</button> <span class="hint" id="bkAttMsg">เช่น บันทึกข้อความขออนุมัติ หนังสือเชิญ กำหนดการ รายชื่อผู้เดินทาง</span></div>' +
       '<div class="summary" id="bkSummary"></div>' +
       '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap"><button type="button" class="btn btn-ghost" id="bkReset">ล้างฟอร์ม</button><button type="submit" class="btn btn-maroon" id="bkSubmit">' + ic('send') + 'ส่งคำขอจองรถ</button></div>' +
       '</form>';
@@ -1242,6 +1302,23 @@ const Pages = {
       drawMemo();
     }
     S.memoOn = memoOn;
+    // เอกสารแนบ (อัปโหลดทันทีที่เลือก แล้วผูกกับคำขอตอนส่ง)
+    S.newAtt = (draft && draft.att) || [];
+    const drawAtt = () => {
+      $('#bkAtt').innerHTML = attListHtml(S.newAtt, { empty: 'ยังไม่ได้แนบไฟล์', canRemove: () => true });
+      $$('#bkAtt [data-attdel]').forEach(x => x.onclick = () => { S.newAtt = S.newAtt.filter(a => a.id !== x.dataset.attdel); drawAtt(); Pages._saveDraft(); });
+    };
+    drawAtt();
+    $('#bkAttBtn').onclick = async () => {
+      try {
+        const fl = await pickDocFile();
+        $('#bkAttMsg').textContent = 'กำลังอัปโหลด ' + fl.name + '…'; $('#bkAttBtn').disabled = true;
+        const a = await call('uploadAttachment', '', fl.name, fl.data, '');
+        S.newAtt.push(Object.assign(a, { byName: S.user.name, at: Date.now() })); drawAtt(); Pages._saveDraft();
+        $('#bkAttMsg').textContent = '✔ แนบแล้ว ' + S.newAtt.length + ' ไฟล์ — แนบเพิ่มได้';
+      } catch (e) { if (e.message !== 'ยกเลิก') UI.err(e); $('#bkAttMsg').textContent = ''; }
+      finally { $('#bkAttBtn').disabled = false; }
+    };
     const setMission = v => { $$('#mType button').forEach(x => x.classList.toggle('on', x.dataset.v === v)); f.missionType.value = v; };
     setMission(f.missionType.value || 'INTERNAL');
     $$('#mType button').forEach(b => b.onclick = () => { setMission(b.dataset.v); Pages._saveDraft(); });
@@ -1275,8 +1352,9 @@ const Pages = {
     const v = {}; ['start', 'end', 'carId', 'driverId', 'missionType', 'destination', 'passengers', 'purpose', 'phone', 'department', 'remark',
       'obName', 'obPosition', 'obDepartment', 'obEmail', 'obPhone', 'obMemoNo', 'obMemoUrl'].forEach(k => { if (f.elements[k]) v[k] = f.elements[k].value; });
     if (f.memoOn) v.memoOn = f.memoOn.checked ? '1' : '';
-    const touched = v.destination || v.purpose || v.remark || v.carId || v.driverId || v.obName;
-    try { if (touched) localStorage.setItem(Pages._draftKey(), JSON.stringify({ v, savedAt: Date.now() })); } catch (e) {}
+    const att = S.newAtt || [];
+    const touched = v.destination || v.purpose || v.remark || v.carId || v.driverId || v.obName || att.length;
+    try { if (touched) localStorage.setItem(Pages._draftKey(), JSON.stringify({ v, att, savedAt: Date.now() })); } catch (e) {}
   },
   _clearDraft() { try { localStorage.removeItem(Pages._draftKey()); } catch (e) {} },
   async _checkAvail(quiet) {
@@ -1349,6 +1427,7 @@ const Pages = {
       d.onBehalf = { name: d.obName, position: d.obPosition, department: d.obDepartment, email: d.obEmail, phone: d.obPhone, memoNo: d.obMemoNo, memoUrl: d.obMemoUrl };
     }
     if (d.driverId === '__NONE__') { d.noDriver = true; d.driverId = ''; }
+    d.attachments = (S.newAtt || []).map(a => ({ id: a.id, url: a.url, path: a.path, name: a.name, type: a.type, sizeKB: a.sizeKB }));
     if (!d.carId) { UI.toast('กรุณาเลือกรถ', 'err'); $('#carPick').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
     if (!d.destination || !d.purpose) { UI.toast('กรุณากรอกสถานที่และวัตถุประสงค์', 'err'); (d.destination ? f.purpose : f.destination).focus(); return; }
     const btn = $('#bkSubmit'); btn.disabled = true;
@@ -1356,7 +1435,7 @@ const Pages = {
       UI.loading(true);
       const r = await call('createBooking', d);
       UI.loading(false);
-      Pages._clearDraft();
+      Pages._clearDraft(); S.newAtt = [];
       const msg = r.status === 'CONFIRMED' ? 'บันทึกและยืนยันการจองแล้ว'
         : r.status === 'PENDING_APPROVAL' ? 'บันทึกแล้ว สถานะ "รออนุมัติ" — ระบบแจ้งผู้บริหาร/ผู้ดูแลให้อนุมัติแล้ว'
         : r.notified ? (d.driverId ? 'ระบบส่งงานถึงพนักงานขับรถที่คุณเลือกแล้ว หากไม่รับภายในเวลาที่กำหนด ระบบจะส่งให้คนขับที่ว่างคนอื่น' : 'ระบบส่งอีเมลแจ้งงานถึงพนักงานขับรถที่ว่าง ' + r.notified + ' คนแล้ว') + ' คุณจะได้รับอีเมลยืนยันเมื่อมีผู้รับงาน'
@@ -1474,8 +1553,29 @@ const Pages = {
           (b.trip.note ? '<p class="hint" style="margin:8px 0 0">' + esc(b.trip.note) + '</p>' : '') +
           (b.trip.receipt ? '<a class="btn btn-ghost btn-sm" style="margin-top:8px" href="' + esc(b.trip.receipt) + '" target="_blank" rel="noopener">' + ic('camera') + 'ดูรูปใบเสร็จ/เลขไมล์</a>' : '') +
           '<p class="hint" style="margin:6px 0 0">บันทึกโดย ' + esc(b.trip.by || '-') + '</p></div>'
-          : (b.status === 'COMPLETED' ? '<div class="trip-box warn">ยังไม่ได้บันทึกระยะทางและค่าน้ำมันของงานนี้</div>' : '')),
+          : (b.status === 'COMPLETED' ? '<div class="trip-box warn">ยังไม่ได้บันทึกระยะทางและค่าน้ำมันของงานนี้</div>' : '')) +
+        '<div class="att-sec"><div class="att-head">' + ic('clip') + '<b>เอกสารแนบและหลักฐาน</b><span class="hint">' + (b.attachments || []).length + ' ไฟล์</span>' +
+          (b.canAttach ? '<button type="button" class="btn btn-ghost btn-sm" id="dAttBtn">' + ic('plus') + 'แนบไฟล์</button>' : '') + '</div>' +
+          attListHtml(b.attachments, { canRemove: a => b.canRemoveAttach || (b.canRemoveOwnAttach && String(a.by || '').toLowerCase() === b.me) }) +
+          (b.canAttach ? '<p class="hint" id="dAttMsg" style="margin:6px 0 0">PDF / JPG / PNG ไฟล์ละไม่เกิน ' + ATT_MAX_MB + ' MB' + (['COMPLETED', 'CONFIRMED'].indexOf(b.status) > -1 ? ' • ไฟล์ที่แนบตอนนี้จะบันทึกเป็น "หลักฐานหลังปฏิบัติงาน"' : '') + '</p>' : '') + '</div>',
       foot: acts.join('')
+    });
+    const reopen = () => { m.close(); Pages.bookingDetail(b, reload); };
+    const ab = m.el.querySelector('#dAttBtn');
+    if (ab) ab.onclick = async () => {
+      try {
+        const fl = await pickDocFile();
+        const note = await UI.confirm('แนบไฟล์ ' + esc(fl.name), 'ระบุคำอธิบายไฟล์ (ไม่บังคับ)', { input: 'คำอธิบาย เช่น ใบเสร็จค่าทางด่วน / รูปถ่ายขณะปฏิบัติงาน', ok: 'อัปโหลด', noGuard: true });
+        if (!note) return;
+        UI.loading(true); await call('uploadAttachment', b.id, fl.name, fl.data, note.trim()); UI.loading(false);
+        UI.toast('แนบไฟล์แล้ว', 'ok'); reopen();
+      } catch (e) { if (e.message !== 'ยกเลิก') UI.err(e); }
+    };
+    $$('[data-attdel]', m.el).forEach(x => x.onclick = async () => {
+      const a = (b.attachments || []).find(y => y.id === x.dataset.attdel);
+      const why = await UI.confirm('ลบไฟล์ ' + esc(a ? a.name : ''), 'ไฟล์จะถูกย้ายไปถังขยะบนเซิร์ฟเวอร์ (เก็บเป็นหลักฐาน) และบันทึกในประวัติ', { input: 'เหตุผล (ไม่บังคับ)', ok: 'ลบไฟล์', danger: true, noGuard: true });
+      if (!why) return;
+      try { UI.loading(true); await call('deleteAttachment', b.id, x.dataset.attdel, why.trim()); UI.loading(false); UI.toast('ลบไฟล์แล้ว', 'ok'); reopen(); } catch (e) { UI.err(e); }
     });
     const again = reload || (() => App.go(S.page));
     const done = msg => { m.close(); UI.toast(msg, 'ok'); again(); };
@@ -1578,6 +1678,7 @@ const Pages = {
        ['พนักงานขับรถ', b.noDriver ? 'ไม่ใช้พนักงานขับรถ' : (b.driverName || '-')], ['สถานะ', STATUS_TH[b.status] || b.status]]
         .map(r => '<tr><td>' + r[0] + '</td><td>' + esc(r[1] || '-') + '</td></tr>').join('') +
       (tl ? tl.steps.map(st => '<tr><td>ขั้นที่ ' + st.no + ' ' + esc(st.name) + '</td><td>' + (st.log ? esc((st.log.action === 'REJECT' ? 'ไม่อนุมัติ' : st.log.action === 'SKIP' ? 'ข้าม' : 'อนุมัติ') + ' — ' + st.log.name + ' ' + fDT(st.log.at) + (st.log.note ? ' “' + st.log.note + '”' : '')) : '-') + '</td></tr>').join('') : '') +
+      ((b.attachments || []).length ? '<tr><td>เอกสารแนบ</td><td>' + b.attachments.map(a => esc(a.name)).join('<br>') + '</td></tr>' : '') +
       '</table><p style="font-size:12px;color:#777">พิมพ์จากระบบ EN-MSU Fleet ' + fDT(Date.now()) + '</p><scr' + 'ipt>window.print()<\/scr' + 'ipt></body></html>');
     w.document.close();
   },

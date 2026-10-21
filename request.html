@@ -94,6 +94,12 @@
     .lb{position:fixed;inset:0;z-index:200;background:rgba(20,20,20,.85);display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
     .lb img{max-width:100%;max-height:86vh;border-radius:12px}
     .lb span{position:absolute;bottom:20px;left:0;right:0;text-align:center;color:#fff;font-family:var(--head)}
+    .att-box{border:1.5px dashed var(--line);border-radius:14px;padding:12px;background:#FCFBF8}
+    .att-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:#fff;margin-bottom:8px}
+    .att-ic{width:46px;height:46px;border-radius:10px;display:grid;place-items:center;overflow:hidden;background:#FBE6E4;color:var(--bad);font-family:var(--head);font-size:12px;text-decoration:none}
+    .att-ic img{width:100%;height:100%;object-fit:cover}
+    .att-item a.nm{color:var(--ink);font-family:var(--head);text-decoration:none;word-break:break-word}
+    .att-item button{border:0;background:var(--paper);border-radius:50%;width:32px;height:32px;cursor:pointer;color:var(--bad)}
     .check{display:flex;gap:10px;align-items:flex-start;font-size:15px;margin:6px 0 16px}
     .check input{width:20px;height:20px;margin-top:2px;accent-color:var(--maroon)}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:999px;padding:14px 28px;font-family:var(--head);font-weight:500;font-size:16px;cursor:pointer;text-decoration:none}
@@ -187,6 +193,10 @@
         <div class="field"><label>รายละเอียดการขอใช้รถ / วัตถุประสงค์ <span class="req">*</span></label>
           <textarea class="input" name="purpose" required placeholder="เช่น นำคณะทำงาน 5 คน ไปประชุมโครงการความร่วมมือ ออกเดินทางจากหน้าอาคาร EN1"></textarea></div>
         <div class="field"><label>หมายเหตุ</label><input class="input" name="remark" placeholder="จุดนัดรับ สัมภาระ ฯลฯ"></div>
+        <div class="field"><label>เอกสารประกอบการขอใช้รถ <span style="font-weight:400;color:var(--muted)">(ไม่บังคับ แต่แนะนำ)</span></label>
+          <div class="att-box"><div id="attList"><p class="hint" style="margin:0 0 8px">ยังไม่ได้แนบไฟล์</p></div>
+            <button type="button" class="btn btn-ghost" id="attBtn" style="padding:9px 18px;font-size:14.5px">📎 แนบไฟล์ (PDF / JPG / PNG)</button>
+            <p class="hint" id="attMsg" style="margin:8px 0 0">เช่น หนังสือขอความอนุเคราะห์ บันทึกข้อความ กำหนดการ • ไฟล์ละไม่เกิน 10 MB • แนบได้หลายไฟล์ ทีละไฟล์</p></div></div>
         <div class="summary" id="summary"></div>
         <label class="check"><input type="checkbox" name="confirm" required> <span>ข้าพเจ้ายืนยันว่าข้อมูลข้างต้นเป็นความจริง และยินยอมให้คณะวิศวกรรมศาสตร์ใช้ข้อมูลนี้เพื่อติดต่อกลับเกี่ยวกับคำขอใช้รถ <span class="req" style="color:var(--bad)">*</span></span></label>
         <div class="actions"><a class="btn btn-ghost home-go" href="index.html">ยกเลิก</a><button class="btn btn-maroon" type="submit" id="send">
@@ -318,20 +328,64 @@
         '<span>' + esc(f.destination.value || 'ยังไม่ระบุสถานที่') + ' • ' + esc(f.passengers.value || 0) + ' คน</span></div></div>';
     }
 
+    /* ---------- เอกสารแนบ (ไม่บังคับ) ---------- */
+    let ATT = [];
+    function drawAtt() {
+      $('#attList').innerHTML = ATT.length ? ATT.map(a => '<div class="att-item">' +
+        '<a class="att-ic" href="' + esc(a.url) + '" target="_blank" rel="noopener">' + (a.type === 'pdf' ? 'PDF' : '<img src="' + esc(a.url) + '" alt="">') + '</a>' +
+        '<div><a class="nm" href="' + esc(a.url) + '" target="_blank" rel="noopener">' + esc(a.name) + '</a><div class="hint">' + (a.sizeKB >= 1024 ? (a.sizeKB / 1024).toFixed(1) + ' MB' : Math.round(a.sizeKB || 0) + ' KB') + '</div></div>' +
+        '<button type="button" data-rm="' + esc(a.id) + '" aria-label="ลบไฟล์">✕</button></div>').join('') : '<p class="hint" style="margin:0 0 8px">ยังไม่ได้แนบไฟล์</p>';
+      document.querySelectorAll('#attList [data-rm]').forEach(x => x.onclick = () => { ATT = ATT.filter(a => a.id !== x.dataset.rm); drawAtt(); saveDraft(); });
+    }
+    function readFile(f) {
+      return new Promise((ok, bad) => {
+        const isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+        if (!isPdf && !/^image\//.test(f.type)) return bad(new Error('รองรับเฉพาะ PDF, JPG, PNG'));
+        if (isPdf && f.size > 10 * 1048576) return bad(new Error('ไฟล์ PDF ใหญ่เกิน 10 MB'));
+        if (isPdf) { const rd = new FileReader(); rd.onload = () => ok({ name: f.name, data: String(rd.result).replace(/^data:[^;]*;/, 'data:application/pdf;') }); rd.onerror = () => bad(new Error('อ่านไฟล์ไม่ได้')); return rd.readAsDataURL(f); }
+        const img = new Image(), u = URL.createObjectURL(f);
+        img.onload = () => {
+          const k = Math.min(1, 2200 / Math.max(img.width, img.height)), cv = document.createElement('canvas');
+          cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
+          const cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(img, 0, 0, cv.width, cv.height);
+          URL.revokeObjectURL(u); ok({ name: f.name.replace(/\.[^.]+$/, '') + '.jpg', data: cv.toDataURL('image/jpeg', 0.85) });
+        };
+        img.onerror = () => bad(new Error('อ่านรูปไม่ได้ (ไฟล์ HEIC ให้เปลี่ยนเป็น JPG ก่อน)'));
+        img.src = u;
+      });
+    }
+    $('#attBtn').addEventListener('click', () => {
+      const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png';
+      inp.onchange = async () => {
+        const f = inp.files && inp.files[0]; if (!f) return;
+        const btn = $('#attBtn'), msg = $('#attMsg');
+        try {
+          btn.disabled = true; msg.textContent = 'กำลังอัปโหลด ' + f.name + '…';
+          const fl = await readFile(f);
+          const a = await api('uploadPublicAttachment', [fl.name, fl.data]);
+          ATT.push(a); drawAtt(); saveDraft();
+          msg.textContent = '✔ แนบแล้ว ' + ATT.length + ' ไฟล์ — แนบเพิ่มได้';
+        } catch (e) { msg.textContent = '✖ ' + e.message; }
+        finally { btn.disabled = false; }
+      };
+      inp.click();
+    });
+
     /* ---------- ร่างอัตโนมัติ: เผลอปิด/รีเฟรช/ย้อนกลับ ข้อมูลไม่หาย ---------- */
     const DKEY = 'fleet_ext_draft';
     const FIELDS = ['name', 'position', 'agency', 'email', 'phone', 'start', 'end', 'missionType', 'destination', 'passengers', 'purpose', 'remark', 'carId', 'driverId'];
     let submitted = false;
     function saveDraft() {
       const v = {}; FIELDS.forEach(k => v[k] = f.elements[k] ? f.elements[k].value : '');
-      if (!(v.name || v.agency || v.email || v.phone || v.destination || v.purpose)) return;
-      try { localStorage.setItem(DKEY, JSON.stringify({ v, at: Date.now() })); } catch (e) {}
+      if (!(v.name || v.agency || v.email || v.phone || v.destination || v.purpose || ATT.length)) return;
+      try { localStorage.setItem(DKEY, JSON.stringify({ v, att: ATT, at: Date.now() })); } catch (e) {}
     }
     function clearDraft() { try { localStorage.removeItem(DKEY); } catch (e) {} }
     try {
       const dr = JSON.parse(localStorage.getItem(DKEY) || 'null');
       if (dr && dr.v && Date.now() - dr.at < 14 * 86400000) {
         FIELDS.forEach(k => { if (f.elements[k] && dr.v[k] !== undefined && dr.v[k] !== '') f.elements[k].value = dr.v[k]; });
+        if (Array.isArray(dr.att)) { ATT = dr.att; drawAtt(); }
         document.querySelectorAll('#mType button').forEach(x => x.classList.toggle('on', x.dataset.v === f.missionType.value));
         const t = new Date(dr.at);
         $('#draftText').textContent = 'กู้คืนข้อมูลที่คุณกรอกค้างไว้ (' + t.toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) + ') ให้แล้ว';
@@ -389,6 +443,7 @@
       err.classList.add('hidden');
       const data = {}; new FormData(f).forEach((val, k) => data[k] = typeof val === 'string' ? val.trim() : val);
       data.confirm = f.confirm.checked;
+      data.attachments = ATT;
       const btn = $('#send'); btn.disabled = true; btn.lastChild.textContent = 'กำลังส่งคำขอ…';
       api('submitExternalRequest', [data]).then(r => {
         submitted = true; clearDraft();
