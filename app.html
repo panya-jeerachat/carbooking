@@ -574,7 +574,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
 /* =====================================================================
  *  EN-MSU Fleet — Client (Single Page App ใน Apps Script HtmlService)
  * ===================================================================== */
-const CLIENT_VERSION = '2569.10-r14';   // ต้องตรงกับ APP.VERSION ใน Code.gs
+const CLIENT_VERSION = '2569.10-r15';   // ต้องตรงกับ APP.VERSION ใน Code.gs
 const S = { token: null, user: null, settings: window.PUBLIC || {}, cars: [], drivers: [], page: null,
             charts: [], timer: null, cal: { mode: 'month', date: null, resource: 'car' }, filters: {} };
 
@@ -994,7 +994,7 @@ const App = {
       const r = await api('login', $('#lgUser').value, $('#lgPass').value);
       S.token = r.token; store.set('fleet_token', r.token);
       $('#lgPass').value = ''; $('#lgPicked').classList.add('hidden');
-      await App.boot();
+      await App.boot(r.boot);
       if (r.defaultPassword) setTimeout(() => UI.toast('คุณกำลังใช้รหัสผ่านเริ่มต้น 123456 — เปลี่ยนได้ที่ "บัญชีของฉัน" (ไม่บังคับ)'), 600);
     } catch (err) { UI.err(err); }
     finally { btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ'; }
@@ -1010,8 +1010,9 @@ const App = {
       e.target.reset(); UI.showRegister(false); $('#lgUser').value = d.username;
     } catch (err) { UI.err(err); }
   },
-  async boot() {
-    const b = await call('getBootstrap');
+  async boot(pre) {
+    const b = pre || await call('getBootstrap', true);
+    S.prefetch = { dashboard: b.dash || null };
     S.user = b.user; S.settings = b.settings; S.cars = b.cars; S.drivers = b.drivers; S.approverSteps = b.approverSteps || []; S.isApprover = !!b.isApprover;
     App.versionCheck(b.serverVersion);
     $('#loginView').classList.add('hidden'); $('#appView').classList.remove('hidden');
@@ -1083,7 +1084,8 @@ const Pages = {
 
   /* ---------- Dashboard ---------- */
   async dashboard(silent) {
-    const d = await call('getDashboard');
+    let d = S.prefetch && S.prefetch.dashboard;
+    if (d) S.prefetch.dashboard = null; else d = await call('getDashboard');
     if (S.page !== 'dashboard') return;
     S.charts.forEach(c => c.destroy()); S.charts = [];
     const k = d.kpi, role = S.user.role;

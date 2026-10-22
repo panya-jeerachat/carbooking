@@ -75,6 +75,90 @@
     .step-detail ol{margin:0;padding-left:20px;line-height:1.9}
     @media (max-width:640px){ .im-hero{grid-template-columns:1fr} .sch div{grid-template-columns:1fr} }
     .car-ph img{cursor:zoom-in}
+    /* ===== รายงานผลการดำเนินงาน ===== */
+    .rp-head{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+    .rp-tools{margin-left:auto;display:flex;gap:8px;align-items:center}
+    .fy-sel{border:1.5px solid var(--line);border-radius:999px;padding:8px 14px;font-family:var(--head);font-size:14.5px;background:#fff;color:var(--maroon)}
+    .rp-card{background:#fff;border:1px solid #E6E8F0;border-radius:22px;padding:20px;box-shadow:0 12px 30px -22px rgba(30,60,140,.35)}
+    .rp-card h3{font-family:var(--head);font-size:17px;color:#1C2A4A;display:flex;align-items:center;gap:8px;margin:0}
+    .rp-card .sub{font-size:13px;color:#7A86A0;margin:4px 0 14px}
+    .kpis2{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+    .kp{position:relative;overflow:hidden;border:0;border-radius:18px;padding:14px 16px;text-align:left;cursor:pointer;color:#fff;font:inherit;background:var(--g);box-shadow:0 10px 24px -16px var(--sh);transition:transform .15s}
+    .kp:hover{transform:translateY(-2px)}
+    .kp::after{content:"";position:absolute;right:-18px;top:-18px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.15)}
+    .kp b{display:block;font-family:var(--head);font-size:28px;line-height:1.15}
+    .kp b small{font-size:14px;font-weight:500;opacity:.9}
+    .kp span{font-size:13.5px;opacity:.95}
+    .kp em{display:block;font-style:normal;font-size:12px;opacity:.85;margin-top:2px}
+    .rp-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:16px;margin-top:16px}
+    .tabs2{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+    .tabs2 button{border:1.5px solid #DCE2EF;background:#fff;border-radius:999px;padding:6px 13px;font-family:var(--head);font-size:13px;color:#33415C;cursor:pointer}
+    .tabs2 button.on{background:linear-gradient(135deg,#1D6FE0,#3B8DF5);border-color:#1D6FE0;color:#fff;box-shadow:0 6px 14px -8px #1D6FE0}
+    .bars{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px;align-items:end;height:250px;padding:26px 4px 0;border-bottom:1px dashed #E3E7F0;background:repeating-linear-gradient(to top,transparent 0 49px,#F1F3F8 49px 50px)}
+    .bar{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:pointer;border:0;background:none;padding:0;font:inherit}
+    .bar i{display:block;width:78%;min-height:3px;border-radius:10px 10px 6px 6px;background:linear-gradient(180deg,#5AB2FF,#2F86F0);transition:height .5s cubic-bezier(.2,.8,.2,1),filter .15s}
+    .bar:hover i{filter:brightness(1.08)}
+    .bar.peak i{background:linear-gradient(180deg,#FFD166,#F59E0B)}
+    .bar.peak{background:rgba(255,193,7,.12);border-radius:12px}
+    .bar.last i{background:linear-gradient(180deg,#5EE6A8,#10B981)}
+    .bar.last{background:rgba(16,185,129,.10);border-radius:12px}
+    .bar .v{font-family:var(--head);font-size:12px;font-weight:600;color:#1F4E9A;margin-bottom:6px}
+    .bar.zero .v{color:#B4BCCB}
+    .xl{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px;text-align:center;font-size:12px;color:#5D6B85;margin-top:6px}
+    .xl small{display:block;color:#9AA4B8;font-size:11px}
+    .legend2{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:#6B778F;margin-top:10px}
+    .legend2 span::before{content:"";display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+    .sv-boxes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .sv{border:1px solid #E6E8F0;border-left:5px solid var(--c);border-radius:14px;padding:12px;cursor:pointer;background:#fff}
+    .sv.total{background:linear-gradient(135deg,#EEF5FF,#F6FAFF)}
+    .sv span{font-size:13px;color:#53607A}
+    .sv b{display:block;font-family:var(--head);font-size:26px;color:var(--c);line-height:1.2}
+    .sv b small{font-size:13px;color:#7A86A0;font-weight:500}
+    .sv em{font-style:normal;font-size:12px;color:#8994AA}
+    .stack{display:flex;height:22px;border-radius:999px;overflow:hidden;margin:16px 0 6px;background:#EEF1F6}
+    .stack i{display:block;height:100%}
+    .ring{width:170px;height:170px;border-radius:50%;margin:6px auto 10px;display:grid;place-items:center;background:conic-gradient(#22C55E calc(var(--p)*1%),#E8F7EE 0);cursor:pointer}
+    .ring > div{width:132px;height:132px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}
+    .ring b{font-family:var(--head);font-size:32px;color:#15803D;line-height:1}
+    .ring span{font-size:12px;color:#6B778F}
+    .hist{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;align-items:end;height:110px;background:#F5FBF7;border:1px solid #DDF1E4;border-radius:14px;padding:10px 10px 6px;cursor:pointer}
+    .hist div{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:11.5px;color:#5D6B85}
+    .hist i{width:70%;border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,#86EFAC,#16A34A)}
+    .hist .na{color:#A3ADBF;font-size:11px;margin-bottom:auto;margin-top:18px}
+    .hist .cur i{box-shadow:0 0 0 3px #BBF7D0}
+    .props{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}
+    .donut{width:150px;height:150px;border-radius:50%;margin:4px auto 10px;display:grid;place-items:center}
+    .donut div{width:92px;height:92px;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center;font-family:var(--head);color:#1C2A4A}
+    .donut div small{display:block;font-family:var(--body);font-size:11.5px;color:#7A86A0}
+    .lg{display:flex;flex-direction:column;gap:6px}
+    .lg button{display:flex;align-items:center;gap:8px;border:0;background:#F7F8FB;border-radius:10px;padding:6px 10px;font:inherit;font-size:13.5px;cursor:pointer;text-align:left}
+    .lg button i{width:12px;height:12px;border-radius:4px;flex:none}
+    .lg button b{margin-left:auto;font-family:var(--head)}
+    .hbars{display:flex;flex-direction:column;gap:8px}
+    .hb{display:grid;grid-template-columns:minmax(0,1fr) 46px;gap:8px;align-items:center;font-size:13px;cursor:pointer;border:0;background:none;padding:0;text-align:left;font:inherit}
+    .hb .t{display:flex;flex-direction:column;gap:3px;min-width:0}
+    .hb .t span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+    .hb .t i{display:block;height:9px;border-radius:99px;background:var(--c)}
+    .hb b{font-family:var(--head);text-align:right;font-size:13.5px}
+    .mtable{overflow-x:auto;border:1px solid #E6E8F0;border-radius:16px;margin-top:16px;background:#fff}
+    .mtable table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:980px}
+    .mtable th{background:linear-gradient(135deg,#1E3A8A,#2563EB);color:#fff;font-family:var(--head);font-weight:500;padding:10px 8px;text-align:right;white-space:nowrap}
+    .mtable th:first-child,.mtable td:first-child{text-align:left}
+    .mtable td{padding:9px 8px;border-top:1px solid #EEF1F6;text-align:right}
+    .mtable tbody tr{cursor:pointer}
+    .mtable tbody tr:hover{background:#F5F9FF}
+    .mtable tfoot td{font-family:var(--head);font-weight:600;background:#F2F6FF}
+    .mtable .r-ok{color:#15803D;font-weight:600}
+    .cum{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;margin-top:16px;padding:14px 18px;border-radius:18px;color:#fff;background:linear-gradient(120deg,#401D1B,#7A3A16 45%,#C59701)}
+    .cum b{font-family:var(--head);font-size:20px;color:#FFE08A}
+    .cum span{font-size:13.5px}
+    .pop-kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .pop-kv div{background:#F6F8FC;border-radius:12px;padding:10px}
+    .pop-kv span{display:block;font-size:12px;color:#7A86A0}
+    .pop-kv b{font-family:var(--head);font-size:18px;color:#1C2A4A}
+    .pop-note{font-size:13px;color:#6B778F;background:#FFF8E6;border-radius:10px;padding:10px 12px}
+    @media (max-width:1060px){ .rp-grid,.props{grid-template-columns:1fr} .kpis2{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    @media (max-width:640px){ .bars,.xl{gap:4px} .bar .v{font-size:10px} .sv-boxes{grid-template-columns:1fr} .pop-kv{grid-template-columns:1fr 1fr} .rp-tools{margin-left:0} }
     .lb{position:fixed;inset:0;z-index:300;background:rgba(20,20,20,.85);display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
     .lb img{max-width:100%;max-height:86vh;border-radius:12px}
     .lb span{position:absolute;bottom:20px;left:0;right:0;text-align:center;color:#fff;font-family:var(--head)}
@@ -276,6 +360,7 @@
         <a href="#fleet">สถานะรถ</a>
         <a href="#drivers">พนักงานขับรถ</a>
         <a href="#how">ขั้นตอนการขอใช้รถ</a>
+        <a href="#report">รายงานผล</a>
         <a href="request.html" class="ext-nav">หน่วยงานอื่นขอใช้รถ</a>
       </nav>
       <button class="btn btn-maroon btn-sm" data-login>
@@ -353,11 +438,20 @@
     <section class="block" id="how">
       <div class="sec-head"><h2>ขั้นตอนการขอใช้รถ</h2></div>
       <div class="steps">
-        <div class="step" data-step="0" tabindex="0" role="button"><h3>เข้าสู่ระบบ</h3><p>กด "เข้าสู่ระบบเจ้าหน้าที่" ใช้ชื่อผู้ใช้ของระบบ หรือสมัครบัญชีผู้ขอใช้รถครั้งแรก</p></div>
+        <div class="step" data-step="0" tabindex="0" role="button"><h3>เข้าสู่ระบบ / ยื่นคำขอ</h3><p>บุคลากรเข้าสู่ระบบด้วยอีเมลมหาวิทยาลัย • หน่วยงานอื่นใช้แบบฟอร์ม "หน่วยงานอื่นขอใช้รถ" ไม่ต้องมีบัญชี</p></div>
         <div class="step" data-step="1" tabindex="0" role="button"><h3>เลือกเวลา รถ และพนักงานขับรถ</h3><p>ระบบแสดงรูปรถจริง ป้ายทะเบียน และพนักงานขับรถที่ว่างจริงในช่วงเวลานั้นให้เลือก</p></div>
         <div class="step" data-step="2" tabindex="0" role="button"><h3>พนักงานขับรถรับงาน</h3><p>ระบบส่งงานถึงคนขับที่คุณเลือก หรือคนขับที่ว่างทุกคน คนแรกที่กดรับจะได้งาน</p></div>
         <div class="step" data-step="3" tabindex="0" role="button"><h3>รับอีเมลยืนยัน</h3><p>คุณได้รับอีเมลแจ้งชื่อและเบอร์โทรพนักงานขับรถ ติดตามสถานะได้ในระบบ</p></div>
       </div>
+    </section>
+
+    <!-- ===== รายงานผลการดำเนินงาน (เปิดเผยข้อมูลสาธารณะ) ===== -->
+    <section class="block" id="report">
+      <div class="sec-head rp-head">
+        <div><h2>รายงานผลการดำเนินงาน</h2><p>เปิดเผยข้อมูลสรุปเชิงสถิติอย่างโปร่งใส • ไม่มีข้อมูลส่วนบุคคล (PDPA) • กดที่การ์ด/แท่งกราฟเพื่อดูรายละเอียด</p></div>
+        <div class="rp-tools"><label for="fySel" class="hint">ปีงบประมาณ</label><select id="fySel" class="fy-sel"></select><span class="hint" id="rpUpd"></span></div>
+      </div>
+      <div id="rpWrap"><div class="skeleton" style="height:180px"></div></div>
     </section>
   </main>
 
@@ -467,6 +561,21 @@
       const [y, m, d] = key.split('-').map(Number);
       const a = Date.UTC(y, m - 1, d) - OFF, b = a + DAY;          // 00:00–24:00 เวลาไทย (ms)
       return cal.bookings.filter(x => x.start < b && x.end > a);
+    }
+    function calRange() { const s = gridStart(); return [ymd(s), ymd(new Date(s.getTime() + 42 * DAY))]; }
+    /** โหลดครั้งเดียว: สถานะ + ปฏิทิน (+ รายงาน) — ลดจำนวนการเรียกเซิร์ฟเวอร์ */
+    let STATS = null, FY = 0, statsAt = 0;
+    function loadHome() {
+      const r = calRange(), needStats = !STATS || Date.now() - statsAt > 600000;
+      $('#monthTitle').textContent = MONTHS[view.getUTCMonth()] + ' ' + (view.getUTCFullYear() + 543);
+      return api('getPublicHome', [r[0], r[1], FY || 0, needStats]).then(d => {
+        board = d.board; renderBoard(); cal = d.calendar; renderMonth();
+        if (d.stats) { STATS = d.stats; FY = STATS.fy; statsAt = Date.now(); renderReport(); }
+      }).catch(() => {
+        $('#updated').textContent = 'เชื่อมต่อไม่ได้';
+        if (!cal) $('#month').innerHTML = '<div class="cal-state">ยังโหลดข้อมูลไม่ได้ กรุณารีเฟรชหน้านี้อีกครั้ง</div>';
+        if (!STATS) $('#rpWrap').innerHTML = '<p class="empty-s">ยังโหลดรายงานไม่ได้</p>';
+      });
     }
     function loadCalendar() {
       const s = gridStart(), e = new Date(s.getTime() + 42 * DAY);
@@ -667,6 +776,160 @@
     });
     $('#todayDetail').addEventListener('click', () => openDay(todayKey));
 
+    /* ===================== รายงานผลการดำเนินงาน (เปิดเผยข้อมูล) ===================== */
+    const nf = (n, d) => (n == null || isNaN(n)) ? '-' : Number(n).toLocaleString('th-TH', { maximumFractionDigits: d == null ? 0 : d });
+    const fyLabel = f => 'ปีงบประมาณ ' + f;
+    const mLabel = ym => { const [y, m] = ym.split('-').map(Number); return [MS[m - 1], String(y + 543).slice(2)]; };
+    const METRICS = [
+      ['received', 'จำนวนคำขอ', 'ครั้ง', 'จำนวนคำขอใช้รถที่รับเข้าระบบในแต่ละเดือน'],
+      ['success', 'เที่ยวที่สำเร็จ', 'เที่ยว', 'จำนวนเที่ยวที่ให้บริการเสร็จสิ้น'],
+      ['km', 'ระยะทาง', 'กม.', 'ระยะทางไป-กลับรวมของเที่ยวที่เสร็จสิ้น'],
+      ['hours', 'ชั่วโมงให้บริการ', 'ชม.', 'ชั่วโมงการใช้รถรวมของเที่ยวที่เสร็จสิ้น'],
+      ['avgHours', 'เวลาเฉลี่ย/เที่ยว', 'ชม.', 'ชั่วโมงให้บริการเฉลี่ยต่อเที่ยว'],
+      ['hoursSaved', 'เวลาที่ประหยัด', 'ชม.', ''],
+      ['paper', 'กระดาษที่ลด', 'แผ่น', ''],
+      ['value', 'มูลค่าที่ประหยัด', 'บาท', '']
+    ];
+    let metric = 'received';
+    function currentYm() { const d = bk(Date.now()); return d.getUTCFullYear() + '-' + p2(d.getUTCMonth() + 1); }
+    function renderReport() {
+      const S = STATS, t = S.total, R = S.rate;
+      $('#fySel').innerHTML = S.fyList.map(f => '<option value="' + f + '"' + (f === S.fy ? ' selected' : '') + '>' + fyLabel(f) + (f === S.nowFy ? ' (ปัจจุบัน)' : '') + '</option>').join('');
+      $('#rpUpd').textContent = 'อัปเดต ' + tm(S.generatedAt) + ' น.';
+      METRICS[5][3] = 'คำขอ × ' + R.minutes + ' นาที (เทียบงานเอกสารกระดาษ)';
+      METRICS[6][3] = 'คำขอ × ' + R.paper + ' แผ่น';
+      METRICS[7][3] = 'เวลาที่ประหยัด × ' + R.labor + ' บาท/ชม. + กระดาษ × ' + R.paperCost + ' บาท/แผ่น';
+      const kp = (id, val, unit, label, sub, g, sh) => '<button type="button" class="kp" data-kp="' + id + '" style="--g:' + g + ';--sh:' + sh + '"><b>' + val + (unit ? ' <small>' + unit + '</small>' : '') + '</b><span>' + label + '</span>' + (sub ? '<em>' + sub + '</em>' : '') + '</button>';
+      const closedTxt = t.closed ? 'สำเร็จ ' + nf(t.success) + ' จาก ' + nf(t.closed) + ' งานที่ปิดแล้ว' : 'ยังไม่มีงานที่ปิดสถานะ';
+      let h = '<div class="kpis2">' +
+        kp('received', nf(t.received), 'เรื่อง', 'รับคำขอทั้งหมด', fyLabel(S.fy), 'linear-gradient(135deg,#1D4ED8,#3B82F6)', '#1D4ED8') +
+        kp('success', nf(t.success), 'เรื่อง', 'สำเร็จ (เสร็จสิ้น)', nf(t.km, 1) + ' กม. • ' + nf(t.hours, 1) + ' ชม.', 'linear-gradient(135deg,#059669,#34D399)', '#059669') +
+        kp('inProgress', nf(t.inProgress), 'เรื่อง', 'กำลังดำเนินการ', 'ยืนยันแล้ว/รอคนขับรับงาน', 'linear-gradient(135deg,#0891B2,#22D3EE)', '#0891B2') +
+        kp('pending', nf(t.pending), 'เรื่อง', 'รออนุมัติ', 'อยู่ระหว่างพิจารณา', 'linear-gradient(135deg,#D97706,#FBBF24)', '#D97706') +
+        kp('rejected', nf(t.rejected), 'เรื่อง', 'ไม่อนุมัติ (ไม่สำเร็จ)', '', 'linear-gradient(135deg,#B91C1C,#F87171)', '#B91C1C') +
+        kp('cancelled', nf(t.cancelled), 'เรื่อง', 'ยกเลิก', 'ผู้ขอยกเลิกเอง', 'linear-gradient(135deg,#4B5563,#9CA3AF)', '#4B5563') +
+        kp('rate', t.rate == null ? '-' : nf(t.rate, 2), '%', 'อัตราความสำเร็จ', closedTxt, 'linear-gradient(135deg,#6D28D9,#A78BFA)', '#6D28D9') +
+        kp('value', nf(t.value), 'บาท', 'มูลค่าที่ประหยัดได้', nf(t.paper) + ' แผ่น • ' + nf(t.hoursSaved, 1) + ' ชม.', 'linear-gradient(135deg,#401D1B,#C59701)', '#7A3A16') +
+        '</div>';
+      // แนวโน้มรายเดือน
+      h += '<div class="rp-card"><div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap"><div><h3>📈 แนวโน้มผลการดำเนินงานรายเดือน</h3><p class="sub" id="trSub"></p></div>' +
+        '<div class="tabs2" id="trTabs">' + METRICS.map(m => '<button type="button" data-m="' + m[0] + '" class="' + (m[0] === metric ? 'on' : '') + '">' + m[1] + '</button>').join('') + '</div></div>' +
+        '<div class="bars" id="trBars"></div><div class="xl" id="trX"></div>' +
+        '<div class="legend2"><span style="--c:#3B8DF5">เดือนทั่วไป</span><span style="--c:#F59E0B">เดือนที่สูงสุด (Peak)</span><span style="--c:#10B981">เดือนล่าสุด</span><span>• กดที่แท่งเพื่อดูรายละเอียดเดือน</span></div></div>';
+      // มูลค่า + คุณภาพ
+      const pct = t.value ? Math.round(t.valueTime / t.value * 1000) / 10 : 0;
+      const mWith = S.months.filter(m => m.received).length || 1;
+      h += '<div class="rp-grid"><div class="rp-card"><h3>💰 มูลค่าสะสมที่ประหยัดได้จากการเปลี่ยนผ่านสู่ระบบดิจิทัล (บาท)</h3>' +
+        '<p class="sub">คำนวณจากต้นทุนแรงงานเฉลี่ย ' + nf(R.labor) + ' บาท/ชั่วโมง (' + R.minutes + ' นาที/คำขอ) และต้นทุนกระดาษรวมหมึก-การพิมพ์-การจัดเก็บ ' + nf(R.paperCost) + ' บาท/แผ่น (' + R.paper + ' แผ่น/คำขอ)</p>' +
+        '<div class="sv-boxes"><div class="sv" data-kp="time" style="--c:#1D6FE0"><span>มูลค่าจากเวลาที่ประหยัด</span><b>' + nf(t.valueTime) + ' <small>บาท</small></b><em>' + nf(t.hoursSaved, 1) + ' ชม. × ' + nf(R.labor) + ' บาท/ชม.</em></div>' +
+        '<div class="sv" data-kp="paper" style="--c:#0F9D8A"><span>มูลค่าจากกระดาษที่ลดใช้</span><b>' + nf(t.valuePaper) + ' <small>บาท</small></b><em>' + nf(t.paper) + ' แผ่น × ' + nf(R.paperCost) + ' บาท/แผ่น</em></div>' +
+        '<div class="sv total" data-kp="value" style="--c:#1E3A8A"><span>มูลค่ารวมสะสม</span><b>' + nf(t.value) + ' <small>บาท</small></b><em>รวมทั้งสองรายการ</em></div></div>' +
+        '<div class="stack" title="สัดส่วนมูลค่า"><i style="width:' + pct + '%;background:linear-gradient(90deg,#3B82F6,#1D4ED8)"></i><i style="width:' + (100 - pct) + '%;background:linear-gradient(90deg,#2DD4BF,#0F9D8A)"></i></div>' +
+        '<div class="legend2"><span style="--c:#1D6FE0">เวลาที่ประหยัด ' + nf(t.valueTime) + ' บาท (' + pct + '%)</span><span style="--c:#0F9D8A">กระดาษที่ลดใช้ ' + nf(t.valuePaper) + ' บาท (' + Math.round((100 - pct) * 10) / 10 + '%)</span></div>' +
+        '<p class="hint" style="margin:10px 0 0">• เฉลี่ย ' + nf(t.value / mWith) + ' บาท/เดือน • เทียบเท่าการทำงาน ' + nf(t.hoursSaved / 7, 1) + ' วันทำงาน (7 ชม./วัน)</p></div>';
+      const prevTxt = S.prevRate != null && t.rate != null ? ((t.rate - S.prevRate >= 0 ? '▲ ' : '▼ ') + nf(Math.abs(t.rate - S.prevRate), 2) + ' จุด เทียบปีงบ ' + (S.fy - 1) + ' (' + nf(S.prevRate, 2) + '%)') : 'ยังไม่มีข้อมูลปีก่อนให้เปรียบเทียบ';
+      h += '<div class="rp-card"><h3>🎯 คุณภาพการให้บริการ</h3><p class="sub">อัตราความสำเร็จของงานที่ปิดสถานะแล้ว ' + fyLabel(S.fy) + ' (1 ต.ค. ' + (S.fy - 1) + ' – 30 ก.ย. ' + S.fy + ')</p>' +
+        '<div class="ring" data-kp="rate" style="--p:' + (t.rate || 0) + '"><div><b>' + (t.rate == null ? '-' : nf(t.rate, t.rate === 100 ? 0 : 2) + '%') + '</b><span>' + fyLabel(S.fy) + '</span></div></div>' +
+        '<p style="text-align:center;margin:0;font-size:14px">' + closedTxt + '<br><span class="hint">' + prevTxt + '</span></p>' +
+        '<div class="hist" id="histBox" style="margin-top:12px">' + S.history.map(x => '<div class="' + (x.fy === S.fy ? 'cur' : '') + '">' +
+          (x.rate == null ? '<span class="na">ไม่มีข้อมูล</span>' : '<span style="font-family:var(--head);color:#15803D">' + nf(x.rate, 2) + '%</span><i style="height:' + Math.max(8, (x.rate - 80) / 20 * 70) + '%"></i>') +
+          '<b style="font-size:12px;margin-top:4px">' + x.fy + '</b></div>').join('') + '</div>' +
+        '<p class="hint" style="margin:6px 0 0;font-size:12px">ย้อนหลัง 5 ปีงบประมาณ • กดเพื่อดูตารางเปรียบเทียบ</p></div></div>';
+      // สัดส่วนประเภทงาน
+      const sp = S.split;
+      const donut = (pairs, total, center) => {
+        let acc = 0; const stops = pairs.filter(p => p[1]).map(p => { const a = acc; acc += p[1] / (total || 1) * 100; return p[2] + ' ' + a + '% ' + acc + '%'; });
+        return '<div class="donut" style="background:' + (stops.length ? 'conic-gradient(' + stops.join(',') + ')' : '#EEF1F6') + '"><div>' + nf(total) + '<small>' + center + '</small></div></div>';
+      };
+      const reqPairs = [['บุคลากรภายในคณะ', sp.requester.INTERNAL, '#3B82F6', 'INTERNAL'], ['หน่วยงานภายนอก', sp.requester.EXTERNAL, '#A855F7', 'EXTERNAL'], ['จากหนังสือบันทึกข้อความ', sp.requester.MEMO, '#F59E0B', 'MEMO']];
+      const misPairs = [['ภายในจังหวัด', sp.mission.INTERNAL, '#10B981', 'INTERNAL'], ['ภายนอก/ต่างจังหวัด', sp.mission.EXTERNAL, '#EF4444', 'EXTERNAL']];
+      const sumP = a => a.reduce((n, p) => n + p[1], 0);
+      const pal = ['#2563EB', '#16A34A', '#F59E0B', '#DB2777', '#7C3AED', '#0891B2', '#EA580C', '#64748B'];
+      const maxCt = Math.max(1, ...sp.carType.map(x => x.count)), maxDp = Math.max(1, ...sp.dept.map(x => x.count));
+      h += '<div class="props"><div class="rp-card"><h3>🧩 สัดส่วนประเภทผู้ขอใช้บริการ</h3><p class="sub">จากทะเบียนคำขอจริง</p>' + donut(reqPairs, sumP(reqPairs), 'คำขอ') +
+          '<div class="lg">' + reqPairs.map(p => '<button type="button" data-sp="req:' + p[3] + '"><i style="background:' + p[2] + '"></i>' + p[0] + '<b>' + nf(p[1]) + '</b></button>').join('') + '</div></div>' +
+        '<div class="rp-card"><h3>🗺️ ประเภทภารกิจ</h3><p class="sub">ภายในจังหวัด / ต่างจังหวัด</p>' + donut(misPairs, sumP(misPairs), 'ภารกิจ') +
+          '<div class="lg">' + misPairs.map(p => '<button type="button" data-sp="mis:' + p[3] + '"><i style="background:' + p[2] + '"></i>' + p[0] + '<b>' + nf(p[1]) + '</b></button>').join('') + '</div></div>' +
+        '<div class="rp-card"><h3>🚐 การใช้งานตามประเภทรถ</h3><p class="sub">จำนวนคำขอ (และระยะทางของเที่ยวที่สำเร็จ)</p><div class="hbars">' +
+          (sp.carType.length ? sp.carType.map((x, i) => '<button type="button" class="hb" data-sp="car:' + i + '"><span class="t"><span>' + esc(x.type) + ' • ' + nf(x.km, 1) + ' กม.</span><i style="--c:' + pal[i % pal.length] + ';width:' + Math.max(4, x.count / maxCt * 100) + '%"></i></span><b>' + nf(x.count) + '</b></button>').join('') : '<p class="hint">ยังไม่มีข้อมูล</p>') +
+          '</div><h3 style="margin-top:16px;font-size:15px">🏢 หน่วยงานที่ใช้บริการสูงสุด</h3><div class="hbars" style="margin-top:8px">' +
+          (sp.dept.length ? sp.dept.map((x, i) => '<div class="hb"><span class="t"><span>' + esc(x.name) + '</span><i style="--c:' + pal[(i + 3) % pal.length] + ';width:' + Math.max(4, x.count / maxDp * 100) + '%"></i></span><b>' + nf(x.count) + '</b></div>').join('') : '<p class="hint">ยังไม่มีข้อมูล</p>') + '</div></div></div>';
+      // ตารางรายเดือน
+      h += '<div class="rp-card" style="margin-top:16px"><h3>📋 ตารางสรุปผลการดำเนินงานรายเดือน</h3><p class="sub">' + fyLabel(S.fy) + ' • กดที่แถวเพื่อดูรายละเอียด</p><div class="mtable"><table><thead><tr><th>เดือน</th><th>รับคำขอ</th><th>สำเร็จ</th><th>ดำเนินการ</th><th>รออนุมัติ</th><th>ไม่อนุมัติ</th><th>ยกเลิก</th><th>อัตราสำเร็จ</th><th>ระยะทาง (กม.)</th><th>ชม.ให้บริการ</th><th>กระดาษที่ลด</th><th>เวลาที่ประหยัด (ชม.)</th><th>มูลค่า (บาท)</th></tr></thead><tbody>' +
+        S.months.map((m, i) => { const l = mLabel(m.ym); return '<tr data-mi="' + i + '"><td>' + l[0] + ' ' + l[1] + '</td><td>' + nf(m.received) + '</td><td class="r-ok">' + nf(m.success) + '</td><td>' + nf(m.inProgress) + '</td><td>' + nf(m.pending) + '</td><td>' + nf(m.rejected) + '</td><td>' + nf(m.cancelled) + '</td><td>' + (m.rate == null ? '-' : nf(m.rate, 1) + '%') + '</td><td>' + nf(m.km, 1) + '</td><td>' + nf(m.hours, 1) + '</td><td>' + nf(m.paper) + '</td><td>' + nf(m.hoursSaved, 1) + '</td><td>' + nf(m.value) + '</td></tr>'; }).join('') +
+        '</tbody><tfoot><tr><td>รวม</td><td>' + nf(t.received) + '</td><td>' + nf(t.success) + '</td><td>' + nf(t.inProgress) + '</td><td>' + nf(t.pending) + '</td><td>' + nf(t.rejected) + '</td><td>' + nf(t.cancelled) + '</td><td>' + (t.rate == null ? '-' : nf(t.rate, 2) + '%') + '</td><td>' + nf(t.km, 1) + '</td><td>' + nf(t.hours, 1) + '</td><td>' + nf(t.paper) + '</td><td>' + nf(t.hoursSaved, 1) + '</td><td>' + nf(t.value) + '</td></tr></tfoot></table></div></div>';
+      const c = S.cumulative;
+      h += '<div class="cum"><span>🌱 สะสมตั้งแต่เริ่มใช้ระบบ (' + dShort(c.since) + ' ' + String(bk(c.since).getUTCFullYear() + 543).slice(2) + ')</span><span><b>' + nf(c.received) + '</b> คำขอ</span><span>สำเร็จ <b>' + nf(c.success) + '</b> เที่ยว</span><span>ลดกระดาษ <b>' + nf(c.paper) + '</b> แผ่น</span><span>ประหยัดเวลา <b>' + nf(c.hoursSaved, 1) + '</b> ชม.</span><span>มูลค่า <b>' + nf(c.value) + '</b> บาท</span></div>';
+      $('#rpWrap').innerHTML = h;
+      drawTrend();
+      $$('#trTabs button').forEach(b => b.addEventListener('click', () => { metric = b.dataset.m; $$('#trTabs button').forEach(x => x.classList.toggle('on', x === b)); drawTrend(); }));
+      $$('[data-kp]').forEach(b => b.addEventListener('click', () => kpPopup(b.dataset.kp)));
+      $$('[data-mi]').forEach(r => r.addEventListener('click', () => monthPopup(+r.dataset.mi)));
+      $('#histBox').addEventListener('click', histPopup);
+      $$('[data-sp]').forEach(b => b.addEventListener('click', () => splitPopup(b.dataset.sp)));
+    }
+    function drawTrend() {
+      const S = STATS, m = METRICS.find(x => x[0] === metric);
+      const vals = S.months.map(x => Number(x[metric]) || 0), max = Math.max(...vals, 0);
+      const peak = max > 0 ? vals.indexOf(max) : -1;
+      const cur = currentYm(); let last = S.months.findIndex(x => x.ym === cur);
+      if (last < 0) for (let i = vals.length - 1; i >= 0; i--) if (S.months[i].received) { last = i; break; }
+      $('#trSub').textContent = m[3] + ' • หน่วย: ' + m[2];
+      $('#trBars').innerHTML = S.months.map((x, i) => {
+        const v = vals[i], hgt = max ? Math.max(v ? 4 : 0, v / max * 88) : 0;
+        return '<button type="button" class="bar' + (i === peak && i !== last ? ' peak' : '') + (i === last ? ' last' : '') + (v ? '' : ' zero') + '" data-bi="' + i + '" title="' + mLabel(x.ym).join(' ') + ': ' + nf(v, 1) + ' ' + m[2] + '">' +
+          '<span class="v">' + nf(v, metric === 'avgHours' || metric === 'km' || metric === 'hours' || metric === 'hoursSaved' ? 1 : 0) + '</span><i style="height:' + hgt + '%"></i></button>';
+      }).join('');
+      $('#trX').innerHTML = S.months.map(x => { const l = mLabel(x.ym); return '<div>' + l[0] + '<small>' + l[1] + '</small></div>'; }).join('');
+      $$('#trBars .bar').forEach(b => b.addEventListener('click', () => monthPopup(+b.dataset.bi)));
+    }
+    const kvBox = items => '<div class="pop-kv">' + items.map(x => '<div><span>' + x[0] + '</span><b>' + x[1] + '</b></div>').join('') + '</div>';
+    function monthPopup(i) {
+      const m = STATS.months[i], l = mLabel(m.ym), R = STATS.rate;
+      openInfo('ผลการดำเนินงานเดือน ' + l[0] + ' ' + l[1] + '<small>' + fyLabel(STATS.fy) + '</small>',
+        kvBox([['รับคำขอ', nf(m.received) + ' เรื่อง'], ['สำเร็จ', nf(m.success) + ' เรื่อง'], ['กำลังดำเนินการ', nf(m.inProgress)], ['รออนุมัติ', nf(m.pending)], ['ไม่อนุมัติ', nf(m.rejected)], ['ยกเลิก', nf(m.cancelled)],
+          ['อัตราความสำเร็จ', m.rate == null ? '-' : nf(m.rate, 2) + '%'], ['ระยะทาง', nf(m.km, 1) + ' กม.'], ['ชั่วโมงให้บริการ', nf(m.hours, 1) + ' ชม.'],
+          ['เวลาเฉลี่ย/เที่ยว', m.avgHours == null ? '-' : nf(m.avgHours, 1) + ' ชม.'], ['ค่าน้ำมัน', nf(m.fuel) + ' บาท'], ['กระดาษที่ลด', nf(m.paper) + ' แผ่น'],
+          ['เวลาที่ประหยัด', nf(m.hoursSaved, 1) + ' ชม.'], ['มูลค่าเวลา', nf(m.valueTime) + ' บาท'], ['มูลค่ารวม', nf(m.value) + ' บาท']]) +
+        '<p class="pop-note">มูลค่าคำนวณจาก ' + R.minutes + ' นาที × ' + nf(R.labor) + ' บาท/ชม. และ ' + R.paper + ' แผ่น × ' + R.paperCost + ' บาท/แผ่น ต่อ 1 คำขอ</p>');
+    }
+    function kpPopup(k) {
+      const t = STATS.total, R = STATS.rate;
+      const DEF = {
+        received: ['รับคำขอทั้งหมด', 'จำนวนคำขอใช้รถทุกช่องทาง (บุคลากร หน่วยงานภายนอก และหนังสือบันทึกข้อความ) ที่รับเข้าระบบใน' + fyLabel(STATS.fy) + ' ไม่นับรายการที่ถูกลบเพราะบันทึกซ้ำ/ผิดพลาด'],
+        success: ['สำเร็จ (เสร็จสิ้น)', 'เที่ยวที่ให้บริการเสร็จสิ้นแล้ว รวมระยะทาง ' + nf(t.km, 1) + ' กม. ชั่วโมงให้บริการ ' + nf(t.hours, 1) + ' ชม. ค่าน้ำมันรวม ' + nf(t.fuel) + ' บาท'],
+        inProgress: ['กำลังดำเนินการ', 'คำขอที่อนุมัติ/ยืนยันแล้วรอวันเดินทาง หรือรอพนักงานขับรถรับงาน'],
+        pending: ['รออนุมัติ', 'คำขอที่อยู่ระหว่างการพิจารณาตามขั้นตอนอนุมัติ'],
+        rejected: ['ไม่อนุมัติ', 'คำขอที่ผู้มีอำนาจพิจารณาไม่อนุมัติ (นับเป็นงานที่ปิดสถานะแล้ว แต่ไม่สำเร็จ)'],
+        cancelled: ['ยกเลิก', 'คำขอที่ผู้ขอหรือผู้ดูแลยกเลิก — แสดงแยก ไม่นำมาคิดอัตราความสำเร็จ'],
+        rate: ['อัตราความสำเร็จ', 'สำเร็จ ÷ งานที่ปิดสถานะแล้ว (สำเร็จ + ไม่อนุมัติ) × 100 = ' + nf(t.success) + ' ÷ ' + nf(t.closed) + ' = ' + (t.rate == null ? '-' : nf(t.rate, 2) + '%')],
+        value: ['มูลค่าที่ประหยัดได้', 'เวลา: ' + nf(t.received) + ' คำขอ × ' + R.minutes + ' นาที = ' + nf(t.hoursSaved, 1) + ' ชม. × ' + nf(R.labor) + ' บาท = ' + nf(t.valueTime) + ' บาท • กระดาษ: ' + nf(t.received) + ' × ' + R.paper + ' แผ่น = ' + nf(t.paper) + ' แผ่น × ' + R.paperCost + ' บาท = ' + nf(t.valuePaper) + ' บาท • รวม ' + nf(t.value) + ' บาท'],
+        time: ['มูลค่าจากเวลาที่ประหยัด', nf(t.received) + ' คำขอ × ' + R.minutes + ' นาที = ' + nf(t.hoursSaved, 1) + ' ชม. × ' + nf(R.labor) + ' บาท/ชม. = ' + nf(t.valueTime) + ' บาท (เทียบเท่า ' + nf(t.hoursSaved / 7, 1) + ' วันทำงาน)'],
+        paper: ['มูลค่าจากกระดาษที่ลดใช้', nf(t.received) + ' คำขอ × ' + R.paper + ' แผ่น = ' + nf(t.paper) + ' แผ่น × ' + R.paperCost + ' บาท/แผ่น = ' + nf(t.valuePaper) + ' บาท (ประมาณ ' + nf(t.paper / 500, 1) + ' รีม)']
+      }[k];
+      if (!DEF) return;
+      const best = STATS.months.reduce((a, m) => m.received > a.received ? m : a, STATS.months[0]);
+      openInfo(DEF[0] + '<small>' + fyLabel(STATS.fy) + '</small>', '<p style="margin-top:0">' + esc(DEF[1]) + '</p>' +
+        kvBox([['รับคำขอ', nf(t.received)], ['สำเร็จ', nf(t.success)], ['อัตราสำเร็จ', t.rate == null ? '-' : nf(t.rate, 2) + '%'], ['เดือนที่มีคำขอสูงสุด', best && best.received ? mLabel(best.ym).join(' ') + ' (' + best.received + ')' : '-'], ['ระยะทางรวม', nf(t.km, 1) + ' กม.'], ['มูลค่ารวม', nf(t.value) + ' บาท']]) +
+        '<p class="pop-note">ข้อมูลสรุปเชิงสถิติเท่านั้น ไม่เปิดเผยข้อมูลส่วนบุคคลตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล</p>');
+    }
+    function histPopup() {
+      openInfo('เปรียบเทียบย้อนหลัง 5 ปีงบประมาณ', '<div class="mtable" style="margin-top:0"><table style="min-width:0"><thead><tr><th>ปีงบประมาณ</th><th>รับคำขอ</th><th>สำเร็จ</th><th>งานที่ปิดแล้ว</th><th>อัตราสำเร็จ</th></tr></thead><tbody>' +
+        STATS.history.map(x => '<tr><td>' + x.fy + '</td><td>' + nf(x.received) + '</td><td>' + nf(x.success) + '</td><td>' + nf(x.closed) + '</td><td>' + (x.rate == null ? 'ไม่มีข้อมูล' : nf(x.rate, 2) + '%') + '</td></tr>').join('') + '</tbody></table></div>');
+    }
+    function splitPopup(key) {
+      const [kind, v] = key.split(':'), sp = STATS.split, t = STATS.total;
+      if (kind === 'car') { const x = sp.carType[+v]; return openInfo(esc(x.type) + '<small>' + fyLabel(STATS.fy) + '</small>', kvBox([['จำนวนคำขอ', nf(x.count)], ['สัดส่วน', nf(x.count / (t.received || 1) * 100, 1) + '%'], ['ระยะทางของเที่ยวที่สำเร็จ', nf(x.km, 1) + ' กม.']])); }
+      const NAME = { req: { INTERNAL: 'บุคลากรภายในคณะ', EXTERNAL: 'หน่วยงานภายนอก', MEMO: 'จากหนังสือบันทึกข้อความ' }, mis: { INTERNAL: 'ภารกิจภายในจังหวัด', EXTERNAL: 'ภารกิจภายนอก/ต่างจังหวัด' } }[kind];
+      const n = kind === 'req' ? sp.requester[v] : sp.mission[v];
+      openInfo(NAME[v] + '<small>' + fyLabel(STATS.fy) + '</small>', kvBox([['จำนวนคำขอ', nf(n)], ['สัดส่วน', nf(n / (t.received || 1) * 100, 1) + '%'], ['คำขอทั้งหมด', nf(t.received)]]) +
+        '<p class="pop-note">' + (kind === 'req' ? 'บุคลากรยื่นผ่านระบบ • หน่วยงานภายนอกยื่นผ่านแบบฟอร์มไม่ต้องมีบัญชี • พนักงานขับรถบันทึกจากหนังสือบันทึกข้อความ' : 'แยกตามประเภทภารกิจที่ผู้ขอระบุ') + '</p>');
+    }
+    $('#fySel').addEventListener('change', () => {
+      FY = Number($('#fySel').value); $('#rpWrap').style.opacity = .5;
+      api('getPublicStats', [FY]).then(d => { STATS = d; statsAt = Date.now(); $('#rpWrap').style.opacity = 1; renderReport(); }).catch(() => { $('#rpWrap').style.opacity = 1; });
+    });
+
     /* ===================== เข้าสู่ระบบ ===================== */
     function target(mode) { return mode === 'msu' ? CFG.GAS_DOMAIN_URL : (CFG.APP_URL || 'app.html'); }
     function openChooser() { lastFocus = document.activeElement; $('#chooser').classList.remove('hidden'); setTimeout(() => $('.opt').focus(), 30); }
@@ -707,9 +970,8 @@
       lb.innerHTML = '<img src="' + esc(z.dataset.zoom) + '" alt=""><span>' + esc(z.dataset.cap || '') + '</span>';
       lb.onclick = () => lb.remove(); document.body.appendChild(lb);
     }, true);
-    loadCalendar();
-    loadBoard();
-    setInterval(() => { if (!document.hidden) { loadBoard(); loadCalendar(); } }, 60000);
+    loadHome();
+    setInterval(() => { if (!document.hidden) loadHome(); }, 60000);
   })();
   </script>
 </body>
