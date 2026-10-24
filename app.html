@@ -180,6 +180,28 @@ img.avatar[data-zoom]{cursor:zoom-in}
 .ro-grid td.acting-cell{background:#EEEAFB}
 .ro-p{display:flex;gap:4px;align-items:center;margin-bottom:3px}
 @media (max-width:760px){ .ro-row{grid-template-columns:auto 1fr} .ro-act{grid-column:1/-1} }
+.rt-live{display:inline-flex;align-items:center;gap:8px;border:1.5px solid #CDEBD8;background:#F0FAF4;color:#1F7A3F;border-radius:999px;padding:6px 12px;font-family:var(--font-head);font-size:12.5px;cursor:pointer;white-space:nowrap}
+.rt-live i{width:9px;height:9px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:rtp 2s infinite}
+.rt-live.off{border-color:#F3C8C8;background:#FDF1F1;color:var(--bad)} .rt-live.off i{background:var(--bad);animation:none}
+.rt-live.new{border-color:var(--gold-deep);background:var(--gold-soft);color:#7A5A00} .rt-live.new i{background:var(--gold-deep)}
+@keyframes rtp{70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.rt-bell{position:relative}
+.rt-badge{position:absolute;top:2px;right:2px;min-width:18px;height:18px;border-radius:999px;background:var(--bad);color:#fff;font-size:11px;font-family:var(--font-head);display:grid;place-items:center;padding:0 4px}
+.toast.notice{background:#fff;color:var(--ink);border-left-color:var(--gold);box-shadow:0 18px 40px -16px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:4px;min-width:280px}
+.toast.notice b{display:flex;gap:6px;align-items:center;font-family:var(--font-head);color:var(--maroon)}
+.toast.notice b svg{width:16px;height:16px;color:var(--gold-deep)}
+.toast.notice span{font-size:13.5px;color:var(--muted)}
+.nt-ops{display:flex;gap:6px;justify-content:flex-end;margin-top:4px}
+.nt-x{background:var(--paper);color:var(--slate)}
+.rt-set{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.rt-set label{display:flex;gap:8px;align-items:center}
+.rt-list{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow:auto}
+.rt-ev{display:grid;grid-template-columns:1fr auto;gap:2px 10px;text-align:left;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff;cursor:pointer;font:inherit}
+.rt-ev:hover{background:#FFFBEA}
+.rt-ev b{font-family:var(--font-head);font-weight:500}
+.rt-ev span{grid-column:1;font-size:13px;color:var(--muted)}
+.rt-ev small{grid-column:2;grid-row:1;color:var(--muted)}
+@media (max-width:860px){ .rt-live span{display:none} .rt-live{padding:6px} }
 .tl-note{display:flex;gap:8px;align-items:flex-start;background:var(--info-soft);color:var(--info);border-radius:10px;padding:10px 12px;font-size:14px;margin-top:4px}
 .tl-admin{margin-top:8px;font-size:13.5px;background:#FFF8E6;border-radius:10px;padding:10px 12px}
 .tl-admin b{font-family:var(--font-head);display:block;margin-bottom:4px;color:var(--maroon)}
@@ -571,6 +593,10 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
         </button>
         <h1 id="pageTitle">แดชบอร์ด</h1>
+        <button type="button" class="rt-live" id="rtLive" title="อัปเดตข้อมูลอัตโนมัติ — กดเพื่อตรวจตอนนี้"><i></i><span>กำลังเชื่อมต่อ…</span></button>
+        <button type="button" class="icon-btn rt-bell" id="rtBell" aria-label="การแจ้งเตือน" title="การแจ้งเตือน">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <span class="rt-badge hidden">0</span></button>
         <div class="clock"><b id="clockTime">--:--</b><span id="clockDate"></span></div>
       </header>
       <div class="content" id="page"></div>
@@ -590,7 +616,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
 /* =====================================================================
  *  EN-MSU Fleet — Client (Single Page App ใน Apps Script HtmlService)
  * ===================================================================== */
-const CLIENT_VERSION = '2569.10-r17';   // ต้องตรงกับ APP.VERSION ใน Code.gs
+const CLIENT_VERSION = '2569.10-r18';   // ต้องตรงกับ APP.VERSION ใน Code.gs
 const S = { token: null, user: null, settings: window.PUBLIC || {}, cars: [], drivers: [], page: null,
             charts: [], timer: null, cal: { mode: 'month', date: null, resource: 'car' }, filters: {} };
 
@@ -781,7 +807,9 @@ function handleApiError(msg) {
   if (msg.indexOf('SESSION_EXPIRED') > -1) { App.forceLogout('หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบอีกครั้ง'); }
   return new Error(msg.replace(/^Exception:\s*/, '').replace(/^Error:\s*/, ''));
 }
+const READ_ONLY_FN = /^(pulse|get|list|login|logout)/;
 function api(fn, ...args) {
+  if (!READ_ONLY_FN.test(fn) && typeof RT !== 'undefined') RT.mutatedAt = Date.now();   // การกระทำของผู้ใช้เอง -> ไม่ต้องแจ้งเตือนซ้ำ
   if (!IS_GAS) {
     if (!CFG.API_URL) return Promise.reject(new Error('ยังไม่ได้ตั้งค่า API_URL ใน config.js'));
     return fetch(CFG.API_URL, {
@@ -813,6 +841,19 @@ const UI = {
     setTimeout(() => t.remove(), type === 'err' ? 6000 : 3500);
   },
   err(e) { UI.loading(false); UI.toast(e && e.message ? e.message : String(e), 'err'); },
+  /** การ์ดแจ้งเตือนเรื่องใหม่ (กดเพื่อไปที่รายการ) */
+  notice(title, body, onClick) {
+    const t = document.createElement('div');
+    t.className = 'toast notice'; t.setAttribute('role', 'alert');
+    t.innerHTML = '<b>' + ic('send') + esc(title) + '</b>' + (body ? '<span>' + esc(body) + '</span>' : '') +
+      '<div class="nt-ops">' + (onClick ? '<button type="button" class="btn btn-gold btn-sm" data-go>ดูเลย</button>' : '') + '<button type="button" class="btn btn-sm nt-x" data-x>ปิด</button></div>';
+    $('#toasts').appendChild(t);
+    const kill = () => t.remove();
+    t.querySelector('[data-x]').onclick = kill;
+    const g = t.querySelector('[data-go]'); if (g) g.onclick = () => { kill(); onClick(); };
+    setTimeout(kill, 15000);
+    while ($('#toasts').querySelectorAll('.notice').length > 3) $('#toasts').querySelector('.notice').remove();
+  },
   modal({ title, body, foot, wide, locked, noGuard }) {
     const bg = document.createElement('div');
     bg.className = 'modal-bg';
@@ -930,6 +971,153 @@ const Staff = {
 };
 
 /* =====================================================================
+ *  REALTIME — ตรวจการเปลี่ยนแปลงทุก ~15 วินาที (เบามาก: ถ้าไม่มีอะไรเปลี่ยน เซิร์ฟเวอร์ไม่อ่านชีท)
+ *  มีเรื่องใหม่ -> อัปเดตตัวเลขเมนู • โหลดเฉพาะหน้าที่เปิดอยู่ใหม่ • แจ้งเตือน (การ์ด/เสียง/ชื่อแท็บ/แจ้งเตือนเดสก์ท็อป)
+ *  กลับมาที่แท็บ/เชื่อมเน็ตได้อีกครั้ง -> ตรวจทันที
+ * ===================================================================== */
+const RT = {
+  ver: null, timer: null, busy: false, lastOk: 0, activeAt: Date.now(), pendingRefresh: false, events: [], unread: 0, inited: false,
+  known: { approvals: null, jobs: null, mine: null }, counts: {},
+  REFRESH: { approvals: s => Pages.approvals(s), dashboard: s => Pages.dashboard(s), calendar: s => Pages.calendar(s), myJobs: s => Pages.myJobs(s),
+    bookings: () => Pages.bookings(), myBookings: () => Pages.myBookings() },
+  pref(k, d) { try { const v = localStorage.getItem('fleet_rt_' + k); return v === null ? d : v === '1'; } catch (e) { return d; } },
+  setPref(k, v) { try { localStorage.setItem('fleet_rt_' + k, v ? '1' : '0'); } catch (e) {} },
+  start() {
+    RT.stop(); RT.ver = null; RT.known = { approvals: null, jobs: null, mine: null }; RT.events = []; RT.unread = 0; RT.pendingRefresh = false;
+    if (!RT.inited) {
+      RT.inited = true;
+      ['click', 'keydown', 'scroll', 'mousemove', 'touchstart'].forEach(ev => document.addEventListener(ev, () => { RT.activeAt = Date.now(); RT.unlockAudio(); }, { passive: true }));
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) { RT.unread = 0; RT.title(); RT.now(); } });
+      window.addEventListener('focus', () => RT.now());
+      window.addEventListener('online', () => RT.now());
+      $('#rtLive').onclick = () => { RT.now(); if (RT.pendingRefresh) RT.refreshPage(true); };
+      $('#rtBell').onclick = () => RT.panel();
+    }
+    RT.tick().finally(RT.schedule);
+  },
+  stop() { clearTimeout(RT.timer); RT.timer = null; document.title = RT.baseTitle || document.title; },
+  interval() { return document.hidden ? 60000 : (Date.now() - RT.activeAt > 30 * 60000 ? 45000 : 15000); },
+  schedule() { clearTimeout(RT.timer); if (S.token) RT.timer = setTimeout(() => RT.tick().finally(RT.schedule), RT.interval()); },
+  now() { if (!S.token) return; clearTimeout(RT.timer); RT.tick().finally(RT.schedule); },
+  async tick() {
+    if (!S.token || RT.busy) return;
+    RT.busy = true;
+    try {
+      const r = await call('pulse', RT.ver);
+      RT.lastOk = Date.now(); RT.live(true);
+      if (r.server && r.server !== CLIENT_VERSION) App.versionCheck(r.server);
+      if (!r.same) { const first = RT.ver === null; RT.ver = r.ver; RT.apply(r, first); }
+      else if (RT.pendingRefresh) RT.refreshPage();
+    } catch (e) { RT.live(false); }
+    finally { RT.busy = false; }
+  },
+  live(ok) {
+    const el = $('#rtLive'); if (!el) return;
+    el.classList.toggle('off', !ok);
+    el.querySelector('span').textContent = ok ? (RT.pendingRefresh ? 'มีข้อมูลใหม่ • กดโหลด' : 'อัปเดตสด ' + fTime(Date.now()) + ':' + p2(bk(Date.now()).getUTCSeconds())) : 'เชื่อมต่อไม่ได้ • ลองใหม่อัตโนมัติ';
+    el.classList.toggle('new', ok && RT.pendingRefresh);
+  },
+  apply(r, first) {
+    const c = r.counts || {};
+    RT.counts = c;
+    App.setCount('approvals', c.approvals || null);
+    if (c.bookings !== undefined) App.setCount('bookings', c.bookings || null);
+    if (c.myJobs !== undefined) App.setCount('myJobs', (c.myJobs + (c.pendingLog || 0)) || null);
+    const news = [];
+    const diffNew = (key, list) => {
+      const ids = (list || []).map(x => x.id);
+      if (RT.known[key] !== null) (list || []).forEach(x => { if (RT.known[key].indexOf(x.id) === -1) news.push([key, x]); });
+      RT.known[key] = ids;
+    };
+    diffNew('approvals', r.approvals);
+    if (r.jobs) diffNew('jobs', r.jobs);
+    // สถานะคำขอของฉันเปลี่ยน
+    const selfAct = Date.now() - (RT.mutatedAt || 0) < 30000;   // เพิ่งทำรายการเอง -> ไม่แจ้งสถานะคำขอของตัวเอง
+    if (RT.known.mine !== null && !selfAct) (r.mine || []).forEach(x => { const o = RT.known.mine[x.id]; if (o && (o.st !== x.st || o.step !== x.step)) news.push(['mine', x, o]); });
+    RT.known.mine = {}; (r.mine || []).forEach(x => RT.known.mine[x.id] = { st: x.st, step: x.step });
+    if (first) {
+      const n = (r.approvals || []).length, j = (r.jobs || []).length;
+      if (n && (S.isApprover || isAdmin() || (S.approverSteps || []).length)) RT.notify('มีเรื่องรออนุมัติ ' + n + ' เรื่อง', 'กดเพื่อเปิดรายการรออนุมัติ', 'approvals', null, false);
+      if (j) RT.notify('มีงานขับรถเปิดรับ ' + j + ' งาน', 'กดเพื่อดูและรับงาน', 'myJobs', null, false);
+    }
+    news.forEach(n => {
+      const x = n[1];
+      if (n[0] === 'approvals') RT.notify('เรื่องใหม่รออนุมัติ' + (x.step ? ' (ขั้นที่ ' + x.step + ')' : ''), x.id + ' • ' + x.dest + ' • ' + fDT(x.start), 'approvals', x.id, true);
+      if (n[0] === 'jobs') RT.notify('งานขับรถใหม่เปิดรับ', x.id + ' • ' + x.dest + ' • ' + fDT(x.start), 'myJobs', x.id, true);
+      if (n[0] === 'mine') RT.notify('คำขอ ' + x.id + ' : ' + (STATUS_TH[x.st] || x.st) + (x.st === 'PENDING_APPROVAL' && x.step && x.step !== 'DONE' ? ' (ขั้นที่ ' + x.step + ')' : ''), x.dest, S.user.role === 'requester' ? 'myBookings' : null, x.id, x.st !== n[2].st);
+    });
+    RT.title();
+    if (!first) RT.refreshPage();
+  },
+  safe() {
+    if ($('#modalRoot').children.length) return false;
+    const a = document.activeElement;
+    if (a && a !== document.body && $('#page').contains(a) && /INPUT|TEXTAREA|SELECT/.test(a.tagName)) return false;
+    return true;
+  },
+  /** โหลดเฉพาะหน้าที่เปิดอยู่ใหม่ (ไม่รีเฟรชทั้งระบบ) — ถ้ากำลังกรอกข้อมูล/เปิดหน้าต่างอยู่ จะรอจนปลอดภัย */
+  refreshPage(force) {
+    const fn = RT.REFRESH[S.page];
+    if (!fn) { RT.pendingRefresh = false; RT.live(true); return; }
+    if (!force && !RT.safe()) { RT.pendingRefresh = true; RT.live(true); return; }
+    RT.pendingRefresh = false; RT.live(true);
+    const y = window.scrollY;
+    Promise.resolve(fn(true)).then(() => window.scrollTo(0, y)).catch(() => {});
+  },
+  title() {
+    if (!RT.baseTitle) RT.baseTitle = document.title.replace(/^\(\d+\)\s*/, '');
+    const n = (RT.counts.approvals || 0) + (RT.counts.myJobs || 0);
+    document.title = (n ? '(' + n + ') ' : '') + RT.baseTitle;
+    const b = $('#rtBell .rt-badge');
+    if (b) { const u = RT.unread; b.textContent = u > 9 ? '9+' : u; b.classList.toggle('hidden', !u); }
+  },
+  notify(title, body, page, id, isNew) {
+    RT.events.unshift({ title, body, page, id, at: Date.now() });
+    RT.events = RT.events.slice(0, 20);
+    if (isNew) { RT.unread++; RT.beep(); }
+    UI.notice(title, body, page ? () => { if (id && page !== 'myJobs') { App.go(page); setTimeout(() => Pages.bookingDetail({ id: id }), 400); } else App.go(page); } : (id ? () => Pages.bookingDetail({ id: id }) : null));
+    if (isNew && document.hidden && RT.pref('desktop', false) && window.Notification && Notification.permission === 'granted') {
+      try { const nn = new Notification(title, { body: body, tag: id || title, icon: window.LOGO_SRC && window.LOGO_SRC.length < 2000 ? window.LOGO_SRC : undefined }); nn.onclick = () => { window.focus(); if (page) App.go(page); nn.close(); }; } catch (e) {}
+    }
+    RT.title();
+  },
+  audio: null,
+  unlockAudio() { if (RT.audio || !(window.AudioContext || window.webkitAudioContext)) return; try { RT.audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} },
+  beep() {
+    if (!RT.pref('sound', true) || !RT.audio) return;
+    try {
+      const a = RT.audio, t = a.currentTime;
+      [880, 1175].forEach((f, i) => { const o = a.createOscillator(), g = a.createGain(); o.frequency.value = f; o.type = 'sine';
+        g.gain.setValueAtTime(0.0001, t + i * 0.16); g.gain.exponentialRampToValueAtTime(0.18, t + i * 0.16 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.16 + 0.15);
+        o.connect(g); g.connect(a.destination); o.start(t + i * 0.16); o.stop(t + i * 0.16 + 0.16); });
+    } catch (e) {}
+  },
+  panel() {
+    RT.unread = 0; RT.title();
+    const canDesk = !!window.Notification;
+    const m = UI.modal({ title: 'การแจ้งเตือน',
+      body: '<div class="rt-set"><label><input type="checkbox" id="rtSnd"' + (RT.pref('sound', true) ? ' checked' : '') + '> เสียงแจ้งเตือนเมื่อมีเรื่องใหม่</label>' +
+        (canDesk ? '<label><input type="checkbox" id="rtDesk"' + (RT.pref('desktop', false) && Notification.permission === 'granted' ? ' checked' : '') + '> แจ้งเตือนบนหน้าจอคอมพิวเตอร์/มือถือ (เมื่อเปิดหน้าอื่นอยู่)</label>' : '') +
+        '<p class="hint">ระบบตรวจข้อมูลใหม่อัตโนมัติทุก 15 วินาที ' + (RT.lastOk ? '• ตรวจล่าสุด ' + fTime(RT.lastOk) + ':' + p2(bk(RT.lastOk).getUTCSeconds()) + ' น.' : '') + '</p></div>' +
+        (RT.events.length ? '<div class="rt-list">' + RT.events.map((e, i) => '<button type="button" class="rt-ev" data-ev="' + i + '"><b>' + esc(e.title) + '</b><span>' + esc(e.body || '') + '</span><small>' + fTime(e.at) + ' น.</small></button>').join('') + '</div>'
+          : '<p class="hint">ยังไม่มีการแจ้งเตือนใหม่</p>'),
+      foot: '<button class="btn btn-ghost" id="rtNow">' + ic('refresh') + 'ตรวจตอนนี้</button><button class="btn btn-maroon" data-close>ปิด</button>' });
+    m.el.querySelector('#rtSnd').onchange = e => { RT.setPref('sound', e.target.checked); RT.unlockAudio(); if (e.target.checked) RT.beep(); };
+    const d = m.el.querySelector('#rtDesk');
+    if (d) d.onchange = async e => {
+      if (e.target.checked) {
+        let p = Notification.permission;
+        if (p !== 'granted') { try { p = await Notification.requestPermission(); } catch (x) { p = 'denied'; } }
+        if (p !== 'granted') { e.target.checked = false; UI.toast(IS_GAS ? 'เบราว์เซอร์ไม่อนุญาตการแจ้งเตือนในหน้านี้ — ใช้ทางเข้า "ไม่ผูกบัญชี Google" (app.html) เพื่อเปิดการแจ้งเตือน' : 'กรุณาอนุญาตการแจ้งเตือนในเบราว์เซอร์', 'err'); return; }
+      }
+      RT.setPref('desktop', e.target.checked);
+    };
+    m.el.querySelector('#rtNow').onclick = () => { RT.now(); UI.toast('กำลังตรวจข้อมูลใหม่…'); };
+    $$('[data-ev]', m.el).forEach(b => b.onclick = () => { const e = RT.events[+b.dataset.ev]; m.close(); if (e.page) App.go(e.page); if (e.id) setTimeout(() => Pages.bookingDetail({ id: e.id }), 400); });
+  }
+};
+
+/* =====================================================================
  *  APP
  * ===================================================================== */
 const MENUS = {
@@ -1032,6 +1220,7 @@ const App = {
     S.prefetch = { dashboard: b.dash || null };
     S.user = b.user; S.settings = b.settings; S.cars = b.cars; S.drivers = b.drivers; S.approverSteps = b.approverSteps || []; S.isApprover = !!b.isApprover;
     App.versionCheck(b.serverVersion);
+    setTimeout(() => RT.start(), 1500);
     $('#loginView').classList.add('hidden'); $('#appView').classList.remove('hidden');
     $('#whoName').textContent = S.user.name;
     $('#whoDept').textContent = S.user.department || '';
@@ -1057,7 +1246,7 @@ const App = {
     if (el) { el.textContent = n; el.classList.toggle('hidden', !n); }
   },
   go(page) {
-    S.page = page;
+    S.page = page; RT.pendingRefresh = false;
     clearInterval(S.timer); S.timer = null;
     S.charts.forEach(c => c.destroy()); S.charts = [];
     document.body.classList.remove('nav-open');
@@ -1070,7 +1259,8 @@ const App = {
   },
   autoRefresh(fn, sec) {
     clearInterval(S.timer);
-    S.timer = setInterval(() => { if (!$('#modalRoot').children.length && !document.hidden) fn(true); }, (sec || 60) * 1000);
+    // การเปลี่ยนแปลงของข้อมูลส่งมาทาง RT (เรียลไทม์) แล้ว — ตัวจับเวลานี้เหลือไว้สำหรับข้อมูลที่ขึ้นกับเวลา (เช่น รถกำลังวิ่ง) ทุก 5 นาที
+    S.timer = setInterval(() => { if (RT.safe() && !document.hidden) fn(true); }, Math.max(300, sec || 60) * 1000);
   },
   homeUrl(p) {
     p = p || S.settings || {};
@@ -1086,6 +1276,7 @@ const App = {
     }
   },
   forceLogout(msg) {
+    RT.stop();
     store.del('fleet_token'); S.token = null; S.user = null; clearInterval(S.timer);
     $('#modalRoot').innerHTML = '';
     App.showLogin();
