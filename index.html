@@ -8,7 +8,11 @@
   <link rel="icon" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- โหลดฟอนต์แบบไม่บล็อกการแสดงผล (หน้าแสดงทันทีด้วยฟอนต์สำรอง แล้วสลับเป็น Prompt/Sarabun) -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap"></noscript>
+  <link rel="preconnect" href="https://script.google.com" crossorigin>
+  <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
   <style>
     :root{
       --gold:#F9BE02;--gold-deep:#C59701;--gold-soft:#FFF4CC;
@@ -159,6 +163,8 @@
     .pop-note{font-size:13px;color:#6B778F;background:#FFF8E6;border-radius:10px;padding:10px 12px}
     @media (max-width:1060px){ .rp-grid,.props{grid-template-columns:1fr} .kpis2{grid-template-columns:repeat(2,minmax(0,1fr))} }
     @media (max-width:640px){ .bars,.xl{gap:4px} .bar .v{font-size:10px} .sv-boxes{grid-template-columns:1fr} .pop-kv{grid-template-columns:1fr 1fr} .rp-tools{margin-left:0} }
+    .live-time.stale{color:#C59701}
+    #month.loading .month{opacity:.55;background-image:linear-gradient(90deg,#fff 0%,#f4f2ec 50%,#fff 100%);background-size:200% 100%;animation:sk 1.1s infinite}
     .lb{position:fixed;inset:0;z-index:300;background:rgba(20,20,20,.85);display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
     .lb img{max-width:100%;max-height:86vh;border-radius:12px}
     .lb span{position:absolute;bottom:20px;left:0;right:0;text-align:center;color:#fff;font-family:var(--head)}
@@ -565,22 +571,57 @@
     function calRange() { const s = gridStart(); return [ymd(s), ymd(new Date(s.getTime() + 42 * DAY))]; }
     /** โหลดครั้งเดียว: สถานะ + ปฏิทิน (+ รายงาน) — ลดจำนวนการเรียกเซิร์ฟเวอร์ */
     let STATS = null, FY = 0, statsAt = 0;
-    function loadHome() {
-      const r = calRange(), needStats = !STATS || Date.now() - statsAt > 600000;
+    /* ===== โหลดเร็ว =====
+     * 1) แสดงข้อมูลชุดล่าสุดที่เคยโหลด (เก็บในเครื่อง) ทันทีที่เปิดหน้า แล้วอัปเดตเบื้องหลัง
+     * 2) สถานะ+ปฏิทิน และรายงาน โหลดขนานกัน — ปฏิทินไม่ต้องรอรายงานที่คำนวณหนักกว่า
+     * 3) ปฏิทินแต่ละเดือนจำไว้ในหน่วยความจำ และโหลดเดือนก่อน/ถัดไปรอไว้ล่วงหน้า */
+    const SNAP_KEY = 'fleet_pub_snap_v2';
+    const CAL_MEM = {};
+    const snapGet = () => { try { const x = JSON.parse(localStorage.getItem(SNAP_KEY) || 'null'); return x && Date.now() - x.at < 3 * 86400000 ? x : null; } catch (e) { return null; } };
+    const snapPut = patch => { try { const x = Object.assign(snapGet() || {}, patch, { at: Date.now() }); localStorage.setItem(SNAP_KEY, JSON.stringify(x)); } catch (e) {} };
+    function setFresh(fresh) { const u = $('#updated'); if (u) u.classList.toggle('stale', !fresh); }
+    function loadHome(first) {
+      const r = calRange(), rk = r[0] + '_' + r[1];
       $('#monthTitle').textContent = MONTHS[view.getUTCMonth()] + ' ' + (view.getUTCFullYear() + 543);
-      return api('getPublicHome', [r[0], r[1], FY || 0, needStats]).then(d => {
-        board = d.board; renderBoard(); cal = d.calendar; renderMonth();
-        if (d.stats) { STATS = d.stats; FY = STATS.fy; statsAt = Date.now(); renderReport(); }
+      if (first) {
+        const sn = snapGet();
+        if (sn && sn.board) { board = sn.board; renderBoard(); $('#updated').textContent = 'ข้อมูลเมื่อ ' + tm(sn.board.generatedAt) + ' น. • กำลังอัปเดต…'; setFresh(false); }
+        if (sn && sn.cal && sn.calKey === rk) { cal = sn.cal; renderMonth(); }
+        if (sn && sn.stats && (!FY || sn.stats.fy === FY)) { STATS = sn.stats; FY = STATS.fy; renderReport(); }
+      }
+      const quick = api('getPublicQuick', [r[0], r[1]]).then(d => {
+        board = d.board; renderBoard(); setFresh(true);
+        cal = d.calendar; CAL_MEM[rk] = { d: cal, at: Date.now() }; renderMonth();
+        snapPut({ board: board, cal: cal, calKey: rk });
+        if (first) setTimeout(prefetchAround, 300);
       }).catch(() => {
-        $('#updated').textContent = 'เชื่อมต่อไม่ได้';
+        $('#updated').textContent = board ? 'ออฟไลน์ • แสดงข้อมูลล่าสุดที่มี' : 'เชื่อมต่อไม่ได้';
         if (!cal) $('#month').innerHTML = '<div class="cal-state">ยังโหลดข้อมูลไม่ได้ กรุณารีเฟรชหน้านี้อีกครั้ง</div>';
-        if (!STATS) $('#rpWrap').innerHTML = '<p class="empty-s">ยังโหลดรายงานไม่ได้</p>';
       });
+      const needStats = first || !STATS || Date.now() - statsAt > 600000;
+      const st = needStats ? api('getPublicStats', [FY || 0]).then(d => {
+        STATS = d; FY = d.fy; statsAt = Date.now(); renderReport(); snapPut({ stats: d });
+      }).catch(() => { if (!STATS) $('#rpWrap').innerHTML = '<p class="empty-s">ยังโหลดรายงานไม่ได้</p>'; }) : Promise.resolve();
+      return Promise.all([quick, st]);
+    }
+    function rangeOf(v) { const g = new Date(v.getTime() - v.getUTCDay() * DAY); return [ymd(g), ymd(new Date(g.getTime() + 42 * DAY))]; }
+    function fetchCal(r) {
+      const k = r[0] + '_' + r[1], m = CAL_MEM[k];
+      if (m && Date.now() - m.at < 120000) return Promise.resolve(m.d);
+      if (m && m.p) return m.p;
+      const p = api('getPublicCalendar', r).then(d => { CAL_MEM[k] = { d: d, at: Date.now() }; return d; });
+      CAL_MEM[k] = Object.assign(m || {}, { p: p });
+      return p;
+    }
+    function prefetchAround() {
+      [-1, 1].forEach(n => { const v = new Date(Date.UTC(view.getUTCFullYear(), view.getUTCMonth() + n, 1)); fetchCal(rangeOf(v)).catch(() => {}); });
     }
     function loadCalendar() {
       const s = gridStart(), e = new Date(s.getTime() + 42 * DAY);
       $('#monthTitle').textContent = MONTHS[view.getUTCMonth()] + ' ' + (view.getUTCFullYear() + 543);
-      return api('getPublicCalendar', [ymd(s), ymd(e)]).then(d => { cal = d; renderMonth(); })
+      const k = ymd(s) + '_' + ymd(e), m = CAL_MEM[k];
+      if (m && m.d) { cal = m.d; renderMonth(); }                       // แสดงทันทีจากหน่วยความจำ
+      return fetchCal([ymd(s), ymd(e)]).then(d => { cal = d; renderMonth(); prefetchAround(); })
         .catch(() => { if (!cal) $('#month').innerHTML = '<div class="cal-state">ยังโหลดปฏิทินไม่ได้ กรุณารีเฟรชหน้านี้อีกครั้ง</div>'; });
     }
     function renderMonth() {
@@ -603,8 +644,9 @@
     }
     function shiftMonth(n) {
       view = new Date(Date.UTC(view.getUTCFullYear(), view.getUTCMonth() + n, 1));
-      $('#month').innerHTML = '<div class="cal-state">กำลังโหลดปฏิทิน…</div>';
-      loadCalendar();
+      const s = gridStart(), k = ymd(s) + '_' + ymd(new Date(s.getTime() + 42 * DAY));
+      if (!(CAL_MEM[k] && CAL_MEM[k].d)) { $('#month').classList.add('loading'); cal = { bookings: [] }; renderMonth(); }
+      loadCalendar().then(() => $('#month').classList.remove('loading'));
     }
     $('#prevM').addEventListener('click', () => shiftMonth(-1));
     $('#nextM').addEventListener('click', () => shiftMonth(1));
@@ -926,7 +968,7 @@
         '<p class="pop-note">' + (kind === 'req' ? 'บุคลากรยื่นผ่านระบบ • หน่วยงานภายนอกยื่นผ่านแบบฟอร์มไม่ต้องมีบัญชี • พนักงานขับรถบันทึกจากหนังสือบันทึกข้อความ' : 'แยกตามประเภทภารกิจที่ผู้ขอระบุ') + '</p>');
     }
     $('#fySel').addEventListener('change', () => {
-      FY = Number($('#fySel').value); $('#rpWrap').style.opacity = .5;
+      FY = Number($('#fySel').value); $('#rpWrap').style.opacity = .5;   // เปลี่ยนปีงบ: โหลดเฉพาะรายงาน
       api('getPublicStats', [FY]).then(d => { STATS = d; statsAt = Date.now(); $('#rpWrap').style.opacity = 1; renderReport(); }).catch(() => { $('#rpWrap').style.opacity = 1; });
     });
 
@@ -970,8 +1012,9 @@
       lb.innerHTML = '<img src="' + esc(z.dataset.zoom) + '" alt=""><span>' + esc(z.dataset.cap || '') + '</span>';
       lb.onclick = () => lb.remove(); document.body.appendChild(lb);
     }, true);
-    loadHome();
-    setInterval(() => { if (!document.hidden) loadHome(); }, 60000);
+    loadHome(true);
+    setInterval(() => { if (!document.hidden) loadHome(false); }, 60000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && board && Date.now() - board.generatedAt > 60000) loadHome(false); });
   })();
   </script>
 </body>
