@@ -5,23 +5,26 @@
   <link rel="icon" href="logo.png">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600;700&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+  <!-- ฟอนต์ "มอน้ำชี" (Mornamchi) ฟอนต์ประจำมหาวิทยาลัยมหาสารคาม — อ้างไฟล์บน eng.msu.ac.th เท่านั้น ไม่ฝังไฟล์ฟอนต์ไว้ในหน้า -->
+  <link rel="preconnect" href="https://eng.msu.ac.th" crossorigin>
+  <link rel="preload" href="https://eng.msu.ac.th/carbooking/fonts/Mornamchi-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="https://eng.msu.ac.th/carbooking/fonts/mornamchi.css">
   <style>
-    :root{--gold:#F9BE02;--gold-deep:#C59701;--gold-soft:#FFF4CC;--graphite:#454545;--maroon:#401D1B;--paper:#F2F2F0;--line:#E2E1DD;--ok:#1F7A3F;--bad:#9B1C1C}
+    :root{--msu-font:"Mornamchi","Kanit","Sarabun","Noto Sans Thai","Leelawadee UI",Tahoma,sans-serif;--gold:#F9BE02;--gold-deep:#C59701;--gold-soft:#FFF4CC;--graphite:#454545;--maroon:#401D1B;--paper:#F2F2F0;--line:#E2E1DD;--ok:#1F7A3F;--bad:#9B1C1C}
     *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;font-family:'Sarabun',Tahoma,sans-serif;background:var(--paper);color:#262423;display:flex;align-items:flex-start;justify-content:center;padding:28px 14px}
+    body{margin:0;min-height:100vh;font-family:var(--msu-font);font-synthesis:none;background:var(--paper);color:#262423;display:flex;align-items:flex-start;justify-content:center;padding:28px 14px}
     .card{width:100%;max-width:520px;background:#fff;border-radius:22px;overflow:hidden;border:1px solid var(--line);box-shadow:0 20px 40px -24px rgba(64,29,27,.45)}
     .top{position:relative;background:var(--graphite);padding:18px 20px;border-bottom:6px solid var(--gold);overflow:hidden}
     .top::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.22) 2px,transparent 2.4px);background-size:14px 14px;-webkit-mask-image:linear-gradient(110deg,#000,transparent 65%);mask-image:linear-gradient(110deg,#000,transparent 65%)}
     .logo{position:relative;background:#fff;border-radius:12px;padding:8px 10px;display:block;width:220px}
     .logo img{width:100%;display:block}
     .body{padding:22px}
-    h1{font-family:'Prompt',sans-serif;color:var(--maroon);font-size:22px;margin:0 0 6px}
+    h1{font-family:var(--msu-font);color:var(--maroon);font-size:22px;margin:0 0 6px}
     .sub{color:#76716D;margin:0 0 18px}
     dl{display:grid;grid-template-columns:110px 1fr;gap:8px 12px;margin:0 0 22px;font-size:15.5px}
     dt{color:#76716D} dd{margin:0}
-    .when{font-family:'Prompt',sans-serif;font-size:19px;color:var(--maroon);background:var(--gold-soft);border-radius:12px;padding:12px 14px;margin-bottom:18px}
-    .btn{width:100%;border:0;border-radius:999px;padding:16px;font-family:'Prompt',sans-serif;font-size:18px;font-weight:600;cursor:pointer;background:var(--maroon);color:var(--gold)}
+    .when{font-family:var(--msu-font);font-size:19px;color:var(--maroon);background:var(--gold-soft);border-radius:12px;padding:12px 14px;margin-bottom:18px}
+    .btn{width:100%;border:0;border-radius:999px;padding:16px;font-family:var(--msu-font);font-size:18px;font-weight:600;cursor:pointer;background:var(--maroon);color:var(--gold)}
     .btn[disabled]{opacity:.6}
     .btn.ghost{background:#fff;color:#646464;border:1.5px solid #E2E1DD;font-size:15px;padding:12px}
     .btn.bad{background:#9B1C1C;color:#fff;font-size:15px;padding:12px}
@@ -33,12 +36,12 @@
     .ap-st small{display:block;color:#76716D}
     .ap-st.DONE span{background:#1F7A3F;color:#fff} .ap-st.CURRENT{background:#EEEAFB} .ap-st.CURRENT span{background:#6D5BD0;color:#fff} .ap-st.REJECTED span{background:#9B1C1C;color:#fff}
     .atts{display:flex;flex-direction:column;gap:6px;margin:-8px 0 18px;padding:10px 12px;background:#F6F5F2;border-radius:12px}
-    .atts b{font-family:'Prompt',sans-serif;color:#401D1B;font-size:14px}
+    .atts b{font-family:var(--msu-font);color:#401D1B;font-size:14px}
     .atts a{color:#2D5B8A;word-break:break-word}
-    .msg{border-radius:14px;padding:16px;font-family:'Prompt',sans-serif;font-size:17px;text-align:center}
+    .msg{border-radius:14px;padding:16px;font-family:var(--msu-font);font-size:17px;text-align:center}
     .msg.ok{background:#E2F3E7;color:var(--ok)} .msg.bad{background:#FBE6E4;color:var(--bad)} .msg.info{background:var(--gold-soft);color:#7A5A00}
     .carimg{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;margin-bottom:14px;display:block;background:#eee}
-    .home-link{display:inline-block;margin-top:8px;color:var(--maroon);font-family:'Prompt',sans-serif}
+    .home-link{display:inline-block;margin-top:8px;color:var(--maroon);font-family:var(--msu-font)}
     .foot{font-size:12.5px;color:#999;text-align:center;padding:0 20px 18px}
   </style>
 </head>

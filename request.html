@@ -5,15 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ขอใช้รถสำหรับหน่วยงานอื่น | คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม</title>
   <link rel="icon" href="logo.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- ฟอนต์ "มอน้ำชี" (Mornamchi) ฟอนต์ประจำมหาวิทยาลัยมหาสารคาม — อ้างไฟล์บน eng.msu.ac.th เท่านั้น ไม่ฝังไฟล์ฟอนต์ไว้ในหน้า -->
+  <link rel="preconnect" href="https://eng.msu.ac.th" crossorigin>
+  <link rel="preload" href="https://eng.msu.ac.th/carbooking/fonts/Mornamchi-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="https://eng.msu.ac.th/carbooking/fonts/mornamchi.css">
   <style>
     :root{--gold:#F9BE02;--gold-deep:#C59701;--gold-soft:#FFF4CC;--graphite:#454545;--graphite-2:#2F2F2F;--slate:#646464;--maroon:#401D1B;--maroon-soft:#F5E9E7;
       --paper:#F2F2F0;--line:#E2E1DD;--ink:#262423;--muted:#76716D;--ok:#1F7A3F;--ok-soft:#E2F3E7;--bad:#9B1C1C;--bad-soft:#FBE6E4;
-      --head:'Prompt',Tahoma,sans-serif;--body:'Sarabun',Tahoma,sans-serif}
+      --msu-font:"Mornamchi","Kanit","Sarabun","Noto Sans Thai","Leelawadee UI",Tahoma,sans-serif;--head:var(--msu-font);--body:var(--msu-font)}
     *{box-sizing:border-box}
-    body{margin:0;font-family:var(--body);font-size:16px;line-height:1.6;color:var(--ink);background:var(--paper)}
+    body{margin:0;font-synthesis:none;font-family:var(--body);font-size:16px;line-height:1.6;color:var(--ink);background:var(--paper)}
     h1,h2,h3{font-family:var(--head);color:var(--maroon);margin:0;line-height:1.25;font-weight:600}
     a{color:var(--maroon)}
     :focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}

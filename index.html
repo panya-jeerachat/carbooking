@@ -6,11 +6,10 @@
   <title>ระบบจองรถยนต์และพนักงานขับรถ | คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม</title>
   <meta name="description" content="ปฏิทินการใช้รถและระบบจองรถยนต์พร้อมพนักงานขับรถ คณะวิศวกรรมศาสตร์ มหาวิทยาลัยมหาสารคาม">
   <link rel="icon" href="logo.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- โหลดฟอนต์แบบไม่บล็อกการแสดงผล (หน้าแสดงทันทีด้วยฟอนต์สำรอง แล้วสลับเป็น Prompt/Sarabun) -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap"></noscript>
+  <!-- ฟอนต์ "มอน้ำชี" (Mornamchi) ฟอนต์ประจำมหาวิทยาลัยมหาสารคาม — อ้างไฟล์บน eng.msu.ac.th เท่านั้น ไม่ฝังไฟล์ฟอนต์ไว้ในหน้า -->
+  <link rel="preconnect" href="https://eng.msu.ac.th" crossorigin>
+  <link rel="preload" href="https://eng.msu.ac.th/carbooking/fonts/Mornamchi-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="https://eng.msu.ac.th/carbooking/fonts/mornamchi.css">
   <link rel="preconnect" href="https://script.google.com" crossorigin>
   <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
   <style>
@@ -20,11 +19,11 @@
       --maroon:#401D1B;--maroon-soft:#F5E9E7;
       --paper:#F2F2F0;--line:#E2E1DD;--ink:#262423;--muted:#76716D;
       --ok:#1F7A3F;--ok-soft:#E2F3E7;--bad:#9B1C1C;--bad-soft:#FBE6E4;--info:#2D5B8A;--info-soft:#E5EEF7;
-      --head:'Prompt',Tahoma,sans-serif;--body:'Sarabun',Tahoma,sans-serif;
+      --msu-font:"Mornamchi","Kanit","Sarabun","Noto Sans Thai","Leelawadee UI",Tahoma,sans-serif;--head:var(--msu-font);--body:var(--msu-font);
     }
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
-    body{margin:0;font-family:var(--body);font-size:16px;line-height:1.6;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased}
+    body{margin:0;font-synthesis:none;font-family:var(--body);font-size:16px;line-height:1.6;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased}
     h1,h2,h3,h4{font-family:var(--head);color:var(--maroon);margin:0;line-height:1.25;font-weight:600}
     a{color:var(--maroon)}
     button{font:inherit;color:inherit}

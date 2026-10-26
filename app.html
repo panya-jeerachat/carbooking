@@ -5,9 +5,10 @@
   <link rel="icon" href="logo.png">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- ฟอนต์ "มอน้ำชี" (Mornamchi) ฟอนต์ประจำมหาวิทยาลัยมหาสารคาม — อ้างไฟล์บน eng.msu.ac.th เท่านั้น ไม่ฝังไฟล์ฟอนต์ไว้ในหน้า -->
+  <link rel="preconnect" href="https://eng.msu.ac.th" crossorigin>
+  <link rel="preload" href="https://eng.msu.ac.th/carbooking/fonts/Mornamchi-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="https://eng.msu.ac.th/carbooking/fonts/mornamchi.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
 /* ===== EN-MSU Fleet — design tokens (จากโลโก้คณะ) ===== */
@@ -19,11 +20,13 @@
   --ok:#1F7A3F; --ok-soft:#E2F3E7; --bad:#9B1C1C; --bad-soft:#FBE6E4; --info:#2D5B8A; --info-soft:#E5EEF7;
   --r-sm:8px; --r-md:14px; --r-lg:22px;
   --shadow:0 1px 0 rgba(64,29,27,.04), 0 8px 24px -12px rgba(64,29,27,.25);
-  --font-head:'Prompt',Tahoma,sans-serif; --font-body:'Sarabun',Tahoma,sans-serif;
+  /* ฟอนต์ประจำมหาวิทยาลัยมหาสารคาม "มอน้ำชี" (Light 300 / Regular 400 / Bold 700) */
+  --msu-font:"Mornamchi","Kanit","Sarabun","Noto Sans Thai","Leelawadee UI",Tahoma,sans-serif;
+  --font-head:var(--msu-font); --font-body:var(--msu-font);
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{font-family:var(--font-body);font-size:15.5px;line-height:1.55;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased}
+body{font-synthesis:none;font-family:var(--font-body);font-size:15.5px;line-height:1.55;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4{font-family:var(--font-head);color:var(--maroon);margin:0;line-height:1.25;font-weight:600}
 button,input,select,textarea{font:inherit;color:inherit}
 a{color:var(--maroon)}
@@ -616,7 +619,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff}
 /* =====================================================================
  *  EN-MSU Fleet — Client (Single Page App ใน Apps Script HtmlService)
  * ===================================================================== */
-const CLIENT_VERSION = '2569.10-r18';   // ต้องตรงกับ APP.VERSION ใน Code.gs
+const CLIENT_VERSION = '2569.10-r19';   // ต้องตรงกับ APP.VERSION ใน Code.gs
 const S = { token: null, user: null, settings: window.PUBLIC || {}, cars: [], drivers: [], page: null,
             charts: [], timer: null, cal: { mode: 'month', date: null, resource: 'car' }, filters: {} };
 
@@ -1334,7 +1337,7 @@ const Pages = {
     $$('[data-bk]').forEach(el => el.onclick = () => Pages.bookingDetail(d.upcoming.find(b => b.id === el.dataset.bk)));
 
     if (role === 'admin' && window.Chart) {
-      Chart.defaults.font.family = "'Sarabun', Tahoma, sans-serif";
+      Chart.defaults.font.family = "'Mornamchi', 'Sarabun', Tahoma, sans-serif";
       Chart.defaults.color = '#646464';
       S.charts.push(new Chart($('#chTrend'), { type: 'bar',
         data: { labels: d.trend.map(t => t.date), datasets: [{ data: d.trend.map(t => t.count), backgroundColor: d.trend.map((t, i) => i === 0 ? '#401D1B' : '#F9BE02'), borderRadius: 6 }] },
@@ -1931,7 +1934,7 @@ const Pages = {
     const w = window.open('', '_blank');
     if (!w) return UI.toast('เบราว์เซอร์บล็อกหน้าต่างพิมพ์', 'err');
     const tl = b.timeline;
-    w.document.write('<html><head><meta charset="utf-8"><title>' + esc(b.id) + '</title><style>body{font-family:Sarabun,Tahoma,sans-serif;padding:24px;color:#222}h2{margin:0 0 4px}table{border-collapse:collapse;width:100%;margin-top:12px}td{border:1px solid #ccc;padding:6px 8px;vertical-align:top}td:first-child{width:30%;background:#f6f6f6}</style></head><body>' +
+    w.document.write('<html><head><meta charset="utf-8"><title>' + esc(b.id) + '</title>' + (S.settings.fontCss ? '<link rel="stylesheet" href="' + esc(S.settings.fontCss) + '">' : '') + '<style>body{font-family:Mornamchi,Sarabun,Tahoma,sans-serif;font-synthesis:none;padding:24px;color:#222}h2{margin:0 0 4px}table{border-collapse:collapse;width:100%;margin-top:12px}td{border:1px solid #ccc;padding:6px 8px;vertical-align:top}td:first-child{width:30%;background:#f6f6f6}</style></head><body>' +
       '<h2>แบบขออนุญาตใช้รถยนต์ราชการ</h2><div>' + esc(S.settings.orgName || '') + ' • เลขที่ ' + esc(b.id) + '</div><table>' +
       [['ผู้ขอ', b.requesterName + (b.requesterPosition ? ' • ' + b.requesterPosition : '')], ['หน่วยงาน', b.department], ['ติดต่อ', (b.requesterPhone || '') + ' ' + (b.requesterEmail || '')],
        ['ช่วงเวลา', fRange(b.start, b.end)], ['สถานที่ไป', b.destination], ['วัตถุประสงค์', b.purpose], ['ผู้โดยสาร', b.passengers + ' คน'], ['รถ', b.carPlate || '-'],
@@ -2589,7 +2592,7 @@ const Pages = {
     };
     if (!window.Chart) return;
     S.charts.forEach(c => c.destroy()); S.charts = [];
-    Chart.defaults.font.family = "'Sarabun', Tahoma, sans-serif"; Chart.defaults.color = '#646464';
+    Chart.defaults.font.family = "'Mornamchi', 'Sarabun', Tahoma, sans-serif"; Chart.defaults.color = '#646464';
     const mlabel = ym => { const [yy, mm] = ym.split('-').map(Number); return MONTHS_S[mm - 1] + ' ' + String(yy + 543).slice(2); };
     S.charts.push(new Chart($('#cMonth'), { data: { labels: d.byMonth.map(m => mlabel(m.ym)), datasets: [
       { type: 'bar', label: 'ระยะทาง (กม.)', data: d.byMonth.map(m => m.km), backgroundColor: '#F9BE02', borderRadius: 6, yAxisID: 'y', order: 2 },
